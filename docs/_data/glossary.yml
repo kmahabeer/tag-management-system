@@ -1,0 +1,18 @@
+entity: |
+  An 'entity' is the generic name for something that is managed by a Asset
+  Management System. Entities are identified by an Entity Reference. We 
+  choose the term 'entity' as some systems give a specific meaning to an 
+  'asset', such that all assets are entities, but not all entities are assets. 
+
+  As a simplified example, an 'asset' may always require to exist in some 
+  organizational hierarchy, and be the only thing that can be version managed. 
+  An entity however, can refer to anything that the Asset Management System 
+  knows about, including a part of the organizational hierarchy, or a specific 
+  version or component part of an 'asset'. In the core API, entities hold data 
+  for one or more traits. Traits have an id, and zero or more properties holding 
+  simple value types. This makes it relatively straightforward for an Asset Management 
+  System to provide support for any entity that a host may wish to store, by simply 
+  storing and retrieving these three properties from its persistent store. 
+
+  If it wishes, or understands specific entity traits, it can always provide more 
+  sophisticated mappings to its own internal types, to provide a better user experience.
