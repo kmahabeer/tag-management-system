@@ -1,61 +1,27 @@
-# Endpoint: `/tags`
+# Tags
 
-The `/tags` endpoints provide full CRUD access to the tag database.
+Tags are the core classification mechanism in the Tagging Service. A tag may represent a person, role, genre, object, emotion, or any other label applicable to an entity or asset.
 
-## GET `/tags`
+Tags are **unified** — there is no distinction between a tag for a “Person” and one for a “Genre” at the schema level. Instead, their function is defined by type and relationships.
 
-List all tags.
+## Endpoints
 
-### Query Parameters
+### Create a new tag
 
-- `type`: (optional) Filter by tag type
-- `q`: (optional) Fuzzy search by name or alias
+- [POST /v1/tags](./tags/create.md)
 
-### Example Response
+### Retrieve an existing tag
 
-```json
-{
-  "data": [
-    { "id": "uuid1", "name": "Red", "types": ["Color"] },
-    { "id": "uuid2", "name": "Car", "types": ["Vehicle"] }
-  ]
-}
-```
+- [GET /v1/tags/{id}](./tags/retrieve.md)
 
-## POST `/tags`
+### List all existing tags
 
-Create a new tag.
+- [GET /v1/tags](./tags/list.md)
 
-### Example Request Body
+### Update an existing tag
 
-```json
-{
-  "name": "Director",
-  "type_ids": ["uuid-role"]
-}
-```
+- [PATCH /v1/tags/{id}](./tags/update.md)
 
-### Example Response
+### Delete an existing tag
 
-```json
-{
-  "data": { "id": "uuid123", "name": "Director" }
-}
-```
-
-## PATCH `/tags/{tag_id}`
-
-Update an existing tag.
-
-### Example Request Body
-
-```json
-{
-  "name": "Director",
-  "metadata": { "source": "user_input" }
-}
-```
-
-## DELETE `/tags/{tag_id}`
-
-Permanently delete a tag.
+- [DELETE /v1/tags/{id}](./tags/delete.md)

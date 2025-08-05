@@ -1,61 +1,35 @@
-# Endpoint: `/entities`
+# Entities
 
-The `/entities` endpoints manage tagged resources.
+Entities represent digital artifacts that are being described or classified by tags. This includes images, documents, video stills, URLs, and more.
 
-## GET `/entities`
+## Endpoints
 
-Returns all registered entities.
+### Create a new entity
 
-### Query Parameters
+- [POST /v1/entities](./entities/create.md)
 
-- `purpose`: (optional) Filter by purpose tag
-- `q`: (optional) Filter by name
+### Retrieve an existing entity
 
-## POST `/entities`
+- [GET /v1/entities/{id}](./entities/retrieve.md)
 
-Create a new entity.
+### List all existing entities
 
-### Example Request Body
+- [GET /v1/entities](./entities/list.md)
 
-```json
-{
-  "name": "fargo_still_01.jpg",
-  "location": "/media/fargo_still_01.jpg"
-}
-```
+### Update an existing entity
 
-### Example Response
+- [PATCH /v1/entities/{id}](./entities/update.md)
 
-```json
-{
-  "data": { "id": "uuid-entity", "name": "fargo_still_01.jpg" }
-}
-```
+### Delete an existing entity
 
-## GET `/entities/{id}`
+- [DELETE /v1/entities/{id}](./entities/delete.md)
 
-Fetch a specific entity, including its tags and purposes.
+### Tag(s) assigned to an entity
 
-## POST `/entities/{id}/tags`
+#### List all tags assigned to an entity
 
-Assign one or more tags to the entity.
+- [GET /v1/entities/{id}/tags](./entities/{id}/tags/assign.md)
 
-### Example Request Body
+#### Assign or unassign tag(s) to an entity
 
-```json
-{
-  "tag_ids": ["uuid-red", "uuid-car"]
-}
-```
-
-## DELETE `/entities/{id}/tags`
-
-Unassign one or more tags from the entity.
-
-### Example Request Body
-
-```json
-{
-  "tag_ids": ["uuid-car"]
-}
-```
+- [PATCH /v1/entities/{id}/tags](./entities/{id}/tags/update.md)

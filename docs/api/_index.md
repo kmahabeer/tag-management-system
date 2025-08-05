@@ -5,7 +5,8 @@ The **Tagging Service API** exposes a RESTful interface for managing all tag-rel
 This document provides an overview of the structure, conventions, and usage patterns for the API.
 
 - [Endpoints](./endpoints/_index.md)
-- [Resources](./resources/_index.md)
+  - [Entities](./endpoints/endpoint-entities.md)
+  - [Tags](./endpoints/endpoint-tags.md)
 
 ## Principles
 
@@ -20,10 +21,10 @@ This document provides an overview of the structure, conventions, and usage patt
 All API endpoints are accessible under the following base path (example for local development):
 
 ```
-http://localhost:8000/api/v1
+http://localhost:8000/api
 ```
 
-Versioning is included in the path (`/v1`, `/v2`, etc.) to support forward compatibility.
+API version number is appended to the base URL in the path (e.g., `/v1`, `/v2`, etc.) to support compatibility.
 
 ## RESTful Conventions
 
