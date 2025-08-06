@@ -1,20 +1,19 @@
 # Database Schema
 
-This document provides a step-by-step breakdown of the SQL schema used by the Tagging Service.
+This document defines the database schema powering the Tagging Service. It supports:
 
-The schema is designed to be flexible, extensible, and context-aware. It supports:
-
-- Unified tagging across multiple entity types
+- Unified tagging across diverse entity types
 - Hierarchical and associative relationships between tags
-- Purpose-driven metadata rendering
-- Modifier-based compositional tagging (e.g., "very tall")
-- Full auditability with `created_at`, `updated_at`, `created_by`, and `updated_by` columns on every table
+- Composite tag construction (e.g., `"very big red car"`)
+- Purpose-driven and context-aware metadata
+- UI-configurable layouts and grouping
+- Ratings and semantic filtering
 
-UUIDv4 is used as the primary key type throughout, and PostgreSQL triggers are employed to automatically update timestamps.
+PostgreSQL with `uuid-ossp` is required for UUID support as UUIDv4 is used as the primary key type throughout. All tables include audit fields: `created_at`, `updated_at`, `created_by`, `updated_by` and PostgreSQL triggers are employed to automatically update timestamps.
 
 > Each section below introduces a logical grouping of tables or configuration steps that collectively define the tagging system’s database foundation.
 
-## Step 1: Enable required extensions
+## Step 1: Enable required PostgreSQL extensions
 
 PostgreSQL needs this to generate UUIDs:
 
@@ -23,7 +22,7 @@ PostgreSQL needs this to generate UUIDs:
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
-## Step 2: Define Shared Lookup Tables
+## Step 2: Create Shared Lookup Tables
 
 These define **types and classifications** used by other tables.
 

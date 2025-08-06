@@ -14,9 +14,11 @@ The `entities` table represents digital artifacts such as image files, video fil
 
 Each **entity** can have one or more associated **purposes**, and is linked to [`tags`](./tags.md) via the `entity_tags` junction table.
 
-## Join Tables
+## Entity Purposes
 
-### `entity_purposes`
+Defines the roles or intended use cases of each entity by linking it to one or more "purpose" tags.
+
+### `entity_purposes` Table
 
 Many-to-many join table which defines one or more **purposes** for an entity. A "purpose" is an entry within the [`tags`](./tags.md) table. Only one "purpose" should be marked as *primary* for each entity.
 
@@ -34,14 +36,11 @@ Constraint: `purpose_tag_id` must refer to a tag of type `"Purpose"`.
 > - Enforce via a SQL CHECK using a function or trigger if needed.
 > Example: An image file might be both a "Figure Study" and a "Film Still", but only one is primary.
 
-### `entity_relationship_types`
+## Entity Relationships
 
-| Column | Type | Description                                                          |
-| ------ | ---- | -------------------------------------------------------------------- |
-| `id`   | UUID | Primary key                                                          |
-| `name` | TEXT | Name for a tag relationship type (e.g. "Parent-Child", "Associated") |
+Enables [versioning](./utilities/versioning.md) and structural grouping between related entities such as alternates, studies, or variants.
 
-### `entity_relationships`
+### `entity_relationships` Table
 
 Many-to-one join table linking many versions of an entity to the primary version of the entity. Defines versioning, grouping, or derivational relationships between entities.
 
@@ -54,10 +53,19 @@ Many-to-one join table linking many versions of an entity to the primary version
 
 > **Directionality Semantics**
 >
-> In the entity_relationships table, entity_a_id always refers to the source or parent entity, while entity_b_id refers to the derived, related, or child entity.
+> In the `entity_relationships` table, `entity_a_id` always refers to the source or parent entity, while `entity_b_id` refers to the derived, related, or child entity.
 >
 > For example:
 > - "Sketch A" → belongs to group → "Figure Study Set"
 > - "Film Still B" → alternate version of → "Film Still A"
 > 
 > This convention enables consistent traversal of relationships and grouping logic.
+
+### `entity_relationship_types` Table
+
+Contains predefined relationship types for modeling associations between entities (e.g., versioning, grouping).
+
+| Column | Type | Description                                                          |
+| ------ | ---- | -------------------------------------------------------------------- |
+| `id`   | UUID | Primary key                                                          |
+| `name` | TEXT | Name for a tag relationship type (e.g. "Parent-Child", "Associated") |

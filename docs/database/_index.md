@@ -5,7 +5,9 @@ This section details the database schema used by the Tagging Service.
 - [Entities](entities.md)
 - [Tags](./tags.md)
 - [Entity Tagging](./entity_tagging.md)
-- [Utilities](./database/utilities.md)
+- Utilities
+	- [User Interface (UI) Configurations](./utilities/ui_configurations.md)
+	- [Ratings](./utilities/ratings.md)
 - [Database Schema](./schema.md)
 
 > **Notes**: All foreign keys in this schema refer to UUID primary keys unless otherwise noted.

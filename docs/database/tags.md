@@ -6,18 +6,21 @@ The Tagging Service uses a unified tag table, enriched by types, aliases, and co
 
 Stores the atomic and composite tags used throughout the system.
 
-| Column         | Type  | Description                                                                              |
-| -------------- | ----- | ---------------------------------------------------------------------------------------- |
-| `id`           | UUID  | Primary key                                                                              |
-| `name`         | TEXT  | Unique name for the tag                                                                  |
-| `display_name` | TEXT  |                                                                                          |
-| `metadata`     | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio" }`) |
+| Column           | Type  | Description                                                                              |
+| ---------------- | ----- | ---------------------------------------------------------------------------------------- |
+| `id`             | UUID  | Primary key                                                                              |
+| `name`           | TEXT  | Unique name for the tag                                                                  |
+| `display_name`   | TEXT  | An optional human-friendly label for use in the UI, defaults to `name` if blank.         |
+| `metadata`       | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio" }`) |
+| `part_of_speech` |       | Foreign key to [`parts_of_speech`](./utilities/parts_of_speech.md) table                 |
 
 `Metadata` in this context informs about the tag itself (its origin, category, creation information).
 
 Composite tags (e.g., `"very big red car"`) are stored as standalone entries in this table, and linked to their component tags using the [`tag_compositions`](./tags.md#tag_compositions-table) table described below. Composite phrases that are semantically equivalent (e.g., "very big car" and "huge car") can be linked through the [`tag_aliases`](./tags.md#tag_aliases-table) table, allowing flexible user input while maintaining canonical tags for storage and querying.
 
-## Core Tables
+## Tag Aliases
+
+Represents alternative names or synonyms that point to a canonical tag, aiding search and tagging flexibility.
 
 ### `tag_aliases` Table
 
@@ -29,26 +32,9 @@ Alternative names or synonyms for a tag. Useful for search, filtering, and UI fl
 | `name`   | TEXT | Unique name for a tag's alias                         |
 | `tag_id` |      | Foreign key to the [`tags`](tags.md#tags-table) table |
 
-### `tag_relationship_types` Table
+## Tag Relationships
 
-Defines the types of relationship between tags.
-
-| Column | Type | Description                                                                                                   |
-| ------ | ---- | ------------------------------------------------------------------------------------------------------------- |
-| `id`   | UUID | Primary key                                                                                                   |
-| `name` | TEXT | Name for a tag relationship type (e.g. "is a", "is associated with", "is a parent to", "is a predecessor to") |
-
-### `tag_context_ratings` Table
-
-| Column    | Type | Description                                                                |
-| --------- | ---- | -------------------------------------------------------------------------- |
-| `id`      | UUID | Primary key                                                                |
-| `tag_id`  | UUID | Foreign key to the [`tags`](tags.md#tags-table) table                      |
-| `context` |      | Foreign key to the [`contexts`](./utilities.md#contexts) table             |
-| `rating`  |      | Foreign key to the [`ratings`](./utilities.md#ratings) table               |
-| `user_id` |      | Foreign key to the `users` table to allow per-user ratings per tag context |
-
-## Join (aka Junction or linking) Tables
+Defines how tags are connected hierarchically or associatively, enabling semantic linkages across the tag graph.
 
 ### `tag_relationships` Table
 
@@ -64,7 +50,7 @@ Many-to-many join table linking [`tags`](tags.md#tags-table) in either **hierarc
 
 The description allows systems to render a human-readable explanation of the relationship. Example: `"Director"` → `role-of` → `"Quentin Tarantino"`
 
-**What it means semantically:**
+### What it means semantically
 
 > "**Tag A** is related to **Tag B** through a relationship of type `X`."
 
@@ -76,15 +62,18 @@ E.g.:
 > [!TODO] TODO
 > For `tag_relationships`, it says that Tag A is the dominant (e.g., parent) to Tag B, but the system doesn’t enforce that based on the `relationship_type`. Add constraints or semantic checks to enforce the relationships.
 
-### `tag_relationship_ratings` Table
+### `tag_relationship_types` Table
 
-| Column      | Type | Description                                                    |
-| ----------- | ---- | -------------------------------------------------------------- |
-| `id`        | UUID | Primary key                                                    |
-| `tag_a_id`  |      | Foreign key to [**Tag A**](./tags.md#tags-table)               |
-| `tag_b_id`  |      | Foreign key to [**Tag B**](./tags.md#tags-table)               |
-| `context`   |      | Foreign key to the [`contexts`](./utilities.md#contexts) table |
-| `rating_id` |      | Foreign key to the [`ratings`](./utilities.md#ratings) table   |
+Defines the types of relationship between tags.
+
+| Column | Type | Description                                                                                                   |
+| ------ | ---- | ------------------------------------------------------------------------------------------------------------- |
+| `id`   | UUID | Primary key                                                                                                   |
+| `name` | TEXT | Name for a tag relationship type (e.g. "is a", "is associated with", "is a parent to", "is a predecessor to") |
+
+## Tag Compositions
+
+Allows atomic tags to be combined into composite phrases while preserving their grammatical structure.
 
 ### `tag_compositions` Table
 
@@ -108,7 +97,7 @@ Each composite tag is stored in the `tags` table and linked to one or more compo
 > - Enforce uniqueness on base_tag_id + ordered list of component_tag_ids.
 > - Prevent semantic composites from being atomic: e.g., `"very big"` must only exist as a composite, not a standalone atomic tag.
 
-#### Composition Grammar Rules (Conceptual)
+### Composition Grammar Rules (Conceptual)
 
 To prevent the creation of semantically invalid or grammatically incorrect composite tags, the system assumes a basic grammatical model:
 
