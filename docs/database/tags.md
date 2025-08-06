@@ -13,6 +13,8 @@ Stores the atomic and composite tags used throughout the system.
 | `display_name` | TEXT  |                                                                                          |
 | `metadata`     | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio" }`) |
 
+`Metadata` in this context informs about the tag itself (its origin, category, creation information).
+
 Composite tags (e.g., `"very big red car"`) are stored as standalone entries in this table, and linked to their component tags using the [`tag_compositions`](./tags.md#tag_compositions-table) table described below.
 
 ## Core Tables
@@ -94,7 +96,7 @@ Each composite tag is stored in the `tags` table and linked to one or more compo
 | `component_tag_id` |      | Foreign key to a [tag](./tags.md#tags-table), representing an atomic **component** (e.g., `"very"`, `"big"`) |
 | `position`         | INT  | Order of the component tag in the composite phrase (1-based index)                                           |
 
-> **Base tags** are treated as atomic when composing higher-level phrases. For instance, once "**red car**" is stored as a tag in the [`tags`](./tags.md#tags-table) table, it may itself be used as a base to form "big ***red car***", which in turn may be used to form "very ***big red car***", and so on.
+> **Base tags** are treated as atomic when composing higher-level phrases. For instance, once "**red car**" is stored as a tag in the [`tags`](./tags.md#tags-table) table, it may itself be used as a base to form "big **_red car_**", which in turn may be used to form "very **_big red car_**", and so on.
 >
 > In this way, while a composite tag may consist of many atomic components, each composition step always joins two tags: the left-hand "base" (which may itself be composite) and a new component.
 
