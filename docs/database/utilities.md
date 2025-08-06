@@ -29,20 +29,35 @@ Tags shown in a control are derived by querying all tags that are related to `ta
 
 ## Ratings
 
+### `rating_types` Table
+
+| Column          | Type    | Description                                         |
+| --------------- | ------- | --------------------------------------------------- |
+| `id`            | UUID    | Primary key                                         |
+| `name`          | TEXT    | e.g., `"likeness"`, `"confidence"`, `"clarity"`     |
+| `is_normalized` | BOOLEAN | Whether the rating should be on a 1–10 or 0–1 scale |
+
 ### `ratings` Lookup Table
 
-| Column        | Type | Description   |
-| ------------- | ---- | ------------- |
-| `id`          | UUID | Primary key   |
-| `name`        | TEXT |               |
-| `score`       | INT  | Numeric scale |
-| `description` | TEXT |               |
+| Column           | Type | Description                                                                  |
+| ---------------- | ---- | ---------------------------------------------------------------------------- |
+| `id`             | UUID | Primary key                                                                  |
+| `name`           | TEXT |                                                                              |
+| `score`          | INT  | Numeric scale                                                                |
+| `description`    | TEXT |                                                                              |
+| `rating_type_id` |      | Foreign key to the [`rating_types`](./utilities.md#rating_types-table) table |
+
+Rating types add semantic meaning to user selected ratings. This way:
+
+- "10/10" can mean "I love it" if it's a *likeness* rating.
+- "9/10" can mean "very clear" if it's a *clarity* rating.
+- You can use the same rating table for different semantics based on context.
 
 ## Contexts
 
 Tags can be assigned to entities in **different semantic roles**, depending on how they relate to the entity. For example, a tag like `"Dog"` could indicate that a dog is **depicted in** the image (content), that the image is **about** dogs (subject), or that the tag is part of **annotation metadata**.
 
-To support this, the `entity_tags` table includes a `context` field that captures the _purpose or meaning_ of each tag assignment.
+To support this, the `entity_tags` table includes a `context` field that captures the *purpose or meaning* of each tag assignment.
 
 ### `contexts` Lookup Table
 
@@ -60,14 +75,14 @@ This enables:
 - **Filtering, displaying, or editing tags** differently depending on the workflow or UI configuration.
 - **Improved semantic clarity** in how tags are interpreted by downstream systems.
 
-The list of allowed contexts is defined and enforced at the schema level, and can be extended over time. See the table below for currently supported contexts. The following table defines the **Taxonomy of Tagging Contexts**, grouped by _objective_ and _subjective_ classifications.
+The list of allowed contexts is defined and enforced at the schema level, and can be extended over time. See the table below for currently supported contexts. The following table defines the **Taxonomy of Tagging Contexts**, grouped by *objective* and *subjective* classifications.
 
 ### Objective Context Classifications
 
 | Context    | Description                                                                 | Use Case                                   | Example Tags               |
 | ---------- | --------------------------------------------------------------------------- | ------------------------------------------ | -------------------------- |
-| `subject`  | What the entity is **about**<br>(e.g., themes, topics, high-level meaning)  | A documentary image _about_ climate issues | "Climate Change"           |
-| `content`  | What is **in** the entity<br>(e.g., visual elements, objects, people shown) | A person or animal shown _in_ a photo      | "Person", "Dog"            |
+| `subject`  | What the entity is **about**<br>(e.g., themes, topics, high-level meaning)  | A documentary image *about* climate issues | "Climate Change"           |
+| `content`  | What is **in** the entity<br>(e.g., visual elements, objects, people shown) | A person or animal shown *in* a photo      | "Person", "Dog"            |
 | `metadata` | Descriptive info not from the content, but about the file or process        | Indicates origin or status info            | "Generated", "Low Quality" |
 
 ### Subjective Context Classifications
