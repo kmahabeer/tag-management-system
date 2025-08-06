@@ -94,7 +94,8 @@ Each composite tag is stored in the `tags` table and linked to one or more compo
 
 > [!todo] TODO
 >
-> - Enforce uniqueness on base_tag_id + ordered list of component_tag_ids.
+> - Enforce uniqueness on `base_tag_id` + ordered list of `component_tag_ids`.
+> - Prevent adding similar components to already composited tags, e.g., prevent adding `big` to `big car`.
 > - Prevent semantic composites from being atomic: e.g., `"very big"` must only exist as a composite, not a standalone atomic tag.
 
 ### Composition Grammar Rules (Conceptual)

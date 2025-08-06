@@ -26,20 +26,20 @@ Rating types add semantic meaning to user selected ratings. This way:
 
 ## `tag_relationship_ratings` Table
 
-| Column      | Type | Description                                                    |
-| ----------- | ---- | -------------------------------------------------------------- |
-| `id`        | UUID | Primary key                                                    |
-| `tag_a_id`  |      | Foreign key to [**Tag A**](tags.md#tags-table)               |
-| `tag_b_id`  |      | Foreign key to [**Tag B**](tags.md#tags-table)               |
-| `context`   |      | Foreign key to the [`contexts`](ui_configurations.md#contexts) table |
-| `rating_id` |      | Foreign key to the [`ratings`](ui_configurations.md#ratings) table   |
+| Column       | Type | Description                                                          |
+| ------------ | ---- | -------------------------------------------------------------------- |
+| `id`         | UUID | Primary key                                                          |
+| `tag_a_id`   |      | Foreign key to [**Tag A**](tags.md#tags-table)                       |
+| `tag_b_id`   |      | Foreign key to [**Tag B**](tags.md#tags-table)                       |
+| `context_id` |      | Foreign key to the [`contexts`](ui_configurations.md#contexts) table |
+| `rating_id`  |      | Foreign key to the [`ratings`](ui_configurations.md#ratings) table   |
 
 ## `tag_context_ratings` Table
 
-| Column    | Type | Description                                                                |
-| --------- | ---- | -------------------------------------------------------------------------- |
-| `id`      | UUID | Primary key                                                                |
-| `tag_id`  | UUID | Foreign key to the [`tags`](tags.md#tags-table) table                      |
-| `context` |      | Foreign key to the [`contexts`](ui_configurations.md#contexts) table             |
-| `rating`  |      | Foreign key to the [`ratings`](ui_configurations.md#ratings) table               |
-| `user_id` |      | Foreign key to the `users` table to allow per-user ratings per tag context |
+| Column       | Type | Description                                                                |
+| ------------ | ---- | -------------------------------------------------------------------------- |
+| `id`         | UUID | Primary key                                                                |
+| `tag_id`     | UUID | Foreign key to the [`tags`](tags.md#tags-table) table                      |
+| `context_id` |      | Foreign key to the [`contexts`](ui_configurations.md#contexts) table       |
+| `rating`     |      | Foreign key to the [`ratings`](ui_configurations.md#ratings) table         |
+| `user_id`    |      | Foreign key to the `users` table to allow per-user ratings per tag context |
