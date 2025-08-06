@@ -18,7 +18,7 @@ Each **entity** can have one or more associated **purposes**, and is linked to [
 
 ### `entity_purposes`
 
-Many-to-many join table which defines one or more **purposes** for an entity. A "purpose" is an entry within the [`tags`](./tags.md) table. Only one "purpose" should be marked as _primary_ for each entity.
+Many-to-many join table which defines one or more **purposes** for an entity. A "purpose" is an entry within the [`tags`](./tags.md) table. Only one "purpose" should be marked as *primary* for each entity.
 
 | Column           | Type    | Description                                                                        |
 | ---------------- | ------- | ---------------------------------------------------------------------------------- |
@@ -32,7 +32,7 @@ Constraint: `purpose_tag_id` must refer to a tag of type `"Purpose"`.
 > [!warning] TODO
 >
 > - Enforce via a SQL CHECK using a function or trigger if needed.
->   Example: An image file might be both a "Figure Study" and a "Film Still", but only one is primary.
+> Example: An image file might be both a "Figure Study" and a "Film Still", but only one is primary.
 
 ### `entity_relationship_types`
 
@@ -52,8 +52,12 @@ Many-to-one join table linking many versions of an entity to the primary version
 | `entity_b_id`          |      | Foreign key to [**Entity B**](./entities.md#entities)                                       |
 | `relationship_type_id` |      | Foreign key to [`entity_relationship_types`](./entities.md#entity_relationship_types) table |
 
-Examples:
-
-- “Film Still B” → alternate version of → “Film Still A”
-- “GIF Loop” → derived from → “Full Video”
-- “Sketch A” → belongs to group → “Figure Study Set”
+> **Directionality Semantics**
+>
+> In the entity_relationships table, entity_a_id always refers to the source or parent entity, while entity_b_id refers to the derived, related, or child entity.
+>
+> For example:
+> - "Sketch A" → belongs to group → "Figure Study Set"
+> - "Film Still B" → alternate version of → "Film Still A"
+> 
+> This convention enables consistent traversal of relationships and grouping logic.
