@@ -2,11 +2,16 @@
 
 ## `entity_tags` Join Table
 
-Junction table which links `tags` to `entities`.
+Many-to-many join table which links [`tags`](./tags.md) to [`entities`](./entities.md).
 
 | Column      | Type  | Description                                                                                                                          |
 | ----------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`        |       | Primary key; composite of `entity_id` and `tag_id`                                                                                   |
-| `asset_id`  | UUID  | Foreign key to `assets`                                                                                                              |
-| `tag_id`    | UUID  | Foreign key to `tags`                                                                                                                |
-| `metadata` | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio", "confidence": 0.92, "annotator": "user123" }`) |
+| `id`        | UUID  | Primary key                                                                                                                          |
+| `entity_id` |       | Foreign key to the [`entities`](./entities.md) table                                                                                 |
+| `tag_id`    |       | Foreign key to the [`tags`](./tags.md) table                                                                                         |
+| `context`   |       | Foreign key to the [`contexts`](./utilities.md#contexts) table                                                                       |
+| `metadata`  | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio", "confidence": 0.92, "annotator": "user123" }`) |
+
+## Tagging Contexts
+
+![](./utilities.md#contexts)
