@@ -2,7 +2,7 @@
 
 Entities represent digital artifacts that are being described or classified by tags. This includes images, documents, video stills, URLs, and more.
 
-## Endpoints
+## General Entity Endpoints
 
 ### Create a new entity
 
@@ -33,3 +33,19 @@ Entities represent digital artifacts that are being described or classified by t
 #### Assign or unassign tag(s) to an entity
 
 - [PATCH /v1/entities/{id}/tags](./entities/{id}/tags/update.md)
+
+## Entity Purpose(s)
+
+### Update purpose(s) for an entity
+
+- [PATCH /v1/entities/{id}/purpose](./entities/{id}/purpose/update.md)
+
+## Entity Relationship(s)
+
+### View entity relationships
+
+- [GET /v1/entities/{id}/relationships](./entities/{id}/relationships/retrieve.md)
+
+### Update entity relationships
+
+- [PATCH /v1/entities/{id}/relationships](./entities/{id}/relationships/update.md)
