@@ -8,7 +8,9 @@ This section details the database schema used by the Tagging Service.
 - Utilities
 	- [User Interface (UI) Configurations](./utilities/ui_configurations.md)
 	- [Ratings](./utilities/ratings.md)
-- [Database Schema](./schema.md)
+	- [Parts of Speech](./utilities/parts_of_speech.md)
+- [Database Schema](./schema/schema.md)
+	- [Schema Enforcement](./schema/schema_enforcement.md)
 
 > **Notes**: All foreign keys in this schema refer to UUID primary keys unless otherwise noted.
 

@@ -23,7 +23,7 @@ The Tagging Service provides a flexible, hierarchical tagging system designed to
 	- [Tags](./database/tags.md)
 	- [Entity Tagging](./database/entity_tagging.md)
 	- [Utilities](ui_configurations.md)
-	- [Database Schema](./database/schema.md)
+	- [Database Schema](./database/schema/schema.md)
 - [Logic](./logic/_index.md)
 	- [Composite Tagging](./logic/composite_tagging.md)
 	- [Labeled Data Import](./logic/labeled_data_import.md)
