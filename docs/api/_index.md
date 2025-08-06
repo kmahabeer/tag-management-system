@@ -7,6 +7,7 @@ This document provides an overview of the structure, conventions, and usage patt
 - [Endpoints](./endpoints/_index.md)
   - [Entities](./endpoints/endpoint-entities.md)
   - [Tags](./endpoints/endpoint-tags.md)
+  - [Utilities](./endpoints/endpoint-utilities.md)
 
 ## Principles
 
