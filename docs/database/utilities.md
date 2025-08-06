@@ -15,15 +15,17 @@ Defines UI-level sections, like “Color”, “Mood”, or “Props”.
 
 ### `ui_fields` Table
 
-Junction table which maps [`tag_types`](./tags.md#tag_types-table) to UI controls and grouping logic.
+Junction table which maps a **UI section** to a specific **tag category**, enabling downstream UIs to render grouped tag selectors.
 
-| Column         | Type    | Description                                                                  |
-| -------------- | ------- | ---------------------------------------------------------------------------- |
-| `id`           | UUID    | Primary key                                                                  |
-| `ui_group_id`  |         | Foreign key to the [`ui_groups`](./utilities.md#ui_groups-table) table       |
-| `tag_type_id`  |         | Foreign key to the [`tag_types`](./tags.md#tag_types-table) (optional) table |
-| `control_type` | TEXT    | UI widget type (e.g., "chips", "dropdown")                                   |
-| `is_required`  | BOOLEAN | Whether the UI expects this tag to be supplied                               |
+| Column                 | Type    | Description                                                                                                                           |
+| ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | UUID    | Primary key                                                                                                                           |
+| `ui_group_id`          |         | Foreign key to the [`ui_groups`](./utilities.md#ui_groups-table) table                                                                |
+| `tag_relationships_id` |         | Foreign key to a [`tag_relationships`](./tags.md#tag_relationships-table) that represents the category (e.g., `"Color"`, `"Vehicle"`) |
+| `control_type`         | TEXT    | UI widget type (e.g., "chips", "dropdown")                                                                                            |
+| `is_required`          | BOOLEAN | Whether the UI expects this tag to be supplied                                                                                        |
+
+Tags shown in a control are derived by querying all tags that are related to `tag_category_id` through a `"is a"` relationship.
 
 ## Ratings
 
