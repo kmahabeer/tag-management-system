@@ -27,6 +27,9 @@ Junction table which maps a **UI section** to a specific **tag category**, enabl
 
 Tags shown in a control are derived by querying all tags that are related to `tag_category_id` through a `"is a"` relationship.
 
+> [!TODO] TODO
+> `ui_fields` references `tag_relationships`, but that indirection might be fragile. Consider allowing UI mapping directly to a `tag_category_id` column in tags or add a `tag_type` = 'category' and map directly.
+
 ## Ratings
 
 ### `rating_types` Table

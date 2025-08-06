@@ -73,6 +73,9 @@ E.g.:
 - **“Vehicle”** is the **parent** of **“Car”**
 - **“Director”** is a **role** of **“Quentin Tarantino”**
 
+> [!TODO] TODO
+> For `tag_relationships`, it says that Tag A is the dominant (e.g., parent) to Tag B, but the system doesn’t enforce that based on the `relationship_type`. Add constraints or semantic checks to enforce the relationships.
+
 ### `tag_relationship_ratings` Table
 
 | Column      | Type | Description                                                    |
