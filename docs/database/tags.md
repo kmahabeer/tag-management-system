@@ -87,22 +87,18 @@ Used to define composite phrases (e.g., `"very big red car"`), where the composi
 
 Each composite tag is stored in the `tags` table and linked to one or more component tags using this table. The `position` field determines the order of components (1-based index).
 
-| Column             | Type | Description                                                                                                   |
-| ------------------ | ---- | ------------------------------------------------------------------------------------------------------------- |
-| `id`               | UUID | Primary key                                                                                                   |
-| `composite_tag_id` |      | Foreign key to a [tag](./tags.md#tags-table), representing the **composite tag** (e.g., `"very big red car"`) |
-| `component_tag_id` |      | Foreign key to a [tag](./tags.md#tags-table), representing an atomic **component** (e.g., `"very"`, `"big"`)  |
-| `position`         | INT  | Order of the component tag in the composite phrase (1-based index)                                            |
+| Column             | Type | Description                                                                                                  |
+| ------------------ | ---- | ------------------------------------------------------------------------------------------------------------ |
+| `id`               | UUID | Primary key                                                                                                  |
+| `base_tag_id`      |      | Foreign key to a [tag](./tags.md#tags-table), representing the **base tag** (e.g., `"very big red car"`)     |
+| `component_tag_id` |      | Foreign key to a [tag](./tags.md#tags-table), representing an atomic **component** (e.g., `"very"`, `"big"`) |
+| `position`         | INT  | Order of the component tag in the composite phrase (1-based index)                                           |
 
-For example, the phrase `"very big red car"` would be stored in [`tags`](./tags.md#tags-table) as a single composite tag, and then linked to `"very"`, `"big"`, `"red"`, and `"car"` via this table in that order.
-
-Composite tags are first-class tags stored in the tags table, and therefore inherit support for:
-
-- Tagging entities via `entity_tags`
-- Contextual ratings via `tag_context_ratings`
-- Aliases, metadata, and UI configuration
+> **Base tags** are treated as atomic when composing higher-level phrases. For instance, once "**red car**" is stored as a tag in the [`tags`](./tags.md#tags-table) table, it may itself be used as a base to form "big ***red car***", which in turn may be used to form "very ***big red car***", and so on.
+>
+> In this way, while a composite tag may consist of many atomic components, each composition step always joins two tags: the left-hand "base" (which may itself be composite) and a new component.
 
 > [!warning] TODO
 >
-> - Enforce uniqueness on composite_tag_id + ordered list of component_tag_ids.
+> - Enforce uniqueness on base_tag_id + ordered list of component_tag_ids.
 > - Prevent semantic composites from being atomic: e.g., `"very big"` must only exist as a composite, not a standalone atomic tag.
