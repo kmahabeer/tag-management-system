@@ -8,6 +8,8 @@ This section details the database schema used by the Tagging Service.
 - [Utilities](./database/utilities.md)
 - [Database Schema](./schema.md)
 
+> **Notes**: All foreign keys in this schema refer to UUID primary keys unless otherwise noted.
+
 > **Note:** Every table in the system includes audit columns: `created_at`, `updated_at` (both of type `TIMESTAMP`), and `created_by`, `updated_by` to track when records are created and last modified. These fields are maintained automatically by the service layer or database triggers.
 
 Use a trigger-based approach and apply to all tables with a common function:
