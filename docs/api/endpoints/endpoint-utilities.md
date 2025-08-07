@@ -4,10 +4,7 @@ These endpoints provide access to general-purpose lookup data used throughout th
 
 ## Endpoints
 
-### Retrieve all tagging contexts
-
-- [GET /v1/contexts](./utilities/contexts.md)
-
-### Retrieve all parts of speech
-
-- [GET /v1/parts-of-speech](./utilities/parts-of-speech.md)
+| HTTP Method | Endpoint                                                | Description                   |
+| ----------- | ------------------------------------------------------- | ----------------------------- |
+| GET         | [`/v1/contexts`](./utilities/contexts.md)               | Retrieve all tagging contexts |
+| GET         | [`/v1/parts-of-speech`](./utilities/parts-of-speech.md) | Retrieve all parts of speech  |

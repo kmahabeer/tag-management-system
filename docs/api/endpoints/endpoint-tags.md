@@ -6,62 +6,38 @@ Tags are **unified** — there is no distinction between a tag for a “Person�
 
 ## General Tag Endpoints
 
-### Create a new tag
-
-- [POST /v1/tags](./tags/create.md)
-
-### Retrieve an existing tag
-
-- [GET /v1/tags/{id}](./tags/retrieve.md)
-
-### List all existing tags
-
-- [GET /v1/tags](./tags/list.md)
-
-### Update an existing tag
-
-- [PATCH /v1/tags/{id}](./tags/update.md)
-
-### Delete an existing tag
-
-- [DELETE /v1/tags/{id}](./tags/delete.md)
+| HTTP Method | Endpoint                              | Description              |
+| ----------- | ------------------------------------- | ------------------------ |
+| POST        | [`/v1/tags`](./tags/create.md)        | Create a new tag         |
+| GET         | [`/v1/tags`](./tags/list.md)          | List all existing tags   |
+| GET         | [`/v1/tags/{id}`](./tags/retrieve.md) | Retrieve an existing tag |
+| PATCH       | [`/v1/tags/{id}`](./tags/update.md)   | Update an existing tag   |
+| DELETE      | [`/v1/tags/{id}`](./tags/delete.md)   | Delete an existing tag   |
 
 ## Tag Aliases Endpoints
 
-### View tag aliases
-
-- [GET /v1/tags/{id}/aliases](./tags/{id}/aliases/retrieve.md)
-
-### Update tag aliases
-
-- [PATCH /v1/tags/{id}/aliases](./tags/{id}/aliases/update.md)
+| HTTP Method | Endpoint                                                   | Description        |
+| ----------- | ---------------------------------------------------------- | ------------------ |
+| GET         | [`/v1/tags/{id}/aliases`](./tags/{id}/aliases/retrieve.md) | View tag aliases   |
+| PATCH       | [`/v1/tags/{id}/aliases`](./tags/{id}/aliases/update.md)    | Update tag aliases |
 
 ## Tag Relationship Endpoints
 
-### View tag relationships
-
-- [GET /v1/tags/{id}/relationships](./tags/{id}/relationships/retrieve.md)
-
-### Update tag relationships
-
-- [PATCH /v1/tags/{id}/relationships](./tags/{id}/relationships/update.md)
+| HTTP Method | Endpoint                                                              | Description              |
+| ----------- | --------------------------------------------------------------------- | ------------------------ |
+| GET         | [`/v1/tags/{id}/relationships`](./tags/{id}/relationships/retrieve.md) | View tag relationships   |
+| PATCH       | [`/v1/tags/{id}/relationships`](./tags/{id}/relationships/update.md)  | Update tag relationships |
 
 ## Tag Composition Endpoints
 
-### View tag composition components
-
-- [GET /v1/tags/{id}/compositions](./tags/{id}/compositions/retrieve.md)
-
-### Update tag composition components
-
-- [PATCH /v1/tags/{id}/compositions](./tags/{id}/compositions/update.md)
+| HTTP Method | Endpoint                                                             | Description                       |
+| ----------- | -------------------------------------------------------------------- | --------------------------------- |
+| GET         | [`/v1/tags/{id}/compositions`](./tags/{id}/compositions/retrieve.md) | View tag composition components   |
+| PATCH       | [`/v1/tags/{id}/compositions`](./tags/{id}/compositions/update.md)   | Update tag composition components |
 
 ## Tag Rating Endpoints
 
-### Rate tag in context
-
-- [PATCH /v1/tags/{id}/ratings](./tags/{id}/ratings/contextual.md)
-
-### Rate tag relationship
-
-- [PATCH /v1/tags/{id}/relationship_ratings](./tags/{id}/ratings/relationship.md)
+| HTTP Method | Endpoint                                                                    | Description           |
+| ----------- | --------------------------------------------------------------------------- | --------------------- |
+| PATCH       | [`/v1/tags/{id}/ratings`](./tags/{id}/ratings/contextual.md)                | Rate tag in context   |
+| PATCH       | [`/v1/tags/{id}/relationship_ratings`](./tags/{id}/ratings/relationship.md) | Rate tag relationship |
