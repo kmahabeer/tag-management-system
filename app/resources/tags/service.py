@@ -1,5 +1,5 @@
-from app.models.tag import Tag
-from app.schemas.tag_schema import TagCreate
+from app.resources.tags.models import Tag
+from app.resources.tags.schemas import TagCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from collections.abc import Sequence

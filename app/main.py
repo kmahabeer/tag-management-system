@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.database import sqlalchemy_engine
-from app.models.base import Base
+from app.models.model_base import Base
 from app.api.v1.api_v1 import api_router
 from app.core.config import settings
 

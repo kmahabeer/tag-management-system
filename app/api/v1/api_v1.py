@@ -1,9 +1,11 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import tags, entities, utilities
+from app.resources.utilities import endpoints
+from app.resources.entities import endpoints
+from app.resources.tags import endpoints
 
 
 api_router = APIRouter(prefix="/v1")
 
-api_router.include_router(tags.router)
-api_router.include_router(entities.router)
-api_router.include_router(utilities.router)
+api_router.include_router(endpoints.router)
+api_router.include_router(endpoints.router)
+api_router.include_router(endpoints.router)

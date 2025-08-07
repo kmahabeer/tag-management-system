@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
-from app.schemas.tag_schema import TagCreate, TagOut
+from app.resources.tags.schemas import TagCreate, TagOut
 from app.services.tag_service import create_tag, get_all_tags, get_tag_by_id
 
 router = APIRouter(prefix="/tags", tags=["tags"])
