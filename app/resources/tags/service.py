@@ -1,9 +1,9 @@
-from app.resources.tags.models import Tag
-from app.resources.tags.schemas import TagCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from collections.abc import Sequence
 from uuid import UUID
+from app.resources.tags.models import Tag
+from app.resources.tags.schemas import TagCreate
 
 
 async def create_tag(db: AsyncSession, tag_in: TagCreate) -> Tag:
