@@ -8,6 +8,7 @@ from app.resources.tags.service import (
     get_all_tags,
     get_tag_by_id,
     update_tag_by_id,
+    delete_tag_by_id,
 )
 
 router = APIRouter(prefix="/tags", tags=["tags"])
@@ -39,3 +40,10 @@ async def update_tag_by_id_endpoint(
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
     return tag
+
+
+@router.delete("/{id}", status_code=204, operation_id="deleteTag")
+async def delete_tag_by_id_endpoint(id: UUID, db: AsyncSession = Depends(get_db)):
+    success = await delete_tag_by_id(db=db, tag_id=id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Tag not found")

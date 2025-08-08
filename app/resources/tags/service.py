@@ -41,3 +41,13 @@ async def update_tag_by_id(
     await db.commit()
     await db.refresh(tag)
     return tag
+
+
+async def delete_tag_by_id(db: AsyncSession, tag_id: UUID) -> bool:
+    result = await db.execute(select(Tag).where(Tag.id == tag_id))
+    tag = result.scalar_one_or_none()
+    if not tag:
+        return False
+    await db.delete(tag)
+    await db.commit()
+    return True
