@@ -12,7 +12,11 @@ async def create_tag(db: AsyncSession, tag_in: TagCreate) -> Tag:
     if existing:
         raise ValueError("Tag already exists")
 
-    new_tag = Tag(**tag_in.model_dump())
+    payload = tag_in.model_dump(exclude_unset=True)
+    if "metadata" in payload:
+        payload["meta"] = payload.pop("metadata")
+
+    new_tag = Tag(**payload)
     db.add(new_tag)
     await db.commit()
     await db.refresh(new_tag)

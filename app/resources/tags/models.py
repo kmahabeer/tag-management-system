@@ -9,7 +9,9 @@ class Tag(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=False, unique=True)
     display_name = Column(String, nullable=True)
-    # part_of_speech_id = Column(
-    #     UUID(as_uuid=True), ForeignKey("parts_of_speech.id"), nullable=True
-    # )
-    # metadata = Column(JSON, nullable=True)
+    part_of_speech_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("parts_of_speech.id"),
+        nullable=True,
+    )
+    meta = Column("metadata", JSON, nullable=True)
