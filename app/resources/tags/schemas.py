@@ -25,3 +25,10 @@ class TagOut(TagCreate):
         validation_alias="meta",
         serialization_alias="metadata",
     )
+
+
+class TagUpdate(BaseModel):
+    name: Optional[str] = None
+    display_name: Optional[str] = None
+    part_of_speech_id: Optional[UUID] = None
+    metadata: Optional[dict] = None

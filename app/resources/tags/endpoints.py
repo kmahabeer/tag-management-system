@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
-from app.resources.tags.schemas import TagCreate, TagOut
+from app.resources.tags.schemas import TagCreate, TagOut, TagUpdate
 from app.resources.tags.service import (
     create_tag,
     get_all_tags,
@@ -34,9 +34,12 @@ async def get_tag_by_id_endpoint(id: UUID, db: AsyncSession = Depends(get_db)):
 
 @router.patch("/{id}", response_model=TagOut)
 async def update_tag_by_id_endpoint(
-    id: UUID, tag_in: TagCreate, db: AsyncSession = Depends(get_db)
+    id: UUID, tag_in: TagUpdate, db: AsyncSession = Depends(get_db)
 ):
-    tag = await update_tag_by_id(db=db, tag_id=id, tag_in=tag_in)
+    try:
+        tag = await update_tag_by_id(db, id, tag_in)
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
     return tag
