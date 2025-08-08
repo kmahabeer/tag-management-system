@@ -4,6 +4,8 @@ from app.core.database import sqlalchemy_engine
 from app.resources.shared.models.base import Base
 from app.api.v1.api_v1 import api_router
 from app.core.config import settings
+from app.resources.tags import models as _
+from app.resources.utilities import models as _
 
 
 @asynccontextmanager
