@@ -3,7 +3,12 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.resources.tags.schemas import TagCreate, TagOut
-from app.resources.tags.service import create_tag, get_all_tags, get_tag_by_id
+from app.resources.tags.service import (
+    create_tag,
+    get_all_tags,
+    get_tag_by_id,
+    update_tag_by_id,
+)
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 
@@ -21,6 +26,16 @@ async def get_tags_endpoint(db: AsyncSession = Depends(get_db)):
 @router.get("/{id}", response_model=TagOut)
 async def get_tag_by_id_endpoint(id: UUID, db: AsyncSession = Depends(get_db)):
     tag = await get_tag_by_id(db, id)
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    return tag
+
+
+@router.patch("/{id}", response_model=TagOut)
+async def update_tag_by_id_endpoint(
+    id: UUID, tag_in: TagCreate, db: AsyncSession = Depends(get_db)
+):
+    tag = await update_tag_by_id(db=db, tag_id=id, tag_in=tag_in)
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
     return tag

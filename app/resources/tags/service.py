@@ -27,3 +27,17 @@ async def get_all_tags(db: AsyncSession) -> Sequence[Tag]:
 async def get_tag_by_id(db: AsyncSession, id: UUID) -> Tag | None:
     result = await db.execute(select(Tag).where(Tag.id == id))
     return result.scalar_one_or_none()
+
+
+async def update_tag_by_id(
+    db: AsyncSession, tag_id: UUID, tag_in: TagCreate
+) -> Tag | None:
+    result = await db.execute(select(Tag).where(Tag.id == tag_id))
+    tag = result.scalar_one_or_none()
+    if not tag:
+        return None
+    for field, value in tag_in.model_dump(exclude_unset=True).items():
+        setattr(tag, field, value)
+    await db.commit()
+    await db.refresh(tag)
+    return tag
