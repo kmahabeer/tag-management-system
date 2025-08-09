@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from app.resources.tags import endpoints as tags_endpoints
-from app.resources.entities import endpoints as entities_endpoints
-from app.resources.utilities import endpoints as utilities_endpoints
+from app.api.v1.resources.tags import endpoints as tags_endpoints
+from app.api.v1.resources.entities import endpoints as entities_endpoints
+from app.api.v1.resources.utilities import endpoints as utilities_endpoints
 
 
 api_router = APIRouter(prefix="/v1")

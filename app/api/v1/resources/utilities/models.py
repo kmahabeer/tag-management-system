@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import String, Column, Boolean, Text
 from sqlalchemy.dialects.postgresql import UUID
-from app.resources.shared.models.base import Base
+from app.api.v1.resources.shared.models.base import Base
 
 
 class PartOfSpeech(Base):
@@ -11,3 +11,8 @@ class PartOfSpeech(Base):
     name = Column(String, unique=True, nullable=False)
     description = Column(Text, nullable=True)
     is_active = Column(Boolean, nullable=True)
+
+
+# class Rating(Base)
+
+# class Context(Base)
