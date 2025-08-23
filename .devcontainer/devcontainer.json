@@ -1,0 +1,68 @@
+{
+  "name": "Fullstack Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
+    "ghcr.io/va-h/devcontainers-features/uv:1": {}
+  },
+  "remoteUser": "root",
+  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-azuretools.vscode-docker",
+        "ms-python.black-formatter"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "./.venv/bin/python",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "chat.commandCenter.enabled": false,
+        "workbench.tree.indent": 28,
+        "workbench.tree.renderIndentGuides": "always",
+        "explorer.confirmDragAndDrop": true,
+        "explorer.confirmDelete": true,
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/.venv": true,
+          "**/node_modules": true
+        }
+      }
+    }
+  },
+  "remoteEnv": {
+    "DATABASE_URL": "postgresql://app:app@db:5432/app"
+  },
+  "forwardPorts": [8000, 5173, 5432],
+  "portsAttributes": {
+    "8000": { "label": "FastAPI" },
+    "5173": { "label": "Vite" },
+    "5432": { "label": "Postgres" }
+  },
+  "mounts": [
+    "type=cache,target=/root/.cache/pip",
+    "type=cache,target=/root/.npm",
+    "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
+  ],
+  "onCreateCommand": "bash .devcontainer/onCreate.sh",
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "updateContentCommand": "",
+  "postAttachCommand": ""
+}

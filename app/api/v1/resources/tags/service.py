@@ -3,8 +3,8 @@ from sqlalchemy.future import select
 from sqlalchemy import and_
 from collections.abc import Sequence
 from uuid import UUID
-from app.resources.tags.models import Tag
-from app.resources.tags.schemas import TagCreate, TagUpdate
+from app.api.v1.resources.tags.models import Tag
+from app.api.v1.resources.tags.schemas import TagCreate, TagUpdate
 
 
 async def create_tag(db: AsyncSession, tag_in: TagCreate) -> Tag:
