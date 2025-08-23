@@ -16,6 +16,6 @@ Frontend clients, such as a web-based graphical user-interface (UI) will read st
 
 ## Usage
 
-The system is designed to expose a RESTful API (coming soon) for tag creation, updates, querying, and relationship management.
+The system is designed to expose a RESTful API for tag creation, updates, querying, and relationship management.
 
 See the [documentation](./docs/_index.md) for detailed schema, logic, and integration guides.
