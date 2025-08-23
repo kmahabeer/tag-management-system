@@ -20,3 +20,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.PROJECT_NAME, root_path="/api", lifespan=lifespan)
 
 app.include_router(api_router)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI is running."}
