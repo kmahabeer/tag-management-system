@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Text, JSON, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from app.resources.shared.models.base import Base
+from app.api.v1.resources.shared.models.base import Base
 import uuid
 
 

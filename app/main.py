@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import sqlalchemy_engine
-from app.resources.shared.models.base import Base
 from app.api.v1.api_v1 import api_router
 from app.core.config import settings
-from app.resources.tags import models as _
-from app.resources.utilities import models as _
+from app.api.v1.resources.shared.models.base import Base
+from app.api.v1.resources.tags import models as _
+from app.api.v1.resources.utilities import models as _
 
 
 @asynccontextmanager
@@ -20,3 +21,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.PROJECT_NAME, root_path="/api", lifespan=lifespan)
 
 app.include_router(api_router)
+
+origins = [
+    "http://localhost:5173",   # Vite dev server
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI is running."}
