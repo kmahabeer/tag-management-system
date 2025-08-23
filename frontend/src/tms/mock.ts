@@ -1,6 +1,6 @@
 import { PartOfSpeech, RelationshipType, Tag, TagRelationship, UUID } from './types'
 
-export const useMock = true
+export const useMock = false
 
 const mockDB = {
     pos: [
