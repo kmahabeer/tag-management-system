@@ -21,7 +21,7 @@ This document provides an overview of the structure, conventions, and usage patt
 
 All API endpoints are accessible under the following base path (example for local development):
 
-```
+```bash
 http://localhost:8000/api
 ```
 

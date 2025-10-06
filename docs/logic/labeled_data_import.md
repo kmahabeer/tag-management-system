@@ -13,7 +13,7 @@ This document describes the logic for importing labeled data from external tools
 
 **Input:** JSON export or webhook payload from an external annotation tool (e.g., Label Studio)
 
-### Example:
+### Example
 
 ```json
 {
@@ -37,7 +37,7 @@ This document describes the logic for importing labeled data from external tools
 }
 ```
 
-### Action:
+### Action
 
 - Parse out the entity reference (e.g., image URL or ID)
 - Parse out the label values (e.g., "Red", "Car")
@@ -52,7 +52,7 @@ This document describes the logic for importing labeled data from external tools
 
 **Purpose:** Ensure that incoming tags map cleanly to your system’s canonical tag structure.
 
-### Steps:
+### Steps
 
 - Convert labels to lowercase
 - Strip whitespace / punctuation
@@ -66,7 +66,7 @@ This document describes the logic for importing labeled data from external tools
 
 Attach relevant source metadata to each imported tag or entity.
 
-### Metadata fields to consider:
+### Metadata fields to consider
 
 |Field|Applies to|Example value|
 |---|---|---|
@@ -84,17 +84,17 @@ Attach relevant source metadata to each imported tag or entity.
 
 Before persisting metadata to the database, it must be validated for consistency and correctness.
 
-#### Validation Rules:
+#### Validation Rules
 
 - Only **known keys** should be accepted (or warn if using open schema)
 - Required keys (e.g., `source`, `timestamp`) must be present
 - Data types should be enforced:
-  - `confidence` must be a float between `0.0` and `1.0`
-  - `timestamp` must be ISO-8601 parseable
-  - `annotation_id` should be a string or UUID
+	- `confidence` must be a float between `0.0` and `1.0`
+	- `timestamp` must be ISO-8601 parseable
+	- `annotation_id` should be a string or UUID
 - Reject invalid structures, malformed payloads, or unsupported nested objects
 
-#### Example (Python pseudocode):
+#### Example (Python pseudocode)
 
 ```python
 def validate_metadata(meta):

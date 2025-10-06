@@ -104,10 +104,10 @@ To prevent the creation of semantically invalid or grammatically incorrect compo
 
 - **Atomic tags** are labeled with part-of-speech (POS) roles (e.g., `adjective`, `noun`, `adverb`).
 - **Composite tags** are created by combining a `base_tag` (e.g., a noun phrase) with a `component_tag` (e.g., an adjective or modifier), based on rules such as:
-  - `adjective` + `noun` → ✅ `"red car"`
-  - `adverb` + `adjective` + `noun` → ✅ `"very big car"`
-  - `adverb` + `adverb` → ❌ invalid
-  - `noun` + `noun` → ✅ only if meaningful (e.g., `"race car"`)
+	- `adjective` + `noun` → ✅ `"red car"`
+	- `adverb` + `adjective` + `noun` → ✅ `"very big car"`
+	- `adverb` + `adverb` → ❌ invalid
+	- `noun` + `noun` → ✅ only if meaningful (e.g., `"race car"`)
 
 In the future, the system may optionally enforce POS compatibility using POS tags or lexical constraints, to avoid illogical composites like `"very big"` (an adverb + adjective phrase with no noun).
 

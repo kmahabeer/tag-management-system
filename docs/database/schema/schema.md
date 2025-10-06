@@ -314,7 +314,7 @@ ON tag_relationships(tag_a_id, tag_b_id, relationship_type_id);
 
 You may want to enforce this with a function/trigger later (e.g., `entity_a_id != entity_b_id`).
 
-```sql 
+```sql
 -- Prevent self-linking
 ALTER TABLE entity_relationships
 ADD CONSTRAINT no_self_referencing_entities

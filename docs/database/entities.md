@@ -56,9 +56,10 @@ Many-to-one join table linking many versions of an entity to the primary version
 > In the `entity_relationships` table, `entity_a_id` always refers to the source or parent entity, while `entity_b_id` refers to the derived, related, or child entity.
 >
 > For example:
+>
 > - "Sketch A" → belongs to group → "Figure Study Set"
 > - "Film Still B" → alternate version of → "Film Still A"
-> 
+>
 > This convention enables consistent traversal of relationships and grouping logic.
 
 ### `entity_relationship_types` Table
