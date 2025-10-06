@@ -1,0 +1,24 @@
+title: Tag Management System Documentation
+description: REST API and database schema for the Tag Management System.
+# For project pages: baseurl should be "/<repo-name>"
+# For user/org site (username.github.io): leave baseurl empty.
+baseurl: "/tag-management-system"
+url: "https://kmahabeer.github.io"
+
+# Use the just-the-docs theme via remote_theme (works with GitHub Pages)
+remote_theme: just-the-docs/just-the-docs
+
+# Navigation & UI
+search_enabled: true
+heading_anchors: true
+aux_links:
+  "View on GitHub":
+    - "https://github.com/kmahabeer/tag-management-system"
+
+# If you keep any leading-underscore files you want to publish, uncomment:
+include:
+  - _index.md
+  - endpoints/_index.md
+
+# Optional: order sections globally if you like
+nav_sort: case_insensitive
