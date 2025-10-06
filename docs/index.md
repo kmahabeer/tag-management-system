@@ -1,8 +1,6 @@
 ---
-published: true
 title: Home
-description: 
-layout: default
+nav_order: 1
 ---
 # Tag Management System Documentation
 
