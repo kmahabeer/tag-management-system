@@ -5,9 +5,9 @@ The **Tagging Service API** exposes a RESTful interface for managing all tag-rel
 This document provides an overview of the structure, conventions, and usage patterns for the API.
 
 - [Endpoints](./endpoints/_index.md)
-  - [Entities](./endpoints/endpoint-entities.md)
-  - [Tags](./endpoints/endpoint-tags.md)
-  - [Utilities](./endpoints/endpoint-utilities.md)
+	- [Entities](./endpoints/endpoint-entities.md)
+	- [Tags](./endpoints/endpoint-tags.md)
+	- [Utilities](./endpoints/endpoint-utilities.md)
 
 ## Principles
 
