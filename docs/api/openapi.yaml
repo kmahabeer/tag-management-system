@@ -702,43 +702,20 @@ paths:
 
   /tags/{id}/compositions:
     get:
-      tags: [tags]
-      summary: Get tag composition components
+      tags: [tags, tags:tag-specific]
+      summary: List components of a composite tag
+      description: |
+        Retrieves all **component tags** that form the composition of this base tag.
+        Each component is returned with its `position` to indicate order in the phrase.
+        For example, for the tag `"very big car"`, this would return:
+        - `"very"` (position 1)
+        - `"big"`  (position 2)
+        - `"car"`  (position 3)
       parameters:
         - $ref: "#/components/parameters/TagId"
       responses:
         "200":
-          description: List of tag components
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  components:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TagComponent"
-        "404":
-          description: Tag not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-    patch:
-      tags: [tags]
-      summary: Update tag composition components
-      parameters:
-        - $ref: "#/components/parameters/TagId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompositionUpdate"
-      responses:
-        "200":
-          description: Updated tag components
+          description: List of components for the specified base tag
           content:
             application/json:
               schema:
@@ -750,7 +727,98 @@ paths:
                     items:
                       $ref: "#/components/schemas/TagComponent"
         "404":
-          description: Tag not found
+          description: Base tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      tags: [tags, tags:tag-specific]
+      summary: Add component to a composite tag
+      description: |
+        Adds a new **component tag** to the composition of this base tag.
+        The `component_tag_id` specifies which tag to add, and `position` defines where
+        in the phrase the component should appear.
+        The combination `(base_tag_id, component_tag_id, position)` must be unique.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagComponentInput"
+      responses:
+        "201":
+          description: Component added to composition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "400":
+          description: Invalid composition (e.g., duplicate position or grammatical rule violation)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update composition for a tag
+      description: |
+        Bulk-updates the composition of this base tag.
+        Used to reorder, replace, or remove multiple components in a single request.
+        The full updated list of component tags should be provided in order.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompositionUpdate"
+      responses:
+        "200":
+          description: Composition updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  base_tag_id: { type: string, format: uuid }
+                  components:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagComponent"
+        "404":
+          description: Base tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete composition for a tag
+      description: |
+        Deletes all component links for this base tag, effectively breaking the composite phrase.
+        The base tag itself remains intact as a standalone tag.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: Composition deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Base tag not found
           content:
             application/json:
               schema:
