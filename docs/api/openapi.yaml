@@ -21,9 +21,37 @@ tags:
   - name: entities
     description: Manage entities and their assigned tags
   - name: utilities
-    description: Retrieve shared lookup data such as contexts and parts of speech
+    description: Retrieve shared lookup data such as contexts, parts of speech, rating types, and ratings
+  - name: ui
+    description: Retrieve UI layout configurations
+  - name: meta
+    description: Service metadata and health endpoints
 
 paths:
+  ######################################
+  # META
+  ######################################
+
+  /meta/health:
+    get:
+      tags: [meta]
+      summary: Health check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  ######################################
+  # TAGS
+  ######################################
+
   /tags:
     post:
       tags: [tags]
@@ -378,6 +406,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  ######################################
+  # ENTITIES
+  ######################################
+
   /entities:
     post:
       tags: [entities]
@@ -639,6 +671,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  ######################################
+  # UTILITIES (LOOKUPS)
+  ######################################
+
   /contexts:
     get:
       tags: [utilities]
@@ -673,6 +709,134 @@ paths:
                     items:
                       $ref: "#/components/schemas/PartOfSpeech"
 
+  /rating-types:
+    get:
+      tags: [utilities]
+      summary: Retrieve all rating types
+      responses:
+        "200":
+          description: List of rating types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rating_types:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RatingType"
+
+  /ratings:
+    get:
+      tags: [utilities]
+      summary: Retrieve all ratings
+      responses:
+        "200":
+          description: List of ratings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Rating"
+
+  ######################################
+  # UI CONFIGURATIONS
+  ######################################
+
+  /ui/layouts:
+    get:
+      tags: [ui]
+      summary: Retrieve all UI layouts
+      parameters:
+        - in: query
+          name: purpose_tag_id
+          required: false
+          schema: { type: string, format: uuid }
+          description: Filter by purpose tag id; null/absent returns defaults and all
+      responses:
+        "200":
+          description: List of UI layouts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ui_layouts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UiLayout"
+
+  /ui/layouts/{id}:
+    get:
+      tags: [ui]
+      summary: Retrieve a single UI layout
+      parameters:
+        - $ref: "#/components/parameters/UiLayoutId"
+      responses:
+        "200":
+          description: UI layout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiLayout"
+        "404":
+          description: UI layout not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /ui/groups:
+    get:
+      tags: [ui]
+      summary: Retrieve all UI groups
+      responses:
+        "200":
+          description: List of UI groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ui_groups:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UiGroup"
+
+  /ui/fields:
+    get:
+      tags: [ui]
+      summary: Retrieve all UI fields
+      parameters:
+        - in: query
+          name: ui_layout_id
+          required: false
+          schema: { type: string, format: uuid }
+        - in: query
+          name: context_id
+          required: false
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: List of UI fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ui_fields:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UiField"
+
+######################################
+# COMPONENTS
+######################################
+
 components:
   parameters:
     TagId:
@@ -687,6 +851,12 @@ components:
       required: true
       schema: { type: string, format: uuid }
       description: Unique identifier for the entity
+    UiLayoutId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+      description: Unique identifier for the UI layout
 
   schemas:
     ErrorResponse:
@@ -703,6 +873,7 @@ components:
         results: { type: array, items: {} }
         total: { type: integer, example: 42 }
 
+    # ---- Tags
     Tag:
       type: object
       properties:
@@ -749,6 +920,13 @@ components:
         relationship_type_id: { type: string, format: uuid }
         description: { type: string }
 
+    TagRelationshipInput:
+      type: object
+      properties:
+        tag_b_id: { type: string, format: uuid }
+        relationship_type_id: { type: string, format: uuid }
+        description: { type: string }
+
     RelationshipUpdate:
       type: object
       properties:
@@ -757,18 +935,17 @@ components:
           items:
             $ref: "#/components/schemas/TagRelationshipInput"
 
-    TagRelationshipInput:
-      type: object
-      properties:
-        tag_b_id: { type: string, format: uuid }
-        relationship_type_id: { type: string, format: uuid }
-        description: { type: string }
-
     TagComponent:
       type: object
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
+        position: { type: integer }
+
+    TagComponentInput:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
         position: { type: integer }
 
     CompositionUpdate:
@@ -779,11 +956,12 @@ components:
           items:
             $ref: "#/components/schemas/TagComponentInput"
 
-    TagComponentInput:
+    TagContextualRatingInput:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        position: { type: integer }
+        context_id: { type: string, format: uuid }
+        rating_id: { type: string, format: uuid }
+        user_id: { type: string, format: uuid }
 
     ContextualRatingUpdate:
       type: object
@@ -793,6 +971,13 @@ components:
           items:
             $ref: "#/components/schemas/TagContextualRatingInput"
 
+    TagRelationshipRatingInput:
+      type: object
+      properties:
+        tag_b_id: { type: string, format: uuid }
+        context_id: { type: string, format: uuid }
+        rating_id: { type: string, format: uuid }
+
     RelationshipRatingUpdate:
       type: object
       properties:
@@ -801,20 +986,7 @@ components:
           items:
             $ref: "#/components/schemas/TagRelationshipRatingInput"
 
-    TagContextualRatingInput:
-      type: object
-      properties:
-        context_id: { type: string, format: uuid }
-        rating_id: { type: string, format: uuid }
-        user_id: { type: string, format: uuid }
-
-    TagRelationshipRatingInput:
-      type: object
-      properties:
-        tag_b_id: { type: string, format: uuid }
-        context_id: { type: string, format: uuid }
-        rating_id: { type: string, format: uuid }
-
+    # ---- Entities
     Entity:
       type: object
       properties:
@@ -873,6 +1045,10 @@ components:
 
     EntityRelationship:
       type: object
+      description: |
+        Directionality semantics:
+        - entity_a_id — source/primary entity
+        - entity_b_id — alternate/derived entity
       properties:
         entity_a_id: { type: string, format: uuid }
         entity_b_id: { type: string, format: uuid }
@@ -892,6 +1068,7 @@ components:
           items:
             $ref: "#/components/schemas/EntityRelationshipInput"
 
+    # ---- Utilities (Lookups)
     Context:
       type: object
       properties:
@@ -910,3 +1087,58 @@ components:
         name: { type: string }
         description: { type: string }
         is_active: { type: boolean }
+
+    RatingType:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        is_normalized: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Rating:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        score: { type: integer }
+        description: { type: string }
+        rating_type_id: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    UiLayout:
+      type: object
+      description: |
+        A layout configuration profile defining how tags are grouped in the UI.
+        Linked to a purpose tag (optional) and composed of multiple UI fields.
+      properties:
+        id: { type: string, format: uuid }
+        purpose_tag_id: { type: string, format: uuid, nullable: true }
+        name: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    UiGroup:
+      type: object
+      description: A named grouping label for UI sections (e.g., "Photographer", "Ingredients").
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    UiField:
+      type: object
+      description: |
+        A field within a UI layout defining how tags under a given context and category are grouped.
+      properties:
+        id: { type: string, format: uuid }
+        ui_layout_id: { type: string, format: uuid }
+        ui_group_id: { type: string, format: uuid }
+        context_id: { type: string, format: uuid }
+        category_tag_id: { type: string, format: uuid }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
