@@ -19,3 +19,17 @@ The `entities` table represents digital artifacts such as image files, video fil
 | `metadata`    | JSONB     | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio" }`) |
 
 Each **entity** can have one or more associated **purposes**, and is linked to [`tags`](./tags.md) via the `entity_tags` junction table.
+
+### CRUD Parity Overview
+
+| Subsystem            | Collection | Individual | System-Wide | CRUD                              		|
+| -------------------- | ---------- | ---------- | ----------- | ------------------------------------- |
+| Entities             | ✅          | ✅          | —        | Full                              	|
+| Tags                 | ✅          | ✅          | —        | Partial (no POST on sub-resource)		|
+| Relationships        | ✅          | ✅          | ✅       	| Full                              	|
+| Relationship Ratings | ✅          | ✅          | ✅      	| Full                              	|
+| Purposes             | ✅          | ✅          | ✅      	| Full                              	|
+| Ratings              | ✅          | ✅          | ✅      	| Full                              	|
+| Versions             | ✅          | ✅          | ✅      	| Full                              	|
+
+✅ = full REST-compliant CRUD support (GET, POST, PATCH, DELETE).
