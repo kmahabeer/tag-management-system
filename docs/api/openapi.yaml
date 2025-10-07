@@ -3128,6 +3128,37 @@ components:
         created_at: "2025-10-07T12:00:00Z"
         updated_at: "2025-10-07T12:30:00Z"
 
+    EntityRelationshipRatingInput:
+      type: object
+      description: |
+        Represents a contextual rating applied to a relationship between two entities.
+        Mirrors the structure of tag relationship ratings.
+      properties:
+        id: { type: string, format: uuid }
+        entity_b_id:
+          type: string
+          format: uuid
+          description: The related or target entity (Entity B).
+        context_id:
+          type: string
+          format: uuid
+          description: The context under which this relationship was evaluated.
+        rating_id:
+          type: string
+          format: uuid
+          description: The rating value applied to this relationship.
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EntityRelationshipRatingUpdate:
+      type: object
+      description: Request body for creating or updating relationship ratings between entities.
+      properties:
+        relationship_ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityRelationshipRatingInput"
+
     RelationshipRatingUpdate:
       type: object
       description: |
