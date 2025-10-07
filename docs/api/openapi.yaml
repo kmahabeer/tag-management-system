@@ -1970,10 +1970,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /entities/{id}/purpose:
+  /entities/{id}/purposes:
+    get:
+      tags: [entities:purposes]
+      summary: List purpose tags assigned to an entity
+      description: Retrieve all purpose tags assigned to this entity, describing its functional role or intended use within a larger workflow or dataset.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+      responses:
+        "200":
+          description: List of purposes assigned to the entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  purposes:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityPurposeInput"
+        "404":
+          description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [entities]
-      summary: Update purpose(s) for an entity
+      tags: [entities:purposes]
+      summary: Update purpose tags for an entity
+      description: Add, remove, or update the set of purpose tags assigned to this entity, designating its functional role within a workflow or dataset.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       requestBody:
@@ -1984,7 +2010,7 @@ paths:
               $ref: "#/components/schemas/EntityPurposeUpdate"
       responses:
         "200":
-          description: Updated purposes
+          description: Purposes updated for the entity
           content:
             application/json:
               schema:
@@ -1997,6 +2023,98 @@ paths:
                       $ref: "#/components/schemas/EntityPurposeInput"
         "404":
           description: Entity or purpose tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entities/{id}/purposes/{purpose_id}:
+    get:
+      tags: [entities:purposes]
+      summary: Retrieve a specific purpose tag for an entity
+      description: Retrieve information about a specific purpose tag assigned to this entity, including whether it is marked as primary or secondary.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: purpose_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier for the purpose record
+      responses:
+        "200":
+          description: Purpose record found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityPurposeInput"
+        "404":
+          description: Purpose record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:purposes]
+      summary: Update a specific purpose tag for an entity
+      description: Update a single purpose tag assignment for this entity, such as marking it as primary or changing the linked purpose tag.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: purpose_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                purpose_tag_id:
+                  type: string
+                  format: uuid
+                  description: Updated purpose tag reference.
+                is_primary:
+                  type: boolean
+                  description: Whether this purpose is the primary designation for the entity.
+      responses:
+        "200":
+          description: Purpose record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityPurposeInput"
+        "404":
+          description: Purpose record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [entities:purposes]
+      summary: Delete a specific purpose tag from an entity
+      description: Remove a purpose assignment from this entity while leaving the purpose tag itself intact in the database.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: purpose_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Purpose record deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Purpose record not found
           content:
             application/json:
               schema:
