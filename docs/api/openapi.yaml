@@ -2120,6 +2120,157 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /entities/{id}/ratings:
+    get:
+      tags: [entities:ratings]
+      summary: List ratings applied to an entity
+      description: Retrieve all contextual ratings applied to this entity, including rating values, types, and context metadata.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+      responses:
+        "200":
+          description: List of ratings for this entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityContextualRatingInput"
+        "404":
+          description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:ratings]
+      summary: Update or apply ratings for an entity
+      description: Apply or update one or more contextual ratings for this entity. Each rating reflects an evaluative measure such as quality, accuracy, or completeness.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityContextualRatingUpdate"
+      responses:
+        "200":
+          description: Ratings updated or applied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entity_id: { type: string, format: uuid }
+                  ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityContextualRatingInput"
+        "404":
+          description: Entity or context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entities/{id}/ratings/{rating_id}:
+    get:
+      tags: [entities:ratings]
+      summary: Retrieve a specific rating for an entity
+      description: Retrieve a single contextual rating record applied to this entity under a given context.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the rating record
+      responses:
+        "200":
+          description: Rating record found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityContextualRatingInput"
+        "404":
+          description: Rating record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:ratings]
+      summary: Update a specific entity rating
+      description: Update the context or rating value for a single entity rating record.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context_id:
+                  type: string
+                  format: uuid
+                  description: Updated context for this rating record.
+                rating_id:
+                  type: string
+                  format: uuid
+                  description: Updated rating value applied to this entity.
+      responses:
+        "200":
+          description: Rating record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityContextualRatingInput"
+        "404":
+          description: Rating record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [entities:ratings]
+      summary: Delete a specific entity rating
+      description: Permanently delete a single rating record applied to this entity. This operation does not affect rating definitions or contexts.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Rating record deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Rating record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /entities/{id}/relationships:
     get:
       tags: [entities:relationships]
