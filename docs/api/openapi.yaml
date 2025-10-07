@@ -61,19 +61,19 @@ tags:
   - name: entities:versions:system
     description: System-wide endpoints for managing all version-type relationships, enabling traversal of entity lineage and version history.
   - name: utilities:part-of-speech
-    description: Manage grammatical classifications of tags (e.g., noun, adjective, adverb) that determine compositional and linguistic validity.
+    description: Manage grammatical classifications of tags, such as nouns, adjectives, and adverbs, which govern composition and validation logic.
   - name: utilities:contexts
-    description: Manage contexts defining semantic domains such as style, subject, emotion, or content for tagging and rating operations.
+    description: Manage semantic contexts that define how tags, entities, and ratings are grouped and interpreted within specific domains.
   - name: utilities:ratings:system
-    description: Manage global rating schemas including rating types and values that define evaluative scales like likeness or clarity.
+    description: Manage the global rating schema including rating types, scales, and definitions used for tag, entity, and relationship evaluations.
   - name: utilities:versioning
-    description: Manage version tracking for tags and entities to represent alternate, derived, or historical states of a digital artifact.
+    description: Provide metadata and logic for tracking entity and tag versions over time, enabling reconstruction of lineage and alternates.
   - name: ui:layouts
-    description: Manage UI layout profiles that define how tag groups, contexts, and fields are arranged in user-facing interfaces.
+    description: Manage UI layout profiles that organize tags, groups, and contexts for structured presentation in user interfaces.
   - name: ui:groups
-    description: Manage reusable UI groups that act as labeled sections within layouts to organize related fields or contexts.
+    description: Define reusable UI grouping elements that segment layouts into labeled sections for improved visual organization.
   - name: ui:fields
-    description: Manage UI fields linking tags or contexts to layout regions, defining how tagging options are displayed and organized.
+    description: Manage individual UI fields that map tags or contexts to specific regions within layouts, determining display and behavior.
   - name: utilities
     description: Shared reference data including contexts, ratings, and grammatical metadata that add semantic structure to tags and entities.
   - name: ui
