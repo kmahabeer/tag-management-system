@@ -1533,6 +1533,107 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tags/{id}/relationship_ratings/{rating_id}:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: Retrieve relationship rating for a tag
+      description: |
+        Retrieves a single relationship rating record where this tag acts as **Tag A** (the source).
+        Each record represents a rating applied to one connection between Tag A and Tag B
+        under a specific context.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the relationship rating record
+      responses:
+        "200":
+          description: Relationship rating found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationshipRatingInput"
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update relationship rating for a tag
+      description: |
+        Updates an existing relationship rating record.
+        The linked tags (Tag A, Tag B) cannot be changed after creation, but you can modify
+        the `context_id` or `rating_id` to reflect a new evaluation.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context_id:
+                  type: string
+                  format: uuid
+                  description: Updated context for this relationship rating
+                rating_id:
+                  type: string
+                  format: uuid
+                  description: Updated rating value for this relationship
+      responses:
+        "200":
+          description: Relationship rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationshipRatingInput"
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete relationship rating for a tag
+      description: |
+        Deletes a single relationship rating record where this tag acts as **Tag A**.
+        This operation removes only the rating, not the underlying tag relationship itself.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   ######################################
   # ENTITIES
   ######################################
