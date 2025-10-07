@@ -1020,6 +1020,103 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tags/{id}/compositions/{composition_id}:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: Retrieve component of a composite tag
+      description: |
+        Retrieves a single component link belonging to this base tag’s composition.
+        Each record connects the base tag (the composite phrase) to one component tag,
+        with a specific position defining order in the phrase.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: composition_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the composition record
+      responses:
+        "200":
+          description: Composition component found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "404":
+          description: Composition component not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update composition component
+      description: |
+        Updates metadata for a single composition component record.
+        The participating tags (`base_tag_id`, `component_tag_id`) remain immutable after creation.
+        Only the `position` value can be modified.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: composition_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: integer
+                  minimum: 1
+                  description: Updated position of the component within the composite phrase
+      responses:
+        "200":
+          description: Composition component updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "404":
+          description: Composition component not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete composition component
+      description: |
+        Deletes a single component link from this tag’s composition.
+        The component tag itself remains unaffected, but it is no longer part of this composite phrase.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: composition_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Composition component deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Composition component not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tag-compositions:
     get:
       tags: [tags, tags:system-wide]
