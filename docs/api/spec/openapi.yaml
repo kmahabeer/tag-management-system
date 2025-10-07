@@ -1,8 +1,14 @@
 openapi: 3.0.4
 info:
   title: Tagging Service API
-  description: API for managing tags and their relationships.
   version: 0.1.0
+  description: |
+    The **Tagging Service API** exposes a RESTful interface for managing all tag-related operations—creation, updates, deletion, linking, and querying of tags and their relationships. It also supports metadata assignment for tagged entities such as images, documents, or video stills.
+
+    ## Principles
+    - **RESTful architecture**: Resource-based URIs and standard HTTP verbs (GET, POST, PUT, DELETE).
+    - **JSON payloads**: All requests and responses are structured in JSON.
+    - **Frontend-controlled authentication**: Only frontend clients (CLI, UI) interact with the API through validated tokens; exceptions only for development/testing.
 servers:
   - url: http://localhost:8000/api/v1
 tags:
