@@ -712,6 +712,104 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tags/{id}/relationships/{relationship_id}:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: Retrieve tag relationship
+      description: |
+        Retrieves a single relationship record where this tag acts as **Tag A** (the dominant or source tag).
+        This allows inspection of one connection between tags, such as "Vehicle → Car".
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the tag relationship record
+      responses:
+        "200":
+          description: Relationship found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update tag relationship
+      description: |
+        Updates the relationship type or description of a single tag-to-tag relationship.
+        The participating tags (`tag_a_id`, `tag_b_id`) remain immutable after creation.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                relationship_type_id:
+                  type: string
+                  format: uuid
+                  description: Updated relationship type
+                description:
+                  type: string
+                  description: Optional new description of the relationship
+      responses:
+        "200":
+          description: Relationship updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete tag relationship
+      description: |
+        Deletes a single tag relationship record where this tag acts as **Tag A**.
+        This removes the association between the two tags without deleting either tag.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tag-relationships/{id}:
     get:
       tags: [tags, tags:system-wide]
