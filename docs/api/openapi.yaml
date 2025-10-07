@@ -1062,6 +1062,95 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tags/{id}/ratings/{rating_id}:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: Retrieve a contextual rating for a tag
+      description: |
+        Retrieves a specific contextual rating record for this tag, identified by its unique rating assignment ID.
+        This does **not** refer to the `/ratings` table entry itself, but to the *rating instance* assigned to the tag.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the contextual rating record
+      responses:
+        "200":
+          description: Contextual rating found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagContextualRatingInput"
+        "404":
+          description: Contextual rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update a contextual rating for a tag
+      description: |
+        Updates the rating, context, or user assignment for a specific contextual rating record.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagContextualRatingInput"
+      responses:
+        "200":
+          description: Contextual rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagContextualRatingInput"
+        "404":
+          description: Contextual rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete a contextual rating for a tag
+      description: |
+        Deletes a single contextual rating record from this tag.
+        The rating definition itself (in `/ratings`) remains unaffected.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: rating_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Contextual rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Contextual rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tags/{id}/relationship_ratings:
     get:
       tags: [tags, tags:tag-specific]
