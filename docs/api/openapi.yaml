@@ -3097,8 +3097,9 @@ paths:
 
   /contexts:
     get:
-      tags: [utilities]
-      summary: Retrieve all tagging contexts
+      tags: [utilities:contexts]
+      summary: List all contexts
+      description: Retrieve all semantic contexts under which tags, entities, or relationships can be grouped, rated, or classified.
       responses:
         "200":
           description: List of contexts
@@ -3111,9 +3112,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Context"
+
     post:
-      tags: [utilities]
-      summary: Create a new tagging context
+      tags: [utilities:contexts]
+      summary: Create a new context
+      description: Create a new semantic or evaluative context for use across tags and entities (e.g., “Style”, “Clarity”, or “Mood”).
       requestBody:
         required: true
         content:
@@ -3127,10 +3130,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Context"
+
   /contexts/{id}:
+    get:
+      tags: [utilities:contexts]
+      summary: Retrieve a specific context
+      description: Retrieve a single context record by ID, including its classification type and active status.
+      parameters:
+        - $ref: "#/components/parameters/ContextId"
+      responses:
+        "200":
+          description: Context found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Context"
+        "404":
+          description: Context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [utilities]
-      summary: Update a tagging context
+      tags: [utilities:contexts]
+      summary: Update a specific context
+      description: Modify the name, classification type, description, or active status of a context record.
       parameters:
         - $ref: "#/components/parameters/ContextId"
       requestBody:
@@ -3146,9 +3171,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Context"
+        "404":
+          description: Context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
-      tags: [utilities]
-      summary: Delete a tagging context
+      tags: [utilities:contexts]
+      summary: Delete a specific context
+      description: Permanently delete a context record, preventing its further use in tagging, rating, or classification.
       parameters:
         - $ref: "#/components/parameters/ContextId"
       responses:
@@ -3162,6 +3195,12 @@ paths:
                   status:
                     type: string
                     example: deleted
+        "404":
+          description: Context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /parts-of-speech:
     get:
@@ -3911,83 +3950,53 @@ components:
     # ---- Contexts
     Context:
       type: object
-      description: |
-        Defines the **semantic context** under which a tag or relationship is interpreted.
-        Contexts classify how a tag relates to an entity or another tag (e.g., *subject*, *content*, *style*, *emotion*).
-        They may be **objective** (factual) or **subjective** (interpretive), influencing how tags and ratings behave downstream.
       properties:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the context.
         name:
           type: string
-          description: Human-readable name of the context (e.g., "content", "subject", "style").
+          description: Unique name identifying the context (e.g., "Style", "Mood").
         classification_type:
           type: string
           enum: [objective, subjective]
-          description: |
-            Indicates whether this context represents an *objective* fact (e.g., "content")
-            or a *subjective* perspective (e.g., "emotion").
+          description: Defines whether the context represents objective or subjective evaluation criteria.
         description:
           type: string
-          description: Optional text explaining how and when this context is used.
+          description: Optional explanatory text describing the purpose or meaning of the context.
         is_active:
           type: boolean
-          default: true
-          description: Whether this context is currently enabled for tagging and rating operations.
+          description: Indicates whether this context is currently available for use.
         created_at:
           type: string
           format: date-time
-          description: Timestamp of when the context was created.
         updated_at:
           type: string
           format: date-time
-          description: Timestamp of when the context was last modified.
-      required:
-        - id
-        - name
-        - classification_type
-        - is_active
       example:
-        id: "11111111-1111-1111-1111-111111111111"
-        name: "content"
-        classification_type: "objective"
-        description: "Tags representing what physically appears within the entity."
+        id: "5c02a91e-7d4a-4f1e-9a91-0e4d2b5a20f8"
+        name: "Clarity"
+        classification_type: "subjective"
+        description: "Used to evaluate the visual clarity of an image."
         is_active: true
-        created_at: "2025-10-07T12:00:00Z"
-        updated_at: "2025-10-07T12:00:00Z"
 
     ContextInput:
       type: object
-      description: |
-        Input model for creating or updating a context definition.
-        Used to add new contexts (e.g., "style", "emotion") or modify existing ones.
-        Only `name` and `classification_type` are required on creation.
+      required: [name]
       properties:
         name:
           type: string
-          description: Descriptive name of the context.
+          description: Name of the context to create or update.
         classification_type:
           type: string
           enum: [objective, subjective]
-          description: |
-            Defines whether this context is considered *objective* or *subjective*.
+          description: Type of evaluation or classification this context represents.
         description:
           type: string
-          description: Optional text explaining the intended use of this context.
+          description: Optional descriptive text about the context.
         is_active:
           type: boolean
-          default: true
-          description: Whether this context is active and available for tagging operations.
-      required:
-        - name
-        - classification_type
-      example:
-        name: "emotion"
-        classification_type: "subjective"
-        description: "Used for capturing mood, feeling, or tone of an artwork or film still."
-        is_active: true
+          description: Whether the context should be active after creation.
 
     PartOfSpeech:
       type: object
