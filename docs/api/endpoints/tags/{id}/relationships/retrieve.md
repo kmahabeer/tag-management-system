@@ -17,7 +17,7 @@ curl -X GET http://localhost:8000/api/v1/tags/<tag_id>/relationships \
 
 - `relationships`: List of tag relationship records
 
-  - `tag_a_id`, `tag_b_id`, `relationship_type_id`, `description`
+	- `tag_a_id`, `tag_b_id`, `relationship_type_id`, `description`
 
 ### Response Body
 

@@ -3,7 +3,7 @@ layout: default
 title: API Specification
 parent: API
 nav_order: 1
-permalink: /api_spec/
+permalink: /api/
 ---
 
 <div class="redoc-wide">
@@ -14,7 +14,7 @@ permalink: /api_spec/
 <script>
   window.addEventListener('DOMContentLoaded', function () {
     Redoc.init(
-      '{{ site.baseurl }}/api_spec/spec/openapi.yaml',
+      '{{ site.baseurl }}/api/spec/openapi.yaml',
       {
         scrollYOffset: 60,
         hideDownloadButton: false,

@@ -4,9 +4,9 @@
 
 - `id` (UUID, required): Tag A ID (the dominant tag)
 - `relationships`: Array of objects containing:
-  - `tag_b_id` (UUID, required): The related tag
-  - `relationship_type_id` (UUID, required): Type of relationship
-  - `description` (string, optional): Human-readable explanation
+	- `tag_b_id` (UUID, required): The related tag
+	- `relationship_type_id` (UUID, required): Type of relationship
+	- `description` (string, optional): Human-readable explanation
 
 ## Request
 

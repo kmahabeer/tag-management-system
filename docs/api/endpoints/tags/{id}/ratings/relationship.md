@@ -5,9 +5,9 @@
 - `id` (UUID, required): Tag A ID
 - `relationship_ratings`: List of relationship ratings
 
-  - `tag_b_id` (UUID, required): Related tag
-  - `context_id` (UUID, required): Context of the rating
-  - `rating_id` (UUID, required): Rating score
+	- `tag_b_id` (UUID, required): Related tag
+	- `context_id` (UUID, required): Context of the rating
+	- `rating_id` (UUID, required): Rating score
 
 ## Request
 

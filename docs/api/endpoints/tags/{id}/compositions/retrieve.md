@@ -17,9 +17,9 @@ curl -X GET http://localhost:8000/api/v1/tags/<tag_id>/compositions \
 
 - `components`: Ordered list of component tags in the composition
 
-  - `id`: UUID
-  - `name`: Component tag name
-  - `position`: Integer index in the composition
+	- `id`: UUID
+	- `name`: Component tag name
+	- `position`: Integer index in the composition
 
 ### Response Body
 

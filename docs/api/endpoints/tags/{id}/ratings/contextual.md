@@ -5,9 +5,9 @@
 - `id` (UUID, required): Tag ID
 - `contextual_ratings`: List of ratings to apply per context
 
-  - `context_id` (UUID, required): Context of the rating
-  - `rating_id` (UUID, required): Rating value
-  - `user_id` (UUID, optional): Who submitted the rating (if needed)
+	- `context_id` (UUID, required): Context of the rating
+	- `rating_id` (UUID, required): Rating value
+	- `user_id` (UUID, optional): Who submitted the rating (if needed)
 
 ## Request
 

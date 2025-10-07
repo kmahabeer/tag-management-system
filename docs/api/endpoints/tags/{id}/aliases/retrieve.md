@@ -17,8 +17,8 @@ curl -X GET http://localhost:8000/api/v1/tags/<tag_id>/aliases \
 
 - `aliases`: List of alias objects
 
-  - `id`: UUID
-  - `name`: Alias name
+	- `id`: UUID
+	- `name`: Alias name
 
 ### Response Body
 
