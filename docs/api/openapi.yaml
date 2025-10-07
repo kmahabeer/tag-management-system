@@ -357,6 +357,151 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tag-relationships:
+    get:
+      tags: [tags]
+      summary: List all tag relationships
+      description: |
+        Retrieve all tag relationships in the system.
+        Supports optional filters for `tag_a_id`, `tag_b_id`, and `relationship_type_id`.
+      parameters:
+        - in: query
+          name: tag_a_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by source tag
+        - in: query
+          name: tag_b_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by target tag
+        - in: query
+          name: relationship_type_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by type
+      responses:
+        "200":
+          description: List of tag relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  relationships:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagRelationship"
+
+    post:
+      tags: [tags]
+      summary: Create a tag relationship
+      description: |
+        Creates a new tag relationship. Both `tag_a_id` (source) and `tag_b_id` (target)
+        must be provided explicitly in the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagRelationship"
+      responses:
+        "201":
+          description: Tag relationship created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tag-relationships/{id}:
+    get:
+      tags: [tags]
+      summary: Retrieve a tag relationship by ID
+      description: Returns a single tag relationship resource.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the tag relationship
+      responses:
+        "200":
+          description: Relationship found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags]
+      summary: Update a tag relationship
+      description: |
+        Updates the `relationship_type_id` or `description` of a relationship.
+        `tag_a_id` and `tag_b_id` may not be changed after creation.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                relationship_type_id: { type: string, format: uuid }
+                description: { type: string }
+      responses:
+        "200":
+          description: Relationship updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags]
+      summary: Delete a tag relationship
+      description: Permanently deletes a tag relationship by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tags/{id}/compositions:
     get:
       tags: [tags]
