@@ -52,7 +52,10 @@ A complete diagram of all entities, tags, and relationships is available below f
 ```mermaid
 erDiagram
 
-  %% === CORE ENTITIES ===
+  %% =========================
+  %% CORE TABLES
+  %% =========================
+
   ENTITIES {
     UUID id PK
     TEXT name
@@ -69,13 +72,6 @@ erDiagram
     UUID part_of_speech_id FK
   }
 
-  PARTS_OF_SPEECH {
-    UUID id PK
-    TEXT name
-    TEXT description
-    BOOLEAN is_active
-  }
-
   ENTITY_TAGS {
     UUID id PK
     UUID entity_id FK
@@ -84,15 +80,36 @@ erDiagram
     JSONB metadata
   }
 
-  CONTEXTS {
+  %% =========================
+  %% ENTITY SUBSYSTEM
+  %% =========================
+
+  ENTITY_PURPOSES {
     UUID id PK
-    TEXT name
-    TEXT classification_type
-    TEXT description
-    BOOLEAN is_active
+    UUID entity_id FK
+    UUID purpose_tag_id FK
+    BOOLEAN is_primary
   }
 
-  %% === TAGGING STRUCTURE ===
+  ENTITY_RELATIONSHIPS {
+    UUID id PK
+    UUID entity_a_id FK
+    UUID entity_b_id FK
+    UUID relationship_type_id FK
+  }
+
+  ENTITY_RELATIONSHIP_RATINGS {
+    UUID id PK
+    UUID entity_a_id FK
+    UUID entity_b_id FK
+    UUID context_id FK
+    UUID rating_id FK
+  }
+
+  %% =========================
+  %% TAG SUBSYSTEM
+  %% =========================
+
   TAG_ALIASES {
     UUID id PK
     TEXT name
@@ -107,11 +124,6 @@ erDiagram
     TEXT description
   }
 
-  TAG_RELATIONSHIP_TYPES {
-    UUID id PK
-    TEXT name
-  }
-
   TAG_COMPOSITIONS {
     UUID id PK
     UUID base_tag_id FK
@@ -119,28 +131,64 @@ erDiagram
     INT position
   }
 
-  %% === ENTITY RELATIONSHIPS ===
-  ENTITY_RELATIONSHIPS {
+  TAG_CONTEXT_RATINGS {
     UUID id PK
-    UUID entity_a_id FK
-    UUID entity_b_id FK
-    UUID relationship_type_id FK
+    UUID tag_id FK
+    UUID context_id FK
+    UUID rating_id FK
+    UUID user_id FK
   }
 
-  ENTITY_RELATIONSHIP_TYPES {
+  TAG_RELATIONSHIP_RATINGS {
+    UUID id PK
+    UUID tag_a_id FK
+    UUID tag_b_id FK
+    UUID context_id FK
+    UUID rating_id FK
+  }
+
+  TAG_RELATIONSHIP_TYPES {
     UUID id PK
     TEXT name
   }
 
-  %% === ENTITY PURPOSES ===
-  ENTITY_PURPOSES {
+  %% =========================
+  %% UTILITIES
+  %% =========================
+
+  CONTEXTS {
     UUID id PK
-    UUID entity_id FK
-    UUID purpose_tag_id FK
-    BOOLEAN is_primary
+    TEXT name
+    TEXT classification_type
+    TEXT description
+    BOOLEAN is_active
   }
 
-  %% === UI CONFIGURATION ===
+  PARTS_OF_SPEECH {
+    UUID id PK
+    TEXT name
+    TEXT description
+    BOOLEAN is_active
+  }
+
+  RATINGS {
+    UUID id PK
+    TEXT name
+    INT score
+    TEXT description
+    UUID rating_type_id FK
+  }
+
+  RATING_TYPES {
+    UUID id PK
+    TEXT name
+    BOOLEAN is_normalized
+  }
+
+  %% =========================
+  %% UI CONFIGURATION
+  %% =========================
+
   UI_LAYOUTS {
     UUID id PK
     UUID purpose_tag_id FK
@@ -161,71 +209,39 @@ erDiagram
     INT sort_order
   }
 
-  %% === RATINGS ===
-  RATINGS {
-    UUID id PK
-    TEXT name
-    INT score
-    TEXT description
-    UUID rating_type_id FK
-  }
+  %% =========================
+  %% RELATIONSHIPS
+  %% =========================
 
-  RATING_TYPES {
-    UUID id PK
-    TEXT name
-    BOOLEAN is_normalized
-  }
+  ENTITIES ||--o{ ENTITY_TAGS : has
+  TAGS ||--o{ ENTITY_TAGS : used_in
 
-  TAG_CONTEXT_RATINGS {
-    UUID id PK
-    UUID tag_id FK
-    UUID context_id FK
-    UUID rating_id FK
-    UUID user_id FK
-  }
+  ENTITIES ||--o{ ENTITY_PURPOSES : has
+  TAGS ||--o{ ENTITY_PURPOSES : defines
 
-  TAG_RELATIONSHIP_RATINGS {
-    UUID id PK
-    UUID tag_a_id FK
-    UUID tag_b_id FK
-    UUID context_id FK
-    UUID rating_id FK
-  }
+  ENTITIES ||--o{ ENTITY_RELATIONSHIPS : source
+  ENTITIES ||--o{ ENTITY_RELATIONSHIPS : target
+  ENTITY_RELATIONSHIPS ||--o{ ENTITY_RELATIONSHIP_RATINGS : rated_by
+  RATINGS ||--o{ ENTITY_RELATIONSHIP_RATINGS : value
+  CONTEXTS ||--o{ ENTITY_RELATIONSHIP_RATINGS : context
 
-  %% === RELATIONSHIPS ===
-
-  ENTITIES ||--o{ ENTITY_TAGS : tags
-  TAGS ||--o{ ENTITY_TAGS : entities
-  CONTEXTS ||--o{ ENTITY_TAGS : context
-
-  TAGS ||--o{ TAG_ALIASES : aliases
+  TAGS ||--o{ TAG_ALIASES : has
   TAGS ||--o{ TAG_RELATIONSHIPS : tag_a
   TAGS ||--o{ TAG_RELATIONSHIPS : tag_b
-  TAG_RELATIONSHIP_TYPES ||--o{ TAG_RELATIONSHIPS : type
+  TAG_RELATIONSHIPS ||--o{ TAG_RELATIONSHIP_RATINGS : rated_by
+  CONTEXTS ||--o{ TAG_RELATIONSHIP_RATINGS : context
+  RATINGS ||--o{ TAG_RELATIONSHIP_RATINGS : value
 
   TAGS ||--o{ TAG_COMPOSITIONS : base
   TAGS ||--o{ TAG_COMPOSITIONS : component
 
-  ENTITIES ||--o{ ENTITY_PURPOSES : purposes
-  TAGS ||--o{ ENTITY_PURPOSES : purpose_tag
+  TAGS ||--o{ TAG_CONTEXT_RATINGS : rated_in
+  CONTEXTS ||--o{ TAG_CONTEXT_RATINGS : context
+  RATINGS ||--o{ TAG_CONTEXT_RATINGS : value
 
-  ENTITIES ||--o{ ENTITY_RELATIONSHIPS : source
-  ENTITIES ||--o{ ENTITY_RELATIONSHIPS : derived
-  ENTITY_RELATIONSHIP_TYPES ||--o{ ENTITY_RELATIONSHIPS : type
-
-  PARTS_OF_SPEECH ||--o{ TAGS : pos
-
-  UI_LAYOUTS ||--o{ UI_FIELDS : layout
-  UI_GROUPS ||--o{ UI_FIELDS : group
-  CONTEXTS ||--o{ UI_FIELDS : context
+  TAGS ||--o{ UI_LAYOUTS : defines_purpose
   TAGS ||--o{ UI_FIELDS : category
-
-  TAGS ||--o{ TAG_CONTEXT_RATINGS : rated
-  CONTEXTS ||--o{ TAG_CONTEXT_RATINGS : in_context
-  RATINGS ||--o{ TAG_CONTEXT_RATINGS : rating
-
-  TAGS ||--o{ TAG_RELATIONSHIP_RATINGS : rated_a
-  TAGS ||--o{ TAG_RELATIONSHIP_RATINGS : rated_b
-  CONTEXTS ||--o{ TAG_RELATIONSHIP_RATINGS : in_context
-  RATINGS ||--o{ TAG_RELATIONSHIP_RATINGS : rating
+  CONTEXTS ||--o{ UI_FIELDS : context
+  UI_LAYOUTS ||--o{ UI_FIELDS : contains
+  UI_GROUPS ||--o{ UI_FIELDS : grouped_under
 ```
