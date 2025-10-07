@@ -1856,6 +1856,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /entities/{id}/tags:
     get:
       tags: [entities:tags]
@@ -2003,13 +2004,14 @@ paths:
 
   /entities/{id}/relationships:
     get:
-      tags: [entities]
-      summary: Retrieve entity relationships
+      tags: [entities:relationships]
+      summary: List relationships for an entity
+      description: Retrieve all relationships where this entity acts as **Entity A** (the source). Each record defines a directional link to another entity.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
-          description: Related entities
+          description: List of relationships for the entity
           content:
             application/json:
               schema:
@@ -2027,8 +2029,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [entities]
-      summary: Update entity relationships
+      tags: [entities:relationships]
+      summary: Update relationships for an entity
+      description: Create or modify relationships where this entity acts as **Entity A**, defining links to one or more target entities (**Entity B**).
       parameters:
         - $ref: "#/components/parameters/EntityId"
       requestBody:
@@ -2049,9 +2052,98 @@ paths:
                   relationships:
                     type: array
                     items:
-                      $ref: "#/components/schemas/EntityRelationshipInput"
+                      $ref: "#/components/schemas/EntityRelationship"
         "404":
-          description: Entity or target not found
+          description: Entity or related entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entities/{id}/relationships/{relationship_id}:
+    get:
+      tags: [entities:relationships]
+      summary: Retrieve a specific entity relationship
+      description: Retrieve a single relationship record where this entity acts as **Entity A**, such as “Original Render → Color Corrected Version.”
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the relationship record
+      responses:
+        "200":
+          description: Relationship found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:relationships]
+      summary: Update a specific entity relationship
+      description: Update the relationship type or description for an existing link. The participating entities remain immutable.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                relationship_type_id:
+                  type: string
+                  format: uuid
+                  description: Updated relationship type
+      responses:
+        "200":
+          description: Relationship updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+        "404":
+          description: Relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [entities:relationships]
+      summary: Delete a specific entity relationship
+      description: Permanently remove a relationship link between this entity (**Entity A**) and another (**Entity B**) without deleting either entity.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: relationship_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Relationship not found
           content:
             application/json:
               schema:
