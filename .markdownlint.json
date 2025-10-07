@@ -3,5 +3,7 @@
   "MD007": { "indent": 1, "start_indent": 2 },
   "MD010": false,
   "MD024": false,
-  "MD028": false
+  "MD025": false,
+  "MD028": false,
+  "MD033": false
 }
