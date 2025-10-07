@@ -2731,13 +2731,96 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /entity-relationships:
+    get:
+      tags: [entities:relationships:system]
+      summary: List all entity relationships
+      description: Retrieve a system-wide list of all entity-to-entity relationships, regardless of source or target.
+      responses:
+        "200":
+          description: List of entity relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  relationships:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityRelationship"
+
+    post:
+      tags: [entities:relationships:system]
+      summary: Create a new entity relationship
+      description: Create a new relationship between two entities, defining their linkage type and direction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityRelationshipInput"
+      responses:
+        "201":
+          description: Relationship created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+
+  /entity-relationships/{id}:
+    patch:
+      tags: [entities:relationships:system]
+      summary: Update a specific entity relationship
+      description: Update the relationship type or description for a specific relationship record.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier for the relationship record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityRelationshipInput"
+      responses:
+        "200":
+          description: Relationship updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+
+    delete:
+      tags: [entities:relationships:system]
+      summary: Delete a specific entity relationship
+      description: Permanently remove an entity-to-entity relationship record from the system.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+
   /entity-relationship-ratings:
     get:
       tags: [entities:relationship_ratings:system]
       summary: List all entity relationship ratings
+      description: Retrieve a global list of all contextual ratings applied to entity-to-entity relationships.
       responses:
         "200":
-          description: System-wide list of entity relationship ratings
+          description: List of entity relationship ratings
           content:
             application/json:
               schema:
@@ -2751,6 +2834,7 @@ paths:
     post:
       tags: [entities:relationship_ratings:system]
       summary: Create a new entity relationship rating
+      description: Apply a rating to a relationship between two entities, capturing its confidence or quality.
       requestBody:
         required: true
         content:
@@ -2759,11 +2843,254 @@ paths:
               $ref: "#/components/schemas/EntityRelationshipRatingInput"
       responses:
         "201":
-          description: Entity relationship rating created
+          description: Relationship rating created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/EntityRelationshipRatingInput"
+
+  /entity-relationship-ratings/{id}:
+    patch:
+      tags: [entities:relationship_ratings:system]
+      summary: Update a specific entity relationship rating
+      description: Modify the rating value or context for a specific relationship rating record.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityRelationshipRatingInput"
+      responses:
+        "200":
+          description: Relationship rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationshipRatingInput"
+
+    delete:
+      tags: [entities:relationship_ratings:system]
+      summary: Delete a specific entity relationship rating
+      description: Permanently delete a relationship rating record between two entities.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Relationship rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+
+  /entity-ratings:
+    get:
+      tags: [entities:ratings:system]
+      summary: List all entity ratings
+      description: Retrieve a global list of all contextual ratings applied directly to entities.
+      responses:
+        "200":
+          description: List of entity ratings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityContextualRatingInput"
+
+    post:
+      tags: [entities:ratings:system]
+      summary: Create a new entity rating
+      description: Apply a new contextual rating to a specific entity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityContextualRatingInput"
+      responses:
+        "201":
+          description: Entity rating created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityContextualRatingInput"
+
+  /entity-ratings/{id}:
+    patch:
+      tags: [entities:ratings:system]
+      summary: Update a specific entity rating
+      description: Modify the rating value or context for an existing entity rating record.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityContextualRatingInput"
+      responses:
+        "200":
+          description: Entity rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityContextualRatingInput"
+
+    delete:
+      tags: [entities:ratings:system]
+      summary: Delete a specific entity rating
+      description: Permanently remove a contextual rating record from the database.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Entity rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+
+  /entity-purposes:
+    get:
+      tags: [entities:purposes:system]
+      summary: List all entity purposes
+      description: Retrieve all purpose tag assignments across all entities, including which are primary.
+      responses:
+        "200":
+          description: List of all purpose records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  purposes:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityPurposeInput"
+
+    post:
+      tags: [entities:purposes:system]
+      summary: Create a new purpose assignment
+      description: Assign a new purpose tag to an entity, optionally marking it as primary.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityPurposeInput"
+      responses:
+        "201":
+          description: Purpose record created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityPurposeInput"
+
+  /entity-purposes/{id}:
+    patch:
+      tags: [entities:purposes:system]
+      summary: Update a specific purpose record
+      description: Update an existing purpose assignment across any entity.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityPurposeInput"
+      responses:
+        "200":
+          description: Purpose record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityPurposeInput"
+
+    delete:
+      tags: [entities:purposes:system]
+      summary: Delete a specific purpose record
+      description: Permanently delete a purpose tag assignment from the database.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Purpose record deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+
+  /entity-versions:
+    get:
+      tags: [entities:versions:system]
+      summary: List all entity version relationships
+      description: Retrieve all version-type relationships (e.g., “version-of”) across the system.
+      responses:
+        "200":
+          description: List of version relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityRelationship"
+
+    post:
+      tags: [entities:versions:system]
+      summary: Create a new version relationship
+      description: Create a relationship between two entities marked as a version link (“version-of” type).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityRelationshipInput"
+      responses:
+        "201":
+          description: Version relationship created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
 
   ######################################
   # UTILITIES
