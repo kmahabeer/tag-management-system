@@ -63,6 +63,48 @@ tags:
   - name: ui
     description: Manage user interface configuration endpoints that define how tagging and context data appear within the application.
 
+x-tagGroups:
+  - name: Meta
+    tags:
+      - meta
+
+  - name: Tags
+    tags:
+      - tags:core
+      - tags:aliases
+      - tags:relationships
+      - tags:compositions
+      - tags:ratings
+      - tags:relationship_ratings
+
+  - name: Tag System-Wide
+    tags:
+      - tags:aliases:system
+      - tags:relationships:system
+      - tags:compositions:system
+
+  - name: Entities
+    tags:
+      - entities:core
+      - entities:relationships
+      - entities:tags
+      - entities:purposes
+
+  - name: Utilities
+    tags:
+      - utilities:part-of-speech
+      - utilities:contexts
+      - utilities:ratings:system
+      - utilities:versioning
+      - utilities
+
+  - name: UI
+    tags:
+      - ui:layouts
+      - ui:groups
+      - ui:fields
+      - ui
+
 paths:
   ######################################
   # META
