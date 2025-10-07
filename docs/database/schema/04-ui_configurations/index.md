@@ -165,3 +165,22 @@ Artist:
 - Within that layout, the UI **groups by `context` first**, then follows the groupings defined in `ui_fields`.
 - Each grouping rule is based on a **category tag** like `"Character Type"` or `"Environment Type"`; any tag related to it (via `"is a"` or similar relationships) and assigned to the entity under that context is included in the group.
 - If no layout exists for the purpose, the system falls back to the default layout (`ui_layout.purpose_tag_id IS NULL`).
+
+## API Endpoint Summary
+
+| Category       | Endpoint           | CRUD Coverage                  | Description                                                                                                    |
+| -------------- | ------------------ | ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **UI Layouts** | `/ui/layouts`      | **GET**, **POST**              | Retrieve or create layout configuration profiles that determine how tags and contexts are organized in the UI. |
+|                | `/ui/layouts/{id}` | **GET**, **PATCH**, **DELETE** | Retrieve, update, or delete a specific UI layout.                                                              |
+| **UI Groups**  | `/ui/groups`       | **GET**, **POST**              | Retrieve or create reusable labeled sections for organizing UI layouts.                                        |
+|                | `/ui/groups/{id}`  | **GET**, **PATCH**, **DELETE** | Retrieve, update, or delete a specific UI group.                                                               |
+| **UI Fields**  | `/ui/fields`       | **GET**, **POST**              | Retrieve or create field definitions that link tags, contexts, or categories to sections within a layout.      |
+|                | `/ui/fields/{id}`  | **GET**, **PATCH**, **DELETE** | Retrieve, update, or delete a specific UI field record.                                                        |
+
+## Coverage Summary
+
+| UI Component | CRUD   | Description                                                      |
+| ------------ | ------ | ---------------------------------------------------------------- |
+| Layouts      | ✅ Full | Define the top-level structure of tag groupings in the UI.       |
+| Groups       | ✅ Full | Define reusable labeled sections used inside layouts.            |
+| Fields       | ✅ Full | Bind tags, contexts, and categories to specific layout sections. |
