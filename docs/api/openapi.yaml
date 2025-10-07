@@ -18,6 +18,10 @@ servers:
 tags:
   - name: tags
     description: Manage tags, aliases, compositions, and relationships
+  - name: tags:tag-specific
+    description: Tag-scoped relationship operations (e.g., `/tags/{id}/relationships`)
+  - name: tags:system-wide
+    description: Global tag management (e.g., `/tag-relationships`)
   - name: entities
     description: Manage entities and their assigned tags
   - name: utilities
@@ -233,7 +237,7 @@ paths:
 
   /tags/{id}/relationships:
     get:
-      tags: [tags]
+      tags: [tags, tags:tag-specific]
       summary: List relationships for a tag
       description: |
         Retrieve all relationships where this tag acts as **Tag A** (the dominant/source).
@@ -271,7 +275,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     post:
-      tags: [tags]
+      tags: [tags, tags:tag-specific]
       summary: Create a relationship for a tag
       description: |
         Creates a new relationship originating from this tag as **Tag A**.
@@ -299,7 +303,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags]
+      tags: [tags, tags:tag-specific]
       summary: Update relationships for a tag
       description: |
         Bulk update of relationships where this tag is the **source (Tag A)**.
@@ -332,7 +336,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags]
+      tags: [tags, tags:tag-specific]
       summary: Delete relationships for a tag
       description: |
         Deletes all relationships where this tag is **Tag A** (the source).
@@ -359,7 +363,7 @@ paths:
 
   /tag-relationships:
     get:
-      tags: [tags]
+      tags: [tags, tags:system-wide]
       summary: List all tag relationships
       description: |
         Retrieve all tag relationships in the system.
@@ -391,7 +395,7 @@ paths:
                       $ref: "#/components/schemas/TagRelationship"
 
     post:
-      tags: [tags]
+      tags: [tags, tags:system-wide]
       summary: Create a tag relationship
       description: |
         Creates a new tag relationship. Both `tag_a_id` (source) and `tag_b_id` (target)
@@ -418,7 +422,7 @@ paths:
 
   /tag-relationships/{id}:
     get:
-      tags: [tags]
+      tags: [tags, tags:system-wide]
       summary: Retrieve a tag relationship by ID
       description: Returns a single tag relationship resource.
       parameters:
@@ -442,7 +446,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags]
+      tags: [tags, tags:system-wide]
       summary: Update a tag relationship
       description: |
         Updates the `relationship_type_id` or `description` of a relationship.
@@ -476,7 +480,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags]
+      tags: [tags, tags:system-wide]
       summary: Delete a tag relationship
       description: Permanently deletes a tag relationship by its unique ID.
       parameters:
