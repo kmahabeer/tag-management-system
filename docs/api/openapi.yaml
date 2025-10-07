@@ -1063,9 +1063,40 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/relationship_ratings:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: List relationship ratings for a tag
+      description: |
+        Retrieve all ratings applied to relationships where this tag acts as **Tag A**.
+        For example, "Dog → Animal" may have a `relevance` rating of 0.95.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: List of ratings for relationships originating from this tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tag_a_id: { type: string, format: uuid }
+                  relationship_ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagRelationshipRatingInput"
+        "404":
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [tags]
-      summary: Rate tag relationships
+      tags: [tags, tags:tag-specific]
+      summary: Apply or update relationship ratings for a tag
+      description: |
+        Applies or updates ratings on relationships where this tag acts as **Tag A**.
+        Each rating reflects a subjective or objective evaluation of the connection strength or quality.
       parameters:
         - $ref: "#/components/parameters/TagId"
       requestBody:
@@ -1089,6 +1120,32 @@ paths:
                       $ref: "#/components/schemas/TagRelationshipRatingInput"
         "404":
           description: Tag or related tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete relationship ratings for a tag
+      description: |
+        Deletes all ratings assigned to relationships where this tag acts as **Tag A**.
+        This removes evaluations on all related connections for the tag.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: Relationship ratings deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Tag not found
           content:
             application/json:
               schema:
