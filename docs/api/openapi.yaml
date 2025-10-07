@@ -16,20 +16,52 @@ servers:
     description: Local development
 
 tags:
-  - name: tags
-    description: Manage tags, aliases, compositions, and relationships
-  - name: tags:tag-specific
-    description: Tag-scoped relationship operations (e.g., `/tags/{id}/relationships`)
-  - name: tags:system-wide
-    description: Global tag management (e.g., `/tag-relationships`)
-  - name: entities
-    description: Manage entities and their assigned tags
-  - name: utilities
-    description: Retrieve shared lookup data such as contexts, parts of speech, rating types, and ratings
-  - name: ui
-    description: Retrieve UI layout configurations
   - name: meta
-    description: Service metadata and health endpoints
+    description: Endpoints providing service metadata, uptime information, and system health diagnostics.
+  - name: tags:core
+    description: Core CRUD endpoints for managing tag records, each representing an atomic or composite labeling concept.
+  - name: tags:aliases
+    description: Manage aliases for a specific tag, allowing alternative names or synonyms for improved tagging and search flexibility.
+  - name: tags:aliases:system
+    description: System-wide alias management for creating, editing, and listing aliases across all tags.
+  - name: tags:relationships
+    description: Manage relationships where the current tag acts as Tag A, defining hierarchical or associative links like “Vehicle → Car.”
+  - name: tags:relationships:system
+    description: System-wide relationship management for maintaining all tag connections and traversing hierarchical or associative structures.
+  - name: tags:compositions
+    description: Manage component tags that form composite phrases for a base tag, defining structure in multi-word tags like “very big red car.”
+  - name: tags:compositions:system
+    description: System-wide management of composite tag records linking base tags to their component tags.
+  - name: tags:ratings
+    description: Apply, view, or update contextual ratings for tags to capture subjective or objective evaluations like likeness or clarity.
+  - name: tags:relationship_ratings
+    description: Manage ratings applied to tag relationships, measuring connection strength or relevance (e.g., “Dog → Animal” = 0.95).
+  - name: entities:core
+    description: Core CRUD endpoints for managing digital or physical entities such as files, images, or dataset records.
+  - name: entities:relationships
+    description: Manage relationships between entities to represent derivations, alternates, or dependencies (e.g., “Original → Edited Version”).
+  - name: entities:tags
+    description: Assign, remove, or manage tags on entities, including contextual tagging under specific classification contexts.
+  - name: entities:purposes
+    description: Manage purpose tags describing an entity’s role, intent, or function within a broader project or workflow.
+  - name: utilities:part-of-speech
+    description: Manage grammatical classifications of tags (e.g., noun, adjective, adverb) that determine compositional and linguistic validity.
+  - name: utilities:contexts
+    description: Manage contexts defining semantic domains such as style, subject, emotion, or content for tagging and rating operations.
+  - name: utilities:ratings:system
+    description: Manage global rating schemas including rating types and values that define evaluative scales like likeness or clarity.
+  - name: utilities:versioning
+    description: Manage version tracking for tags and entities to represent alternate, derived, or historical states of a digital artifact.
+  - name: ui:layouts
+    description: Manage UI layout profiles that define how tag groups, contexts, and fields are arranged in user-facing interfaces.
+  - name: ui:groups
+    description: Manage reusable UI groups that act as labeled sections within layouts to organize related fields or contexts.
+  - name: ui:fields
+    description: Manage UI fields linking tags or contexts to layout regions, defining how tagging options are displayed and organized.
+  - name: utilities
+    description: Shared reference data including contexts, ratings, and grammatical metadata that add semantic structure to tags and entities.
+  - name: ui
+    description: Manage user interface configuration endpoints that define how tagging and context data appear within the application.
 
 paths:
   ######################################
@@ -58,7 +90,7 @@ paths:
 
   /tags:
     post:
-      tags: [tags]
+      tags: [tags:core]
       summary: Create a new tag
       requestBody:
         required: true
@@ -87,7 +119,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     get:
-      tags: [tags]
+      tags: [tags:core]
       summary: List all tags
       parameters:
         - in: query
@@ -113,7 +145,7 @@ paths:
 
   /tags/{id}:
     get:
-      tags: [tags]
+      tags: [tags:core]
       summary: Retrieve tag by ID
       parameters:
         - $ref: "#/components/parameters/TagId"
@@ -132,7 +164,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags]
+      tags: [tags:core]
       summary: Update tag metadata
       parameters:
         - $ref: "#/components/parameters/TagId"
@@ -157,7 +189,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags]
+      tags: [tags:core]
       summary: Delete a tag
       parameters:
         - $ref: "#/components/parameters/TagId"
@@ -181,7 +213,7 @@ paths:
 
   /tags/{id}/aliases:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: List aliases for a tag
       description: |
         Retrieve all alias names that belong to this tag. Each alias points to this tag as its canonical reference.
@@ -207,7 +239,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     post:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Create alias for a tag
       description: |
         Adds a new alias for this tag. The alias must be unique across the entire system.
@@ -236,7 +268,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Bulk update aliases for a tag
       description: |
         Updates all aliases for this tag. Existing aliases may be replaced with a new set of names.
@@ -269,7 +301,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Delete all aliases for a tag
       description: |
         Deletes every alias associated with this tag. Use cautiously — all linked alias names will be removed.
@@ -295,7 +327,7 @@ paths:
 
   /tags/{id}/aliases/{alias_id}:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Retrieve alias for a tag
       description: |
         Retrieves a single alias record belonging to this tag.
@@ -322,7 +354,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Update alias for a tag
       description: |
         Updates the name or reassigns the alias to a different canonical tag.
@@ -362,7 +394,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:aliases]
       summary: Delete alias for a tag
       description: |
         Deletes a single alias record from this tag.
@@ -393,7 +425,7 @@ paths:
 
   /tag-aliases:
     get:
-      tags: [tags, tags:system-wide]
+      tags: [tags:aliases:system]
       summary: List all tag aliases
       description: |
         Retrieve all aliases across the system. Supports optional filtering by canonical `tag_id`.
@@ -416,7 +448,7 @@ paths:
                       $ref: "#/components/schemas/TagAlias"
 
     post:
-      tags: [tags, tags:system-wide]
+      tags: [tags:aliases:system]
       summary: Create a tag alias
       description: |
         Creates a new alias and links it to a specific tag. The alias name must be unique across the system.
@@ -445,7 +477,7 @@ paths:
 
   /tag-aliases/{id}:
     get:
-      tags: [tags, tags:system-wide]
+      tags: [tags:aliases:system]
       summary: Retrieve alias by ID
       description: Retrieve a specific tag alias by its unique ID.
       parameters:
@@ -468,7 +500,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:system-wide]
+      tags: [tags:aliases:system]
       summary: Update alias
       description: |
         Updates the alias name or reassigns it to a different canonical tag.
@@ -501,7 +533,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:system-wide]
+      tags: [tags:aliases:system]
       summary: Delete alias
       description: Deletes a tag alias by its unique ID.
       parameters:
@@ -529,7 +561,7 @@ paths:
 
   /tags/{id}/relationships:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: List relationships for a tag
       description: |
         Retrieve all relationships where this tag acts as **Tag A** (the dominant/source).
@@ -567,7 +599,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     post:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Create a relationship for a tag
       description: |
         Creates a new relationship originating from this tag as **Tag A**.
@@ -595,7 +627,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Update relationships for a tag
       description: |
         Bulk update of relationships where this tag is the **source (Tag A)**.
@@ -628,7 +660,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Delete relationships for a tag
       description: |
         Deletes all relationships where this tag is **Tag A** (the source).
@@ -653,68 +685,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /tag-relationships:
-    get:
-      tags: [tags, tags:system-wide]
-      summary: List all tag relationships
-      description: |
-        Retrieve all tag relationships in the system.
-        Supports optional filters for `tag_a_id`, `tag_b_id`, and `relationship_type_id`.
-      parameters:
-        - in: query
-          name: tag_a_id
-          schema: { type: string, format: uuid }
-          description: Filter relationships by source tag
-        - in: query
-          name: tag_b_id
-          schema: { type: string, format: uuid }
-          description: Filter relationships by target tag
-        - in: query
-          name: relationship_type_id
-          schema: { type: string, format: uuid }
-          description: Filter relationships by type
-      responses:
-        "200":
-          description: List of tag relationships
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  relationships:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TagRelationship"
-
-    post:
-      tags: [tags, tags:system-wide]
-      summary: Create a tag relationship
-      description: |
-        Creates a new tag relationship. Both `tag_a_id` (source) and `tag_b_id` (target)
-        must be provided explicitly in the request body.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TagRelationship"
-      responses:
-        "201":
-          description: Tag relationship created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TagRelationship"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
   /tags/{id}/relationships/{relationship_id}:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Retrieve tag relationship
       description: |
         Retrieves a single relationship record where this tag acts as **Tag A** (the dominant or source tag).
@@ -741,7 +714,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Update tag relationship
       description: |
         Updates the relationship type or description of a single tag-to-tag relationship.
@@ -781,7 +754,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationships]
       summary: Delete tag relationship
       description: |
         Deletes a single tag relationship record where this tag acts as **Tag A**.
@@ -810,9 +783,68 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tag-relationships:
+    get:
+      tags: [tags:relationships:system]
+      summary: List all tag relationships
+      description: |
+        Retrieve all tag relationships in the system.
+        Supports optional filters for `tag_a_id`, `tag_b_id`, and `relationship_type_id`.
+      parameters:
+        - in: query
+          name: tag_a_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by source tag
+        - in: query
+          name: tag_b_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by target tag
+        - in: query
+          name: relationship_type_id
+          schema: { type: string, format: uuid }
+          description: Filter relationships by type
+      responses:
+        "200":
+          description: List of tag relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  relationships:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagRelationship"
+
+    post:
+      tags: [tags:relationships:system]
+      summary: Create a tag relationship
+      description: |
+        Creates a new tag relationship. Both `tag_a_id` (source) and `tag_b_id` (target)
+        must be provided explicitly in the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagRelationship"
+      responses:
+        "201":
+          description: Tag relationship created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagRelationship"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tag-relationships/{id}:
     get:
-      tags: [tags, tags:system-wide]
+      tags: [tags:relationships:system]
       summary: Retrieve a tag relationship by ID
       description: Returns a single tag relationship resource.
       parameters:
@@ -836,7 +868,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:system-wide]
+      tags: [tags:relationships:system]
       summary: Update a tag relationship
       description: |
         Updates the `relationship_type_id` or `description` of a relationship.
@@ -870,7 +902,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:system-wide]
+      tags: [tags:relationships:system]
       summary: Delete a tag relationship
       description: Permanently deletes a tag relationship by its unique ID.
       parameters:
@@ -898,7 +930,7 @@ paths:
 
   /tags/{id}/compositions:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: List components of a composite tag
       description: |
         Retrieves all **component tags** that form the composition of this base tag.
@@ -930,7 +962,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     post:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Add component to a composite tag
       description: |
         Adds a new **component tag** to the composition of this base tag.
@@ -960,7 +992,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Update composition for a tag
       description: |
         Bulk-updates the composition of this base tag.
@@ -995,7 +1027,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Delete composition for a tag
       description: |
         Deletes all component links for this base tag, effectively breaking the composite phrase.
@@ -1022,7 +1054,7 @@ paths:
 
   /tags/{id}/compositions/{composition_id}:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Retrieve component of a composite tag
       description: |
         Retrieves a single component link belonging to this base tag’s composition.
@@ -1050,7 +1082,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Update composition component
       description: |
         Updates metadata for a single composition component record.
@@ -1088,7 +1120,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:compositions]
       summary: Delete composition component
       description: |
         Deletes a single component link from this tag’s composition.
@@ -1119,7 +1151,7 @@ paths:
 
   /tag-compositions:
     get:
-      tags: [tags, tags:system-wide]
+      tags: [tags:compositions:system]
       summary: List all tag compositions
       description: |
         Retrieves all composition records in the system.
@@ -1148,7 +1180,7 @@ paths:
                       $ref: "#/components/schemas/TagComponent"
 
     post:
-      tags: [tags, tags:system-wide]
+      tags: [tags:compositions:system]
       summary: Create a tag composition record
       description: |
         Creates a new composition link between a base tag and a component tag.
@@ -1184,7 +1216,7 @@ paths:
 
   /tag-compositions/{id}:
     get:
-      tags: [tags, tags:system-wide]
+      tags: [tags:compositions:system]
       summary: Retrieve tag composition by ID
       description: Retrieve a single composition record by its unique identifier.
       parameters:
@@ -1207,7 +1239,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:system-wide]
+      tags: [tags:compositions:system]
       summary: Update a tag composition
       description: |
         Updates the `position` or corrects metadata of a composition record.
@@ -1240,7 +1272,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:system-wide]
+      tags: [tags:compositions:system]
       summary: Delete a tag composition
       description: Permanently deletes a single composition record by its ID.
       parameters:
@@ -1268,7 +1300,7 @@ paths:
 
   /tags/{id}/ratings:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: List contextual ratings for a tag
       description: |
         Retrieve all contextual ratings applied to this tag, grouped by context.
@@ -1296,7 +1328,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: Apply or update contextual ratings for a tag
       description: |
         Applies or updates contextual ratings for this tag across one or more contexts.
@@ -1330,7 +1362,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: Delete contextual ratings for a tag
       description: |
         Removes all contextual ratings associated with this tag.
@@ -1357,7 +1389,7 @@ paths:
 
   /tags/{id}/ratings/{rating_id}:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: Retrieve a contextual rating for a tag
       description: |
         Retrieves a specific contextual rating record for this tag, identified by its unique rating assignment ID.
@@ -1384,7 +1416,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: Update a contextual rating for a tag
       description: |
         Updates the rating, context, or user assignment for a specific contextual rating record.
@@ -1415,7 +1447,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:ratings]
       summary: Delete a contextual rating for a tag
       description: |
         Deletes a single contextual rating record from this tag.
@@ -1446,7 +1478,7 @@ paths:
 
   /tags/{id}/relationship_ratings:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: List relationship ratings for a tag
       description: |
         Retrieve all ratings applied to relationships where this tag acts as **Tag A**.
@@ -1474,7 +1506,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: Apply or update relationship ratings for a tag
       description: |
         Applies or updates ratings on relationships where this tag acts as **Tag A**.
@@ -1508,7 +1540,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: Delete relationship ratings for a tag
       description: |
         Deletes all ratings assigned to relationships where this tag acts as **Tag A**.
@@ -1535,7 +1567,7 @@ paths:
 
   /tags/{id}/relationship_ratings/{rating_id}:
     get:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: Retrieve relationship rating for a tag
       description: |
         Retrieves a single relationship rating record where this tag acts as **Tag A** (the source).
@@ -1563,7 +1595,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: Update relationship rating for a tag
       description: |
         Updates an existing relationship rating record.
@@ -1605,7 +1637,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags: [tags, tags:tag-specific]
+      tags: [tags:relationship_ratings]
       summary: Delete relationship rating for a tag
       description: |
         Deletes a single relationship rating record where this tag acts as **Tag A**.
