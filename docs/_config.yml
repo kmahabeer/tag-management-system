@@ -10,5 +10,6 @@ heading_anchors: true
 aux_links:
   "View on GitHub":
     - "https://github.com/kmahabeer/tag-management-system"
-nav_sort: data
 nav_enabled: true
+nav_sort: data
+nav_data_file: navigation.yml

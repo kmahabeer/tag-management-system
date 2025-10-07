@@ -1,6 +1,3 @@
-# _data/navigation.yml
-# Sidebar hierarchy and order for your documentation site
-
 - title: Overview
   nav_order: 1
   children:
@@ -62,11 +59,10 @@
 - title: Examples
   url: /examples/
   nav_order: 3
-  children:
 
 - title: Logic
-  nav_order: 4
   url: /logic/
+  nav_order: 4
   children:
     - title: Composite Tagging
       url: /logic/composite_tagging/
@@ -74,7 +70,6 @@
 - title: UI
   url: /ui/
   nav_order: 5
-  children:
 
 - title: API
   url: /api/
