@@ -2239,84 +2239,6 @@ components:
           - component_tag_id: "33333333-3333-3333-3333-333333333333"
             position: 3
 
-    TagContextualRatingInput:
-      type: object
-      description: |
-        Represents a rating applied to a tag within a specific context.
-        Each contextual rating associates a tag with a context (e.g., "style", "emotion")
-        and a rating (e.g., "likeness", "clarity").
-      properties:
-        context_id:
-          type: string
-          format: uuid
-          description: Context in which this rating applies (e.g., "style").
-        rating_id:
-          type: string
-          format: uuid
-          description: The rating scale or value (e.g., 9/10, excellent).
-        user_id:
-          type: string
-          format: uuid
-          description: Optional — identifies who applied the rating.
-      required:
-        - context_id
-        - rating_id
-      example:
-        context_id: "11111111-1111-1111-1111-111111111111"
-        rating_id: "22222222-2222-2222-2222-222222222222"
-        user_id: "33333333-3333-3333-3333-333333333333"
-
-    ContextualRatingUpdate:
-      type: object
-      description: |
-        Input model for applying or updating multiple contextual ratings for a tag.
-      properties:
-        contextual_ratings:
-          type: array
-          items:
-            $ref: "#/components/schemas/TagContextualRatingInput"
-      required:
-        - contextual_ratings
-
-    TagRelationshipRatingInput:
-      type: object
-      description: |
-        Represents a rating applied to a relationship between two tags.
-        Useful for scoring how relevant, clear, or strong a connection is.
-      properties:
-        tag_b_id:
-          type: string
-          format: uuid
-          description: The target tag in the relationship.
-        context_id:
-          type: string
-          format: uuid
-          description: Context in which the relationship is rated.
-        rating_id:
-          type: string
-          format: uuid
-          description: Rating applied to this relationship.
-      required:
-        - tag_b_id
-        - context_id
-        - rating_id
-      example:
-        tag_b_id: "44444444-4444-4444-4444-444444444444"
-        context_id: "55555555-5555-5555-5555-555555555555"
-        rating_id: "66666666-6666-6666-6666-666666666666"
-
-    RelationshipRatingUpdate:
-      type: object
-      description: |
-        Bulk-update model for applying or updating multiple ratings on relationships.
-      properties:
-        relationship_ratings:
-          type: array
-          items:
-            $ref: "#/components/schemas/TagRelationshipRatingInput"
-      required:
-        - relationship_ratings
-
     # ---- Entities
     Entity:
       type: object
@@ -2430,38 +2352,259 @@ components:
         description: { type: string }
         is_active: { type: boolean }
 
+    # ---- Ratings
     RatingType:
       type: object
+      description: |
+        Defines the **semantic category** of a rating, giving meaning to its numeric value.
+        For example, a rating type of `"likeness"` might express how much a user likes something,
+        while `"clarity"` could measure how clear it is.
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        is_normalized: { type: boolean }
-        created_at: { type: string, format: date-time }
-        updated_at: { type: string, format: date-time }
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the rating type.
+        name:
+          type: string
+          description: Descriptive name of the rating type (e.g., "likeness", "clarity", "confidence").
+        is_normalized:
+          type: boolean
+          description: |
+            Indicates whether scores under this type are normalized to a [0–1] scale (`true`)
+            or expressed as integer values on a [1–10] scale (`false`).
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - is_normalized
+      example:
+        id: "11111111-1111-1111-1111-111111111111"
+        name: "likeness"
+        is_normalized: false
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:00:00Z"
+
     RatingTypeInput:
       type: object
+      description: |
+        Input model for creating or updating a rating type.
+        Use this to define a new semantic category for ratings or toggle normalization behavior.
       properties:
-        name: { type: string }
-        is_normalized: { type: boolean }
+        name:
+          type: string
+          description: Descriptive name of the rating type.
+        is_normalized:
+          type: boolean
+          default: false
+          description: |
+            `true` → normalized 0-1 range  
+            `false` → integer 1–10 scale
+      required:
+        - name
+      example:
+        name: "clarity"
+        is_normalized: true
 
     Rating:
       type: object
+      description: |
+        Represents a specific **rating value** within a rating type.
+        Examples: `"excellent"` (score = 10, type = likeness) or `"very clear"` (score = 9, type = clarity).
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        score: { type: integer }
-        description: { type: string }
-        rating_type_id: { type: string, format: uuid }
-        created_at: { type: string, format: date-time }
-        updated_at: { type: string, format: date-time }
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the rating.
+        name:
+          type: string
+          description: Label used to identify the rating (e.g., "excellent", "9/10").
+        score:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: |
+            Numeric representation of the rating value.  
+            If `is_normalized` = true on its rating type, this value should be between 0 and 1 (use integer 0–1 or float 0.0–1.0 as appropriate).
+        description:
+          type: string
+          description: Optional longer explanation of the rating meaning.
+        rating_type_id:
+          type: string
+          format: uuid
+          description: Foreign key to the rating type this rating belongs to.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - score
+        - rating_type_id
+      example:
+        id: "22222222-2222-2222-2222-222222222222"
+        name: "Excellent"
+        score: 10
+        description: "Top-tier evaluation for likeness"
+        rating_type_id: "11111111-1111-1111-1111-111111111111"
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:30:00Z"
 
     RatingInput:
       type: object
+      description: |
+        Input model for creating or updating a rating value within a given rating type.
+        Each rating defines one discrete point or label on that type’s scale.
       properties:
-        name: { type: string }
-        score: { type: integer }
-        description: { type: string }
-        rating_type_id: { type: string, format: uuid }
+        name:
+          type: string
+          description: Label or textual description for the rating (e.g., "9/10", "good").
+        score:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: |
+            Numeric score value for this rating.  
+            The range [0–1] applies when the associated `rating_type.is_normalized` = true.
+        description:
+          type: string
+          description: Optional longer explanation of this rating’s meaning.
+        rating_type_id:
+          type: string
+          format: uuid
+          description: Reference to the parent rating type.
+      required:
+        - name
+        - score
+        - rating_type_id
+      example:
+        name: "Very Clear"
+        score: 9
+        description: "High clarity rating"
+        rating_type_id: "33333333-3333-3333-3333-333333333333"
+
+    TagContextualRatingInput:
+      type: object
+      description: |
+        Represents a rating applied to a tag within a specific context.
+        Each contextual rating associates a tag with a context (e.g., "style", "emotion")
+        and a rating (e.g., 9/10, "excellent").
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the contextual rating record.
+        context_id:
+          type: string
+          format: uuid
+          description: Context in which this rating applies.
+        rating_id:
+          type: string
+          format: uuid
+          description: Rating value or scale reference.
+        user_id:
+          type: string
+          format: uuid
+          description: Optional — identifies who applied the rating.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - context_id
+        - rating_id
+      example:
+        id: "44444444-4444-4444-4444-444444444444"
+        context_id: "55555555-5555-5555-5555-555555555555"
+        rating_id: "66666666-6666-6666-6666-666666666666"
+        user_id: "77777777-7777-7777-7777-777777777777"
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:30:00Z"
+
+    ContextualRatingUpdate:
+      type: object
+      description: |
+        Input model for applying or updating multiple contextual ratings for a tag.
+        Used by `/tags/{id}/ratings` endpoints for bulk operations.
+      properties:
+        contextual_ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagContextualRatingInput"
+      required:
+        - contextual_ratings
+      example:
+        contextual_ratings:
+          - context_id: "55555555-5555-5555-5555-555555555555"
+            rating_id: "66666666-6666-6666-6666-666666666666"
+            user_id: "77777777-7777-7777-7777-777777777777"
+
+    TagRelationshipRatingInput:
+      type: object
+      description: |
+        Represents a rating applied to a relationship between two tags.
+        Useful for scoring how relevant, clear, or strong a connection is between tags.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the relationship rating record.
+        tag_b_id:
+          type: string
+          format: uuid
+          description: The target tag (Tag B) in the relationship.
+        context_id:
+          type: string
+          format: uuid
+          description: Context in which the relationship is rated.
+        rating_id:
+          type: string
+          format: uuid
+          description: Rating applied to this relationship.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - tag_b_id
+        - context_id
+        - rating_id
+      example:
+        id: "88888888-8888-8888-8888-888888888888"
+        tag_b_id: "99999999-9999-9999-9999-999999999999"
+        context_id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        rating_id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:30:00Z"
+
+    RelationshipRatingUpdate:
+      type: object
+      description: |
+        Bulk-update model for applying or updating multiple ratings on relationships.
+        Used by `/tags/{id}/relationship_ratings` endpoints.
+      properties:
+        relationship_ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagRelationshipRatingInput"
+      required:
+        - relationship_ratings
+      example:
+        relationship_ratings:
+          - tag_b_id: "99999999-9999-9999-9999-999999999999"
+            context_id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+            rating_id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
     UiLayout:
       type: object
