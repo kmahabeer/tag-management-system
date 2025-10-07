@@ -672,7 +672,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   ######################################
-  # UTILITIES (LOOKUPS)
+  # UTILITIES
   ######################################
 
   /contexts:
@@ -691,6 +691,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Context"
+    post:
+      tags: [utilities]
+      summary: Create a new tagging context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextInput"
+      responses:
+        "201":
+          description: Context created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Context"
+  /contexts/{id}:
+    patch:
+      tags: [utilities]
+      summary: Update a tagging context
+      parameters:
+        - $ref: "#/components/parameters/ContextId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextInput"
+      responses:
+        "200":
+          description: Context updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Context"
+    delete:
+      tags: [utilities]
+      summary: Delete a tagging context
+      parameters:
+        - $ref: "#/components/parameters/ContextId"
+      responses:
+        "200":
+          description: Context deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   /parts-of-speech:
     get:
@@ -708,6 +759,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/PartOfSpeech"
+    post:
+      tags: [utilities]
+      summary: Create a new part of speech
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartOfSpeechInput"
+      responses:
+        "201":
+          description: Part of speech created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartOfSpeech"
+  /parts-of-speech/{id}:
+    patch:
+      tags: [utilities]
+      summary: Update a part of speech
+      parameters:
+        - $ref: "#/components/parameters/PartOfSpeechId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartOfSpeechInput"
+      responses:
+        "200":
+          description: Part of speech updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartOfSpeech"
+    delete:
+      tags: [utilities]
+      summary: Delete a part of speech
+      parameters:
+        - $ref: "#/components/parameters/PartOfSpeechId"
+      responses:
+        "200":
+          description: Part of speech deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   /rating-types:
     get:
@@ -725,6 +827,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/RatingType"
+    post:
+      tags: [utilities]
+      summary: Create a new rating type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingTypeInput"
+      responses:
+        "201":
+          description: Rating type created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingType"
+  /rating-types/{id}:
+    patch:
+      tags: [utilities]
+      summary: Update a rating type
+      parameters:
+        - $ref: "#/components/parameters/RatingTypeId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingTypeInput"
+      responses:
+        "200":
+          description: Rating type updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingType"
+    delete:
+      tags: [utilities]
+      summary: Delete a rating type
+      parameters:
+        - $ref: "#/components/parameters/RatingTypeId"
+      responses:
+        "200":
+          description: Rating type deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   /ratings:
     get:
@@ -742,6 +895,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Rating"
+    post:
+      tags: [utilities]
+      summary: Create a new rating
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "201":
+          description: Rating created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+  /ratings/{id}:
+    patch:
+      tags: [utilities]
+      summary: Update a rating
+      parameters:
+        - $ref: "#/components/parameters/RatingId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "200":
+          description: Rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+    delete:
+      tags: [utilities]
+      summary: Delete a rating
+      parameters:
+        - $ref: "#/components/parameters/RatingId"
+      responses:
+        "200":
+          description: Rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   ######################################
   # UI CONFIGURATIONS
@@ -751,12 +955,6 @@ paths:
     get:
       tags: [ui]
       summary: Retrieve all UI layouts
-      parameters:
-        - in: query
-          name: purpose_tag_id
-          required: false
-          schema: { type: string, format: uuid }
-          description: Filter by purpose tag id; null/absent returns defaults and all
       responses:
         "200":
           description: List of UI layouts
@@ -769,26 +967,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiLayout"
-
-  /ui/layouts/{id}:
-    get:
+    post:
       tags: [ui]
-      summary: Retrieve a single UI layout
-      parameters:
-        - $ref: "#/components/parameters/UiLayoutId"
+      summary: Create a new UI layout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiLayoutInput"
       responses:
-        "200":
-          description: UI layout
+        "201":
+          description: UI layout created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiLayout"
-        "404":
-          description: UI layout not found
+  /ui/layouts/{id}:
+    patch:
+      tags: [ui]
+      summary: Update a UI layout
+      parameters:
+        - $ref: "#/components/parameters/UiLayoutId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiLayoutInput"
+      responses:
+        "200":
+          description: UI layout updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/UiLayout"
+    delete:
+      tags: [ui]
+      summary: Delete a UI layout
+      parameters:
+        - $ref: "#/components/parameters/UiLayoutId"
+      responses:
+        "200":
+          description: UI layout deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   /ui/groups:
     get:
@@ -806,20 +1035,62 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiGroup"
+    post:
+      tags: [ui]
+      summary: Create a new UI group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiGroupInput"
+      responses:
+        "201":
+          description: UI group created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiGroup"
+  /ui/groups/{id}:
+    patch:
+      tags: [ui]
+      summary: Update a UI group
+      parameters:
+        - $ref: "#/components/parameters/UiGroupId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiGroupInput"
+      responses:
+        "200":
+          description: UI group updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiGroup"
+    delete:
+      tags: [ui]
+      summary: Delete a UI group
+      parameters:
+        - $ref: "#/components/parameters/UiGroupId"
+      responses:
+        "200":
+          description: UI group deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
   /ui/fields:
     get:
       tags: [ui]
       summary: Retrieve all UI fields
-      parameters:
-        - in: query
-          name: ui_layout_id
-          required: false
-          schema: { type: string, format: uuid }
-        - in: query
-          name: context_id
-          required: false
-          schema: { type: string, format: uuid }
       responses:
         "200":
           description: List of UI fields
@@ -832,6 +1103,57 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiField"
+    post:
+      tags: [ui]
+      summary: Create a new UI field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiFieldInput"
+      responses:
+        "201":
+          description: UI field created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiField"
+  /ui/fields/{id}:
+    patch:
+      tags: [ui]
+      summary: Update a UI field
+      parameters:
+        - $ref: "#/components/parameters/UiFieldId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UiFieldInput"
+      responses:
+        "200":
+          description: UI field updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiField"
+    delete:
+      tags: [ui]
+      summary: Delete a UI field
+      parameters:
+        - $ref: "#/components/parameters/UiFieldId"
+      responses:
+        "200":
+          description: UI field deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
 
 ######################################
 # COMPONENTS
@@ -857,6 +1179,36 @@ components:
       required: true
       schema: { type: string, format: uuid }
       description: Unique identifier for the UI layout
+    ContextId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    PartOfSpeechId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    RatingTypeId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    RatingId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    UiGroupId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    UiFieldId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
 
   schemas:
     ErrorResponse:
@@ -1068,15 +1420,20 @@ components:
           items:
             $ref: "#/components/schemas/EntityRelationshipInput"
 
-    # ---- Utilities (Lookups)
+    # ---- Utilities
     Context:
       type: object
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
-        classification_type:
-          type: string
-          enum: [objective, subjective]
+        classification_type: { type: string, enum: [objective, subjective] }
+        description: { type: string }
+        is_active: { type: boolean }
+    ContextInput:
+      type: object
+      properties:
+        name: { type: string }
+        classification_type: { type: string, enum: [objective, subjective] }
         description: { type: string }
         is_active: { type: boolean }
 
@@ -1084,6 +1441,12 @@ components:
       type: object
       properties:
         id: { type: string, format: uuid }
+        name: { type: string }
+        description: { type: string }
+        is_active: { type: boolean }
+    PartOfSpeechInput:
+      type: object
+      properties:
         name: { type: string }
         description: { type: string }
         is_active: { type: boolean }
@@ -1096,6 +1459,11 @@ components:
         is_normalized: { type: boolean }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
+    RatingTypeInput:
+      type: object
+      properties:
+        name: { type: string }
+        is_normalized: { type: boolean }
 
     Rating:
       type: object
@@ -1108,11 +1476,20 @@ components:
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
 
+    RatingInput:
+      type: object
+      properties:
+        name: { type: string }
+        score: { type: integer }
+        description: { type: string }
+        rating_type_id: { type: string, format: uuid }
+
     UiLayout:
       type: object
       description: |
         A layout configuration profile defining how tags are grouped in the UI.
         Linked to a purpose tag (optional) and composed of multiple UI fields.
+
       properties:
         id: { type: string, format: uuid }
         purpose_tag_id: { type: string, format: uuid, nullable: true }
@@ -1120,19 +1497,32 @@ components:
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
 
+    UiLayoutInput:
+      type: object
+      properties:
+        purpose_tag_id: { type: string, format: uuid, nullable: true }
+        name: { type: string }
+
     UiGroup:
       type: object
       description: A named grouping label for UI sections (e.g., "Photographer", "Ingredients").
+
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
 
+    UiGroupInput:
+      type: object
+      properties:
+        name: { type: string }
+
     UiField:
       type: object
       description: |
         A field within a UI layout defining how tags under a given context and category are grouped.
+
       properties:
         id: { type: string, format: uuid }
         ui_layout_id: { type: string, format: uuid }
@@ -1142,3 +1532,12 @@ components:
         sort_order: { type: integer }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
+
+    UiFieldInput:
+      type: object
+      properties:
+        ui_layout_id: { type: string, format: uuid }
+        ui_group_id: { type: string, format: uuid }
+        context_id: { type: string, format: uuid }
+        category_tag_id: { type: string, format: uuid }
+        sort_order: { type: integer }
