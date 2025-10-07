@@ -1,3 +1,9 @@
+---
+title: Schema - Entities/Tags
+parent: Database
+has_children: true
+nav_order: 2
+---
 # Entity Tagging
 
 ## `entity_tags` Table

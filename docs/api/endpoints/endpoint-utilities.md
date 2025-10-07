@@ -1,3 +1,9 @@
+---
+title: Endpoints - Utilities
+parent: API Endpoints
+has_children: true
+nav_order: 3
+---
 # Utilities
 
 These endpoints provide access to general-purpose lookup data used throughout the Tagging Service API, including tagging contexts, parts of speech, and UI layout definitions.

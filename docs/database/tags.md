@@ -1,3 +1,9 @@
+---
+title: Schema - Tags
+parent: Database
+has_children: true
+nav_order: 3
+---
 # Tags
 
 The Tagging Service uses a unified tag table, enriched by types, aliases, and compositional relationships.

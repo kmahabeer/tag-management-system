@@ -1,3 +1,9 @@
+---
+title: Endpoints - Tags
+parent: API Endpoints
+has_children: true
+nav_order: 2
+---
 # Tags
 
 Tags are the core classification mechanism in the Tagging Service. A tag may represent a person, role, genre, object, emotion, or any other label applicable to an entity or asset.

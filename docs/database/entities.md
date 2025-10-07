@@ -1,3 +1,9 @@
+---
+title: Schema - Entities
+parent: Database
+has_children: true
+nav_order: 1
+---
 # Entities
 
 The `entities` table represents digital artifacts such as image files, video files, documents, URLs, or any tagged resource.

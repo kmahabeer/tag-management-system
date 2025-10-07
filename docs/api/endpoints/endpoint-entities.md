@@ -1,3 +1,9 @@
+---
+title: Endpoints - Entities
+parent: API Endpoints
+has_children: true
+nav_order: 1
+---
 # Entities
 
 Entities represent digital artifacts that are being described or classified by tags. This includes images, documents, video stills, URLs, and more.
