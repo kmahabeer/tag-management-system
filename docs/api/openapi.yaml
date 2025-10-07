@@ -86,9 +86,16 @@ x-tagGroups:
   - name: Entities
     tags:
       - entities:core
-      - entities:relationships
       - entities:tags
+      - entities:relationships
       - entities:purposes
+      - entities:ratings
+      - entities:versions
+
+  - name: Entity System-Wide
+    tags:
+      - entities:relationships:system
+      - entities:ratings:system
 
   - name: Utilities
     tags:
