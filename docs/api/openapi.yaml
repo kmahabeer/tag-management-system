@@ -2120,6 +2120,168 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /entities/{id}/versions:
+    get:
+      tags: [entities:versions]
+      summary: List versions of an entity
+      description: Retrieve all entities that represent alternate, prior, or derived versions of this entity. Each record reflects a version relationship derived from `entity_relationships`.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+      responses:
+        "200":
+          description: List of entity versions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Entity"
+        "404":
+          description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:versions]
+      summary: Update version relationships for an entity
+      description: Create or modify version links between this entity and others. Internally, these map to entries in `entity_relationships` with type `"version-of"`.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                versions:
+                  type: array
+                  description: List of related entity IDs that represent version links.
+                  items:
+                    type: object
+                    properties:
+                      entity_b_id:
+                        type: string
+                        format: uuid
+                        description: The related entity serving as a version.
+                      relationship_type_id:
+                        type: string
+                        format: uuid
+                        description: Identifier for the `"version-of"` relationship type.
+      responses:
+        "200":
+          description: Versions updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entity_a_id: { type: string, format: uuid }
+                  versions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EntityRelationship"
+        "404":
+          description: Entity or related version not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entities/{id}/versions/{version_id}:
+    get:
+      tags: [entities:versions]
+      summary: Retrieve a specific version of an entity
+      description: Retrieve the relationship record linking this entity to a specific version, as defined by the `"version-of"` relationship type.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: version_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier for the related version entity.
+      responses:
+        "200":
+          description: Version relationship found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+        "404":
+          description: Version relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [entities:versions]
+      summary: Update a specific version relationship
+      description: Update properties of a version relationship (e.g., change relationship type or metadata). The participating entities remain immutable.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: version_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                relationship_type_id:
+                  type: string
+                  format: uuid
+                  description: Updated relationship type ID, typically `"version-of"`.
+      responses:
+        "200":
+          description: Version relationship updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityRelationship"
+        "404":
+          description: Version relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [entities:versions]
+      summary: Delete a version relationship
+      description: Remove the version link between this entity and another. Both entities remain intact, but their version association is deleted.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: version_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Version relationship deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Version relationship not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /entities/{id}/ratings:
     get:
       tags: [entities:ratings]
