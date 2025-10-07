@@ -811,74 +811,6 @@ paths:
                     type: string
                     example: deleted
 
-  /rating-types:
-    get:
-      tags: [utilities]
-      summary: Retrieve all rating types
-      responses:
-        "200":
-          description: List of rating types
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  rating_types:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/RatingType"
-    post:
-      tags: [utilities]
-      summary: Create a new rating type
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RatingTypeInput"
-      responses:
-        "201":
-          description: Rating type created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RatingType"
-  /rating-types/{id}:
-    patch:
-      tags: [utilities]
-      summary: Update a rating type
-      parameters:
-        - $ref: "#/components/parameters/RatingTypeId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RatingTypeInput"
-      responses:
-        "200":
-          description: Rating type updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RatingType"
-    delete:
-      tags: [utilities]
-      summary: Delete a rating type
-      parameters:
-        - $ref: "#/components/parameters/RatingTypeId"
-      responses:
-        "200":
-          description: Rating type deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: deleted
-
   /ratings:
     get:
       tags: [utilities]
@@ -938,6 +870,74 @@ paths:
       responses:
         "200":
           description: Rating deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+
+  /rating-types:
+    get:
+      tags: [utilities]
+      summary: Retrieve all rating types
+      responses:
+        "200":
+          description: List of rating types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rating_types:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RatingType"
+    post:
+      tags: [utilities]
+      summary: Create a new rating type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingTypeInput"
+      responses:
+        "201":
+          description: Rating type created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingType"
+  /rating-types/{id}:
+    patch:
+      tags: [utilities]
+      summary: Update a rating type
+      parameters:
+        - $ref: "#/components/parameters/RatingTypeId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingTypeInput"
+      responses:
+        "200":
+          description: Rating type updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingType"
+    delete:
+      tags: [utilities]
+      summary: Delete a rating type
+      parameters:
+        - $ref: "#/components/parameters/RatingTypeId"
+      responses:
+        "200":
+          description: Rating type deleted
           content:
             application/json:
               schema:
