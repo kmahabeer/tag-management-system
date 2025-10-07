@@ -293,6 +293,142 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tag-aliases:
+    get:
+      tags: [tags, tags:system-wide]
+      summary: List all tag aliases
+      description: |
+        Retrieve all aliases across the system. Supports optional filtering by canonical `tag_id`.
+      parameters:
+        - in: query
+          name: tag_id
+          schema: { type: string, format: uuid }
+          description: Filter aliases belonging to a specific tag
+      responses:
+        "200":
+          description: List of tag aliases
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  aliases:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagAlias"
+
+    post:
+      tags: [tags, tags:system-wide]
+      summary: Create a tag alias
+      description: |
+        Creates a new alias and links it to a specific tag. The alias name must be unique across the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                tag_id: { type: string, format: uuid }
+      responses:
+        "201":
+          description: Alias created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "400":
+          description: Invalid input or duplicate alias
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tag-aliases/{id}:
+    get:
+      tags: [tags, tags:system-wide]
+      summary: Retrieve alias by ID
+      description: Retrieve a specific tag alias by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Alias found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:system-wide]
+      summary: Update alias
+      description: |
+        Updates the alias name or reassigns it to a different canonical tag.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                tag_id: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Alias updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:system-wide]
+      summary: Delete alias
+      description: Deletes a tag alias by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Alias deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tags/{id}/relationships:
     get:
       tags: [tags, tags:tag-specific]
