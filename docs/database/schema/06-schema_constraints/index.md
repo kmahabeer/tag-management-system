@@ -5,7 +5,7 @@ nav_order: 6
 ---
 # Schema Enforcement Rules
 
-This document defines integrity constraints, validations, and behavioral rules that enforce semantic correctness across the Tagging Service database.
+This document defines integrity constraints, validations, and behavioral rules that enforce semantic correctness across the Tag Management System database.
 
 ## Tag Composition Constraints
 

@@ -5,7 +5,7 @@ nav_order: 2
 ---
 # Goals
 
-The Tagging Service is built to support:
+The Tag Management System is built to support:
 
 - **Flexible classification**: One tag can belong to multiple categories or roles.
 - **Contextual rendering**: Tags are grouped and presented differently depending on the asset’s purpose.

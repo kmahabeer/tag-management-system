@@ -5,7 +5,7 @@ nav_order: 2
 ---
 # Labeled Data Import Logic
 
-This document describes the logic for importing labeled data from external tools like **Label Studio** into the **Tagging Service**. It covers normalization, validation, enrichment, and persistence of tag-related data, as well as the handling of source metadata.
+This document describes the logic for importing labeled data from external tools like **Label Studio** into the **Tag Management System**. It covers normalization, validation, enrichment, and persistence of tag-related data, as well as the handling of source metadata.
 
 - All imported tags should be canonicalized and linked to entities
 - Source metadata should be stored in `*_metadata` tables

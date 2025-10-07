@@ -5,7 +5,7 @@ nav_order: 1
 ---
 # Concepts
 
-The Tagging Service powers dynamic metadata assignment for creative assets. Tags are:
+The Tag Management System powers dynamic metadata assignment for creative assets. Tags are:
 
 - **Reusable**: The same tag (e.g., "Quentin Tarantino") may apply to multiple assets or entities.
 - **Typed**: Tags are classified (e.g., as a Person, Role, Vehicle).

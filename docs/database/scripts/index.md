@@ -18,7 +18,7 @@ These scripts:
 
 PostgreSQL (version ≥ 13) is required, with the `uuid-ossp` extension enabled for UUIDv4 primary keys. All tables include standard audit columns (`created_at`, `updated_at`, `created_by`, `updated_by`), and triggers automatically maintain timestamp consistency.
 
-> The steps below should be executed sequentially in a fresh database environment to fully reproduce the Tagging Service schema.
+> The steps below should be executed sequentially in a fresh database environment to fully reproduce the Tag Management System schema.
 
 ## Step 1: Enable required PostgreSQL extensions
 

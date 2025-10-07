@@ -1,9 +1,9 @@
 openapi: 3.0.4
 info:
-  title: Tagging Service API
+  title: Tag Management System API
   version: 0.1.1
   description: |
-    The **Tagging Service API** provides RESTful access to all tag-related operations—creation, updates, deletion, linking, and querying of tags and their relationships.
+    The **Tag Management System API** provides RESTful access to all tag-related operations—creation, updates, deletion, linking, and querying of tags and their relationships.
     It also supports metadata assignment for tagged entities such as images, documents, or video stills.
 
     ## Principles

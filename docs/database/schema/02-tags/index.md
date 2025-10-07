@@ -6,7 +6,7 @@ nav_order: 2
 ---
 # Tags
 
-The Tagging Service uses a unified tag table, enriched by types, aliases, and compositional relationships.
+The Tag Management System uses a unified tag table, enriched by types, aliases, and compositional relationships.
 
 ## `tags` Table
 

@@ -5,7 +5,7 @@ nav_order: 4
 ---
 # User Interface (UI) Configurations
 
-Although the Tagging Service does not render the UI itself, it provides configuration tables to support **structured grouping of tag assignments** (`entity_tags`) in user interfaces, based on:
+Although the Tag Management System does not render the UI itself, it provides configuration tables to support **structured grouping of tag assignments** (`entity_tags`) in user interfaces, based on:
 
 1. The **semantic context** of each tag assignment (e.g., `"content"`, `"subject"`, `"style"`)
 2. The **entity’s primary purpose** (as defined in the `entity_purposes` table)

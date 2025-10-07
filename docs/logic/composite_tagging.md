@@ -5,7 +5,7 @@ nav_order: 1
 ---
 # Composite Tagging
 
-This document outlines how composite tags (e.g., "very big red car") are constructed, validated, stored, and queried within the Tagging Service. Composite tags are treated as first-class tags and are stored in the `tags` table with UUIDs like any other tag.
+This document outlines how composite tags (e.g., "very big red car") are constructed, validated, stored, and queried within the Tag Management System. Composite tags are treated as first-class tags and are stored in the `tags` table with UUIDs like any other tag.
 
 The composition logic is implemented in the application layer. The database is responsible for persistence and lookup.
 

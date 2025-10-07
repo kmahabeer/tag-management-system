@@ -17,13 +17,13 @@ load_env_file()
 
 
 class Settings(BaseModel):
-    PROJECT_NAME: str = "Tagging Service API"
+    PROJECT_NAME: str = "Tag Management System API"
     API_V1_STR: str
     DATABASE_URL: str
 
 
 settings = Settings(
-    PROJECT_NAME=os.getenv("PROJECT_NAME", "Tagging Service API"),
+    PROJECT_NAME=os.getenv("PROJECT_NAME", "Tag Management System API"),
     API_V1_STR=os.getenv("API_V1_STR", "/api/v1"),
     DATABASE_URL=os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./tagging.db"),
 )
