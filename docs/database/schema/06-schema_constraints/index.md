@@ -5,45 +5,33 @@ nav_order: 6
 ---
 # Schema Enforcement Rules
 
-This document defines integrity constraints, validations, and behavioral rules that enforce semantic correctness across the Tag Management System database.
+Defines integrity constraints, validations, and behavioral rules ensuring semantic correctness and data consistency across the schema.
 
 ## Tag Composition Constraints
 
-- A composite tag (e.g., "very big red car") must be composed of valid atomic tags.
-- Composite tags should not themselves be used as component tags of other composites unless the base is well-formed.
-- A composite tag must include exactly one noun (or noun phrase) as the semantic root.
-- Disallow semantically invalid compositions (e.g., adverb + adverb).
-- If needed, add a `part_of_speech` classification to the `tags` table to validate compositions using a rule engine.
+- A composite tag must be composed of valid atomic tags.  
+- Composite tags may reference other composites as bases but must form valid grammatical structures.  
+- A composite must include exactly one noun (or noun phrase) as the root.  
+- Enforce uniqueness on (`base_tag_id`, ordered `component_tag_ids`).  
 
 ## Tag Relationship Constraints
 
-- Relationships should be semantically coherent based on their type:
-	- `"is a"` and `"parent"` should enforce directionality.
-	- Tag A must be more general than Tag B.
-- Use a trigger or check function to enforce dominant/directed relationships.
+- Directional relationships (e.g., “is a,” “parent”) must maintain logical dominance (`tag_a_id` > `tag_b_id`).  
+- Tag A cannot be both parent and child of Tag B.  
+- Enforce referential integrity between `tag_relationships` and `tag_relationship_types`.  
 
 ## Purpose Tag Constraints
 
-- In the `entity_purposes` table:
-	- `purpose_tag_id` must reference a tag of type `"Purpose"`.
-	- Only one row per entity should have `is_primary = TRUE`.
-- Optionally enforce via SQL `CHECK` constraint or trigger.
+- Each `entity_purpose` must reference a tag classified as type “Purpose.”  
+- Only one purpose per entity may have `is_primary = TRUE`.  
 
-## Unique Composite Tags
+## Rating Normalization
 
-- Ensure uniqueness of compositions by enforcing:
-	- `base_tag_id` + ordered `component_tag_ids` must be unique.
-	- Prevent equivalent semantic composites from duplicating (e.g., `"very big car"` and `"huge car"` can be aliases, but not both standalone).
+- `is_normalized` in `rating_types` enforces whether associated `ratings.score` must be in `[0–1]` or `[1–10]`.  
+- Use a database `CHECK` constraint or validation trigger to enforce consistency.  
 
-## Rating Type Normalization
+## Entity Relationship Rules
 
-- Use `is_normalized` in `rating_types` to enforce whether ratings must be in [0–1] or [1–10] range.
-- Optionally enforce using a CHECK constraint on `score` column in `ratings`.
-
-## Entity Relationships
-
-- In `entity_relationships`:
-	- `entity_a_id` must refer to the primary or source entity.
-	- Deletion of a primary entity should cascade appropriately or be blocked.
-	- `entity_a_id` ≠ `entity_b_id`
-	- (entity_a_id, entity_b_id, context_id) is unique.
+- `entity_a_id` must reference the source (primary) entity.  
+- `entity_a_id` ≠ `entity_b_id`.  
+- The combination (`entity_a_id`, `entity_b_id`, `relationship_type_id`) must be unique.  

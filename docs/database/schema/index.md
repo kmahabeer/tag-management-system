@@ -10,15 +10,16 @@ This section documents the **database schema** used by the Tag Management System
 
 Use these pages to understand:
 
-- The logical model and table relationships
-- Schema enforcement rules
-- Versioning and migration strategy
-- Cross-references with API resources
+- The logical data model and table relationships  
+- Schema enforcement rules  
+- Version tracking through relationships  
+- Cross-references between database tables and API endpoints  
 
 ## Contents
 
-- [Schema Overview](../schema.md)
-- [Schema Enforcement](../schema_enforcement.md)
-- [Versioning](../versioning.md)
-- [Ratings](../ratings.md)
-- [Parts of Speech](../parts_of_speech.md)
+- [Entities](./entities/index.md) — tables representing core digital artifacts and their relationships  
+- [Tags](./tags/index.md) — hierarchical and associative tag data model  
+- [Entity Tagging](./entity_tagging/index.md) — how entities are classified using tags and contexts  
+- [UI Configurations](./ui_configurations/index.md) — layout and grouping configuration tables  
+- [Utilities](./utilities/index.md) — supporting lookup tables (contexts, ratings, parts of speech)  
+- [Schema Constraints](./schema_constraints/index.md) — relational and semantic integrity rules  
