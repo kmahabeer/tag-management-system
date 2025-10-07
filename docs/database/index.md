@@ -31,19 +31,52 @@ The database consists of several key areas:
 
 ## Common Trigger Function
 
-The following function can be applied to all tables to automatically maintain audit timestamps:
+This function maintains audit timestamps (created_at, updated_at) across all tables. It should be defined once and applied to every table via BEFORE UPDATE triggers.
 
 ```sql
-CREATE OR REPLACE FUNCTION set_audit_fields()
+CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.updated_at = CURRENT_TIMESTAMP;
+  NEW.updated_at = NOW();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 ```
 
+With example use:
+
+```sql
+CREATE TRIGGER trg_update_timestamp
+BEFORE UPDATE ON tags
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+
+CREATE TRIGGER trg_update_timestamp
+BEFORE UPDATE ON entities
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+```
+
 Attach this function to each table using a BEFORE UPDATE trigger to ensure consistent updated_at management across the schema.
+
+If you also want to automatically populate created_at on insert:
+
+```sql
+CREATE OR REPLACE FUNCTION set_created_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.created_at IS NULL THEN
+    NEW.created_at = NOW();
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_set_created_timestamp
+BEFORE INSERT ON tags
+FOR EACH ROW
+EXECUTE FUNCTION set_created_timestamp();
+```
 
 ## Entity-Relationship (ER) Diagram
 
