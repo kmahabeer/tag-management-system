@@ -12,3 +12,6 @@ aux_links:
     - "https://github.com/kmahabeer/tag-management-system"
 nav_sort: case_insensitive
 nav_enabled: true
+
+mermaid:
+  version: "11.12.0"
