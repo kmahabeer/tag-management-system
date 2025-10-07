@@ -1858,13 +1858,14 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /entities/{id}/tags:
     get:
-      tags: [entities]
+      tags: [entities:tags]
       summary: List tags assigned to an entity
+      description: Retrieve all tags currently assigned to this entity, including contextual and metadata details.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
-          description: Tag assignments
+          description: List of assigned tags
           content:
             application/json:
               schema:
@@ -1882,8 +1883,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags: [entities]
-      summary: Assign or unassign tags to entity
+      tags: [entities:tags]
+      summary: Update tags assigned to an entity
+      description: Assign or unassign tags for this entity, including updates to context or metadata on existing assignments.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       requestBody:
@@ -1894,7 +1896,7 @@ paths:
               $ref: "#/components/schemas/EntityTagUpdate"
       responses:
         "200":
-          description: Tags updated
+          description: Tag assignments updated
           content:
             application/json:
               schema:
@@ -1907,6 +1909,61 @@ paths:
                       $ref: "#/components/schemas/EntityTagAssignment"
         "404":
           description: Entity or tags not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entities/{id}/tags/{tag_id}:
+    get:
+      tags: [entities:tags]
+      summary: Retrieve specific tag assignment
+      description: Retrieve information about a specific tag attached to this entity, including contextual data if present.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: tag_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier for the tag assignment
+      responses:
+        "200":
+          description: Tag assignment found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityTagAssignment"
+        "404":
+          description: Tag assignment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [entities:tags]
+      summary: Remove tag assignment from entity
+      description: Unassign a specific tag from this entity while leaving the tag itself intact in the database.
+      parameters:
+        - $ref: "#/components/parameters/EntityId"
+        - name: tag_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier for the tag assignment
+      responses:
+        "200":
+          description: Tag unassigned from entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: unassigned
+        "404":
+          description: Entity or tag assignment not found
           content:
             application/json:
               schema:
