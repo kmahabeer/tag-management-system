@@ -1,4 +1,0 @@
-/* Make the content area wider for the Redoc page only */
-.redoc-wide .main-content {
-  max-width: 1400px; /* or 100% */
-}
