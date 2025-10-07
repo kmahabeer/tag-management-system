@@ -3526,8 +3526,9 @@ paths:
 
   /ui/layouts:
     get:
-      tags: [ui]
-      summary: Retrieve all UI layouts
+      tags: [ui:layouts]
+      summary: List all UI layouts
+      description: Retrieve all UI layout profiles that define how tags and contexts are organized in the user interface.
       responses:
         "200":
           description: List of UI layouts
@@ -3540,9 +3541,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiLayout"
+
     post:
-      tags: [ui]
+      tags: [ui:layouts]
       summary: Create a new UI layout
+      description: Create a new layout profile for organizing tag groups and fields for a specific purpose.
       requestBody:
         required: true
         content:
@@ -3551,15 +3554,37 @@ paths:
               $ref: "#/components/schemas/UiLayoutInput"
       responses:
         "201":
-          description: UI layout created
+          description: Layout created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiLayout"
+
   /ui/layouts/{id}:
+    get:
+      tags: [ui:layouts]
+      summary: Retrieve a specific UI layout
+      description: Retrieve details for a specific layout profile by its unique identifier.
+      parameters:
+        - $ref: "#/components/parameters/UiLayoutId"
+      responses:
+        "200":
+          description: Layout found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiLayout"
+        "404":
+          description: Layout not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [ui]
-      summary: Update a UI layout
+      tags: [ui:layouts]
+      summary: Update a specific UI layout
+      description: Update a layout’s name or associated purpose tag.
       parameters:
         - $ref: "#/components/parameters/UiLayoutId"
       requestBody:
@@ -3570,19 +3595,21 @@ paths:
               $ref: "#/components/schemas/UiLayoutInput"
       responses:
         "200":
-          description: UI layout updated
+          description: Layout updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiLayout"
+
     delete:
-      tags: [ui]
-      summary: Delete a UI layout
+      tags: [ui:layouts]
+      summary: Delete a specific UI layout
+      description: Permanently delete a layout profile and any related groups or fields should be reassigned or removed.
       parameters:
         - $ref: "#/components/parameters/UiLayoutId"
       responses:
         "200":
-          description: UI layout deleted
+          description: Layout deleted
           content:
             application/json:
               schema:
@@ -3594,8 +3621,9 @@ paths:
 
   /ui/groups:
     get:
-      tags: [ui]
-      summary: Retrieve all UI groups
+      tags: [ui:groups]
+      summary: List all UI groups
+      description: Retrieve all reusable UI group definitions that segment layouts into labeled sections.
       responses:
         "200":
           description: List of UI groups
@@ -3608,9 +3636,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiGroup"
+
     post:
-      tags: [ui]
+      tags: [ui:groups]
       summary: Create a new UI group
+      description: Create a labeled section definition that can be reused across UI layouts.
       requestBody:
         required: true
         content:
@@ -3619,15 +3649,37 @@ paths:
               $ref: "#/components/schemas/UiGroupInput"
       responses:
         "201":
-          description: UI group created
+          description: Group created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiGroup"
+
   /ui/groups/{id}:
+    get:
+      tags: [ui:groups]
+      summary: Retrieve a specific UI group
+      description: Retrieve details for a UI group including its name and associated layouts.
+      parameters:
+        - $ref: "#/components/parameters/UiGroupId"
+      responses:
+        "200":
+          description: Group found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiGroup"
+        "404":
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [ui]
-      summary: Update a UI group
+      tags: [ui:groups]
+      summary: Update a specific UI group
+      description: Update the name or metadata for a UI group.
       parameters:
         - $ref: "#/components/parameters/UiGroupId"
       requestBody:
@@ -3638,19 +3690,21 @@ paths:
               $ref: "#/components/schemas/UiGroupInput"
       responses:
         "200":
-          description: UI group updated
+          description: Group updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiGroup"
+
     delete:
-      tags: [ui]
-      summary: Delete a UI group
+      tags: [ui:groups]
+      summary: Delete a specific UI group
+      description: Permanently remove a UI group. Layouts using this group must be updated accordingly.
       parameters:
         - $ref: "#/components/parameters/UiGroupId"
       responses:
         "200":
-          description: UI group deleted
+          description: Group deleted
           content:
             application/json:
               schema:
@@ -3662,8 +3716,9 @@ paths:
 
   /ui/fields:
     get:
-      tags: [ui]
-      summary: Retrieve all UI fields
+      tags: [ui:fields]
+      summary: List all UI fields
+      description: Retrieve all field definitions that map contexts, categories, and tags to specific sections in a layout.
       responses:
         "200":
           description: List of UI fields
@@ -3676,9 +3731,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/UiField"
+
     post:
-      tags: [ui]
+      tags: [ui:fields]
       summary: Create a new UI field
+      description: Define a new UI field linking a tag or context to a specific layout group and sort order.
       requestBody:
         required: true
         content:
@@ -3692,10 +3749,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiField"
+
   /ui/fields/{id}:
+    get:
+      tags: [ui:fields]
+      summary: Retrieve a specific UI field
+      description: Retrieve details of a specific field, including its linked layout, group, and context.
+      parameters:
+        - $ref: "#/components/parameters/UiFieldId"
+      responses:
+        "200":
+          description: Field found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UiField"
+        "404":
+          description: Field not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [ui]
-      summary: Update a UI field
+      tags: [ui:fields]
+      summary: Update a specific UI field
+      description: Modify the layout, group, or context linked to a UI field definition.
       parameters:
         - $ref: "#/components/parameters/UiFieldId"
       requestBody:
@@ -3706,19 +3785,21 @@ paths:
               $ref: "#/components/schemas/UiFieldInput"
       responses:
         "200":
-          description: UI field updated
+          description: Field updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UiField"
+
     delete:
-      tags: [ui]
-      summary: Delete a UI field
+      tags: [ui:fields]
+      summary: Delete a specific UI field
+      description: Permanently remove a field definition from the system.
       parameters:
         - $ref: "#/components/parameters/UiFieldId"
       responses:
         "200":
-          description: UI field deleted
+          description: Field deleted
           content:
             application/json:
               schema:
@@ -4385,12 +4466,10 @@ components:
             context_id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
             rating_id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
+    # UI Configurations
     UiLayout:
       type: object
-      description: |
-        A layout configuration profile defining how tags are grouped in the UI.
-        Linked to a purpose tag (optional) and composed of multiple UI fields.
-
+      description: A layout configuration profile defining how tags and fields are arranged in the UI.
       properties:
         id: { type: string, format: uuid }
         purpose_tag_id: { type: string, format: uuid, nullable: true }
@@ -4400,14 +4479,14 @@ components:
 
     UiLayoutInput:
       type: object
+      required: [name]
       properties:
         purpose_tag_id: { type: string, format: uuid, nullable: true }
         name: { type: string }
 
     UiGroup:
       type: object
-      description: A named grouping label for UI sections (e.g., "Photographer", "Ingredients").
-
+      description: A labeled section within a UI layout used to organize fields under a specific theme or purpose.
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
@@ -4416,14 +4495,13 @@ components:
 
     UiGroupInput:
       type: object
+      required: [name]
       properties:
         name: { type: string }
 
     UiField:
       type: object
-      description: |
-        A field within a UI layout defining how tags under a given context and category are grouped.
-
+      description: A field definition linking tags or contexts to a specific section of a layout.
       properties:
         id: { type: string, format: uuid }
         ui_layout_id: { type: string, format: uuid }
@@ -4436,6 +4514,7 @@ components:
 
     UiFieldInput:
       type: object
+      required: [ui_layout_id, ui_group_id]
       properties:
         ui_layout_id: { type: string, format: uuid }
         ui_group_id: { type: string, format: uuid }
