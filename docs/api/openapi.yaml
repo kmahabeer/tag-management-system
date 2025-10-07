@@ -2153,12 +2153,12 @@ paths:
     get:
       tags: [entities:relationship_ratings]
       summary: List relationship ratings for an entity
-      description: Retrieves all relationship rating records where this entity acts as the source (Entity A).
+      description: Retrieve all relationship rating records where this entity acts as **Entity A** (the source). Each record rates the connection to another entity.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
-          description: List of relationship ratings
+          description: List of relationship ratings for this entity
           content:
             application/json:
               schema:
@@ -2168,11 +2168,17 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/EntityRelationshipRatingInput"
+        "404":
+          description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
       tags: [entities:relationship_ratings]
       summary: Update or create relationship ratings for an entity
-      description: Applies or updates contextual ratings to the relationships where this entity acts as Entity A.
+      description: Apply or update contextual ratings for relationships where this entity acts as **Entity A**. Ratings measure qualities such as confidence or clarity of the connection.
       parameters:
         - $ref: "#/components/parameters/EntityId"
       requestBody:
@@ -2194,17 +2200,25 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/EntityRelationshipRatingInput"
+        "404":
+          description: Entity or related entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entities/{id}/relationship_ratings/{rating_id}:
     get:
       tags: [entities:relationship_ratings]
       summary: Retrieve a single entity relationship rating
+      description: Retrieve a single relationship rating record for a connection where this entity acts as **Entity A**.
       parameters:
         - $ref: "#/components/parameters/EntityId"
         - name: rating_id
           in: path
           required: true
           schema: { type: string, format: uuid }
+          description: Unique identifier of the relationship rating record
       responses:
         "200":
           description: Relationship rating found
@@ -2212,10 +2226,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EntityRelationshipRatingInput"
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
       tags: [entities:relationship_ratings]
-      summary: Update a single entity relationship rating
+      summary: Update a specific entity relationship rating
+      description: Update the rating value or context for a specific entity-to-entity relationship record. The participating entities remain immutable.
       parameters:
         - $ref: "#/components/parameters/EntityId"
         - name: rating_id
@@ -2229,8 +2250,14 @@ paths:
             schema:
               type: object
               properties:
-                context_id: { type: string, format: uuid }
-                rating_id: { type: string, format: uuid }
+                context_id:
+                  type: string
+                  format: uuid
+                  description: Updated context for this relationship rating
+                rating_id:
+                  type: string
+                  format: uuid
+                  description: Updated rating value for this relationship
       responses:
         "200":
           description: Relationship rating updated
@@ -2238,10 +2265,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EntityRelationshipRatingInput"
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     delete:
       tags: [entities:relationship_ratings]
       summary: Delete a single entity relationship rating
+      description: Permanently delete a relationship rating record for this entity. The entities and relationship itself remain intact.
       parameters:
         - $ref: "#/components/parameters/EntityId"
         - name: rating_id
@@ -2256,7 +2290,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, example: deleted }
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Relationship rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entity-relationship-ratings:
     get:
