@@ -1,3 +1,8 @@
+---
+title: Parts of Speech
+parent: Miscellaneous
+nav_order: 1
+---
 # Parts of Speech
 
 Tags in the system can optionally be classified by their grammatical role using **part-of-speech** labels. This enables the construction of semantically valid composite tags (e.g., `"very big car"`) and enforcement of grammar rules during tag creation.

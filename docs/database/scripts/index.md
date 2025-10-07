@@ -1,3 +1,8 @@
+---
+title: Database Scripts
+parent: Database
+nav_order: 2
+---
 # Database Schema
 
 This document defines the database schema for the **Tagging Service**. It supports:

@@ -1,3 +1,8 @@
+---
+title: User Interface (UI) Configurations
+parent: Database
+nav_order: 4
+---
 # User Interface (UI) Configurations
 
 Although the Tagging Service does not render the UI itself, it provides configuration tables to support **structured grouping of tag assignments** (`entity_tags`) in user interfaces, based on:
@@ -132,7 +137,7 @@ with the `entity_tags` assignments as follows:
 
 resulting in the following UI rendering result for a specific entity:
 
-```
+```txt
 [Content]
 Subjects:
 - Alien

@@ -1,3 +1,8 @@
+---
+title: Entity Versioning
+parent: Miscellaneous
+nav_order: 3
+---
 # Entity Versioning Logic
 
 This document defines how versioning is handled within the `entities` table using the `entity_relationships` join table.
