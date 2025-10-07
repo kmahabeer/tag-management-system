@@ -10,7 +10,7 @@ permalink: /api/
 <style>
 /* Force Redoc page full width */
 @media (min-width: 1024px) {
-  /* Blow away every JTD wrapper width */
+  /* Remove every JTD wrapper width */
   .container,
   .container-lg,
   .page,
