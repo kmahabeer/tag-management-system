@@ -48,3 +48,21 @@ Rating types add semantic meaning to user selected ratings. This way:
 | `context_id` |      | Foreign key to the [`contexts`](ui_configurations.md#contexts) table       |
 | `rating`     |      | Foreign key to the [`ratings`](ui_configurations.md#ratings) table         |
 | `user_id`    |      | Foreign key to the `users` table to allow per-user ratings per tag context |
+
+## `entity_relationship_ratings` Table
+
+Stores contextual ratings of relationships between entities, similar to how `tag_relationship_ratings` captures semantic strength between tags.
+
+| Column       | Type | Description                                                                 	|
+| ------------- | ---- | ------------------------------------------------------------------------------ |
+| `id`          | UUID | Primary key                                                                 	|
+| `entity_a_id` | UUID | Foreign key to the [`entities`](../01-entities/index.md) table; source entity 	|
+| `entity_b_id` | UUID | Foreign key to the [`entities`](../01-entities/index.md) table; target entity 	|
+| `context_id`  | UUID | Foreign key to the [`contexts`](./contexts.md#contexts-table) table          	|
+| `rating_id`   | UUID | Foreign key to the [`ratings`](./ratings.md#ratings-table) table             	|
+
+Examples:
+
+- Rating confidence of a derived version (“Processed → Final Render” confidence = 0.92)
+- Quality assessment between source and derivative (“RAW → Compressed” = low clarity)
+- Workflow relevance (“Input Dataset → Output Report” rated for consistency)

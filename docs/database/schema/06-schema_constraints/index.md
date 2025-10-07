@@ -45,3 +45,5 @@ This document defines integrity constraints, validations, and behavioral rules t
 - In `entity_relationships`:
 	- `entity_a_id` must refer to the primary or source entity.
 	- Deletion of a primary entity should cascade appropriately or be blocked.
+	- `entity_a_id` ≠ `entity_b_id`
+	- (entity_a_id, entity_b_id, context_id) is unique.
