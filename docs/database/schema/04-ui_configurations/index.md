@@ -1,6 +1,6 @@
 ---
 title: User Interface (UI) Configurations
-parent: Database
+parent: Database Schema
 nav_order: 4
 ---
 # User Interface (UI) Configurations

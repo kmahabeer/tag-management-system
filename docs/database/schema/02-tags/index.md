@@ -1,6 +1,6 @@
 ---
 title: Tags
-parent: Database
+parent: Database Schema
 has_children: true
 nav_order: 2
 ---

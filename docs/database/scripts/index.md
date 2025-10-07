@@ -3,20 +3,22 @@ title: Database Scripts
 parent: Database
 nav_order: 2
 ---
-# Database Schema
 
-This document defines the database schema for the **Tagging Service**. It supports:
+# Database Schema Generation
 
-- Unified tagging across diverse entity types
-- Hierarchical, compositional, and associative tag relationships
-- Context and purpose-aware entity tagging
-- Ratings of tags and tag relationships
-- UI-driven configurations for grouping and rendering
-- Enforcement of grammatical, directional, and semantic rules
+This document provides the complete **SQL build scripts** required to generate the Tag Management System database from scratch. It is intended for initializing a clean PostgreSQL instance and establishing all tables, relationships, and triggers that power the Tag Management System.
 
-PostgreSQL with `uuid-ossp` is required for UUID support as UUIDv4 is used as the primary key type throughout. All tables include audit fields: `created_at`, `updated_at`, `created_by`, `updated_by` and PostgreSQL triggers are employed to automatically update timestamps.
+These scripts:
 
-> Each section below introduces a logical grouping of tables or configuration steps that collectively define the tagging system’s database foundation.
+- Create all required lookup, tagging, and entity tables
+- Establish relationships, constraints, and foreign keys
+- Enable audit fields and automatic timestamp updates
+- Enforce semantic integrity and relationship uniqueness
+- Provide a reusable, migration-friendly foundation for development and testing
+
+PostgreSQL (version ≥ 13) is required, with the `uuid-ossp` extension enabled for UUIDv4 primary keys. All tables include standard audit columns (`created_at`, `updated_at`, `created_by`, `updated_by`), and triggers automatically maintain timestamp consistency.
+
+> The steps below should be executed sequentially in a fresh database environment to fully reproduce the Tagging Service schema.
 
 ## Step 1: Enable required PostgreSQL extensions
 

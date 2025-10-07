@@ -1,6 +1,6 @@
 ---
 title: Schema Constraints
-parent: Database
+parent: Database Schema
 nav_order: 6
 ---
 # Schema Enforcement Rules

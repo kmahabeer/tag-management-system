@@ -1,6 +1,6 @@
 ---
 title: Entity-Tag Relationships
-parent: Database
+parent: Database Schema
 has_children: false
 nav_order: 3
 ---

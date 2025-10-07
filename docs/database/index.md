@@ -5,7 +5,7 @@ has_children: true
 ---
 # Database
 
-This section details the database schema used by the Tagging Service.
+This section details the database schema, scripts, and migrations used by the Tag Management System Database.
 
 - [Entities](entities.md)
 - [Tags](./tags.md)
