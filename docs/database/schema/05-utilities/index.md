@@ -1,5 +1,5 @@
 ---
-title: Miscellaneous
+title: Utilities
 parent: Database Schema
 has_children: true
 nav_order: 5

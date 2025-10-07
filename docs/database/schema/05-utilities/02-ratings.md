@@ -1,6 +1,6 @@
 ---
 title: Ratings
-parent: Miscellaneous
+parent: Utilities
 nav_order: 2
 ---
 # Ratings

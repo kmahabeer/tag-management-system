@@ -1,6 +1,6 @@
 ---
 title: Parts of Speech
-parent: Miscellaneous
+parent: Utilities
 nav_order: 1
 ---
 # Parts of Speech

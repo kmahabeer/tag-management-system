@@ -1,6 +1,6 @@
 ---
 title: Entity Versioning
-parent: Miscellaneous
+parent: Utilities
 nav_order: 3
 ---
 # Entity Versioning Logic

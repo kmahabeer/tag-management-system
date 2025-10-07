@@ -1,25 +1,8 @@
 ---
-title: Entity-Tag Relationships
-parent: Database Schema
-has_children: false
-nav_order: 3
+title: Contexts
+parent: Entity-Tag Relationships
+nav_order: 1
 ---
-# Entity Tagging
-
-## `entity_tags` Table
-
-Many-to-many join table which links [`tags`](./tags.md) to [`entities`](./entities.md).
-
-| Column       | Type  | Description                                                                                                                          |
-| ------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`         | UUID  | Primary key                                                                                                                          |
-| `entity_id`  |       | Foreign key to the [`entities`](./entities.md) table                                                                                 |
-| `tag_id`     |       | Foreign key to the [`tags`](./tags.md) table                                                                                         |
-| `context_id` |       | Foreign key to the [`contexts`](ui_configurations.md#contexts) table                                                                 |
-| `metadata`   | JSONB | Arbitrary key-value data about the tag assignment (e.g., `{ "source": "Label Studio", "confidence": 0.92, "annotator": "user123" }`) |
-
-`Metadata` in this context informs about how the tag is used on an entity.
-
 ## Tagging Contexts
 
 Tags can be assigned to entities in **different semantic roles**, depending on how they relate to the entity. For example, a tag like `"Dog"` could indicate that a dog is **depicted in** the image (content), that the image is **about** dogs (subject), or that the tag is part of **annotation metadata**.
