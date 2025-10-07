@@ -824,6 +824,155 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tag-compositions:
+    get:
+      tags: [tags, tags:system-wide]
+      summary: List all tag compositions
+      description: |
+        Retrieves all composition records in the system.
+        Each record describes a relationship between a **base tag** and one of its **component tags**.
+        Optional query parameters allow filtering by `base_tag_id` or `component_tag_id`.
+      parameters:
+        - in: query
+          name: base_tag_id
+          schema: { type: string, format: uuid }
+          description: Filter compositions by base tag
+        - in: query
+          name: component_tag_id
+          schema: { type: string, format: uuid }
+          description: Filter compositions by a specific component tag
+      responses:
+        "200":
+          description: List of tag compositions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  compositions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagComponent"
+
+    post:
+      tags: [tags, tags:system-wide]
+      summary: Create a tag composition record
+      description: |
+        Creates a new composition link between a base tag and a component tag.
+        The `position` field defines the component’s place in the sequence.
+        Used for inserting new composite definitions globally without referencing a specific tag path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                base_tag_id: { type: string, format: uuid }
+                component_tag_id: { type: string, format: uuid }
+                position:
+                  {
+                    type: integer,
+                    description: "Order of the component in the phrase (1-based)",
+                  }
+      responses:
+        "201":
+          description: Composition created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "400":
+          description: Invalid input or duplicate composition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tag-compositions/{id}:
+    get:
+      tags: [tags, tags:system-wide]
+      summary: Retrieve tag composition by ID
+      description: Retrieve a single composition record by its unique identifier.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Composition found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "404":
+          description: Composition not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:system-wide]
+      summary: Update a tag composition
+      description: |
+        Updates the `position` or corrects metadata of a composition record.
+        The `base_tag_id` and `component_tag_id` cannot be changed after creation.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position: { type: integer }
+      responses:
+        "200":
+          description: Composition updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagComponent"
+        "404":
+          description: Composition not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:system-wide]
+      summary: Delete a tag composition
+      description: Permanently deletes a single composition record by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Composition deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Composition not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tags/{id}/ratings:
     patch:
       tags: [tags]
