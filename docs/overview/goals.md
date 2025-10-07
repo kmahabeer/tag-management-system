@@ -1,5 +1,7 @@
 ---
 title: Goals
+parent: Overview
+nav_order: 2
 ---
 # Goals
 

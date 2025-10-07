@@ -1,5 +1,7 @@
 ---
 title: Repository Structure
+parent: Overview
+nav_order: 3
 ---
 # Repository
 
