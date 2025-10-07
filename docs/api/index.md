@@ -1,4 +1,8 @@
-# API Reference
+---
+title: API
+nav_order: 4
+---
+# API
 
 The **Tagging Service API** exposes a RESTful interface for managing all tag-related operations: creation, updates, deletion, linking, and querying of tags and their relationships. It also supports metadata assignment for tagged entities such as images, documents, or video stills.
 

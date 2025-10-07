@@ -1,4 +1,4 @@
-title: Tag Management System Documentation
+title: Tag Management System
 description: REST API and database schema for the Tag Management System.
 baseurl: "/tag-management-system"
 url: "https://kmahabeer.github.io"
@@ -11,16 +11,4 @@ aux_links:
   "View on GitHub":
     - "https://github.com/kmahabeer/tag-management-system"
 nav_sort: case_insensitive
-
-collections:
-  docs:
-    output: true
-    permalink: /:collection/:path/
-
-defaults:
-  - scope:
-      path: ""
-      type: docs
-    values:
-      layout: default
-      has_children: false
+nav_enabled: true

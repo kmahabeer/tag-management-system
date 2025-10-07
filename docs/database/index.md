@@ -1,4 +1,8 @@
-# Database Reference
+---
+title: Database
+nav_order: 3
+---
+# Database
 
 This section details the database schema used by the Tagging Service.
 
