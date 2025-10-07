@@ -84,32 +84,29 @@ x-tagGroups:
     tags:
       - tags:core
       - tags:aliases
+      - tags:aliases:system
       - tags:relationships
+      - tags:relationships:system
       - tags:compositions
+      - tags:compositions:system
       - tags:ratings
       - tags:relationship_ratings
-
-  - name: Tag System-Wide
-    tags:
-      - tags:aliases:system
-      - tags:relationships:system
-      - tags:compositions:system
+      - tags:relationship_ratings:system
 
   - name: Entities
     tags:
       - entities:core
       - entities:tags
       - entities:relationships
-      - entities:purposes
-      - entities:ratings
-      - entities:relationship_ratings
-      - entities:versions
-
-  - name: Entity System-Wide
-    tags:
       - entities:relationships:system
-      - entities:ratings:system
+      - entities:relationship_ratings
       - entities:relationship_ratings:system
+      - entities:ratings
+      - entities:ratings:system
+      - entities:purposes
+      - entities:purposes:system
+      - entities:versions
+      - entities:versions:system
 
   - name: Utilities
     tags:
@@ -117,14 +114,12 @@ x-tagGroups:
       - utilities:contexts
       - utilities:ratings:system
       - utilities:versioning
-      - utilities
 
   - name: UI
     tags:
       - ui:layouts
       - ui:groups
       - ui:fields
-      - ui
 
 paths:
   ######################################
