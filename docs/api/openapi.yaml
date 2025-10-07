@@ -3204,8 +3204,9 @@ paths:
 
   /parts-of-speech:
     get:
-      tags: [utilities]
-      summary: Retrieve all parts of speech
+      tags: [utilities:part-of-speech]
+      summary: List all parts of speech
+      description: Retrieve all grammatical classifications used to categorize tags (e.g., noun, adjective, adverb).
       responses:
         "200":
           description: List of parts of speech
@@ -3218,9 +3219,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/PartOfSpeech"
+
     post:
-      tags: [utilities]
+      tags: [utilities:part-of-speech]
       summary: Create a new part of speech
+      description: Define a new grammatical classification for use in tag labeling or composition validation.
       requestBody:
         required: true
         content:
@@ -3234,10 +3237,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PartOfSpeech"
+
   /parts-of-speech/{id}:
+    get:
+      tags: [utilities:part-of-speech]
+      summary: Retrieve a specific part of speech
+      description: Retrieve details of a specific grammatical classification by its unique identifier.
+      parameters:
+        - $ref: "#/components/parameters/PartOfSpeechId"
+      responses:
+        "200":
+          description: Part of speech found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartOfSpeech"
+        "404":
+          description: Part of speech not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [utilities]
-      summary: Update a part of speech
+      tags: [utilities:part-of-speech]
+      summary: Update a specific part of speech
+      description: Modify the name, description, or activation status of a grammatical classification record.
       parameters:
         - $ref: "#/components/parameters/PartOfSpeechId"
       requestBody:
@@ -3253,9 +3278,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PartOfSpeech"
+        "404":
+          description: Part of speech not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
-      tags: [utilities]
-      summary: Delete a part of speech
+      tags: [utilities:part-of-speech]
+      summary: Delete a specific part of speech
+      description: Permanently delete a grammatical classification record from the database.
       parameters:
         - $ref: "#/components/parameters/PartOfSpeechId"
       responses:
@@ -3269,6 +3302,12 @@ paths:
                   status:
                     type: string
                     example: deleted
+        "404":
+          description: Part of speech not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /ratings:
     get:
@@ -4001,16 +4040,43 @@ components:
     PartOfSpeech:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        description: { type: string }
-        is_active: { type: boolean }
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: Name of the grammatical classification (e.g., "noun", "adjective").
+        description:
+          type: string
+          description: Optional description explaining how this part of speech is used in tagging or composition.
+        is_active:
+          type: boolean
+          description: Indicates whether this classification is active and available for use.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      example:
+        id: "2ef48d8b-bf7d-47b0-a928-5a4c3a95a71e"
+        name: "adjective"
+        description: "Describes a noun or pronoun, typically expressing a quality or attribute."
+        is_active: true
+
     PartOfSpeechInput:
       type: object
+      required: [name]
       properties:
-        name: { type: string }
-        description: { type: string }
-        is_active: { type: boolean }
+        name:
+          type: string
+          description: Name of the grammatical classification.
+        description:
+          type: string
+          description: Description explaining the role of this part of speech.
+        is_active:
+          type: boolean
+          description: Whether this part of speech is active upon creation or update.
 
     # ---- Ratings
     RatingType:
