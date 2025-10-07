@@ -1,3 +1,8 @@
+---
+title: Labelled Data Import Logic
+parent: Application Logic
+nav_order: 2
+---
 # Labeled Data Import Logic
 
 This document describes the logic for importing labeled data from external tools like **Label Studio** into the **Tagging Service**. It covers normalization, validation, enrichment, and persistence of tag-related data, as well as the handling of source metadata.

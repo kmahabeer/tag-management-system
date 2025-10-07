@@ -1,3 +1,8 @@
+---
+title: Structured Inspector JSON
+parent: Examples
+nav_order: 1
+---
 # Structured Inspector JSON
 
 For **asset 1** (Fargo still):
