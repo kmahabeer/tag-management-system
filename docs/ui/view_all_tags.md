@@ -1,3 +1,8 @@
+---
+title: SQL View - View all tags
+parent: User Interface (UI)
+nav_order: 1
+---
 # SQL View: View all tags
 
 Here is a unified SQL View that combines both:

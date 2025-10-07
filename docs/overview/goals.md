@@ -1,3 +1,8 @@
+---
+title: Goals
+parent: Overview
+nav_order: 2
+---
 # Goals
 
 The Tagging Service is built to support:

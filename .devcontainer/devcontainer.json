@@ -16,7 +16,6 @@
     "ghcr.io/va-h/devcontainers-features/uv:1": {}
   },
   "remoteUser": "root",
-  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -61,8 +60,10 @@
     "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
   ],
+  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
   "onCreateCommand": "bash .devcontainer/onCreate.sh",
-  "postCreateCommand": "bash .devcontainer/postCreate.sh",
-  "updateContentCommand": "",
-  "postAttachCommand": ""
+  "updateContentCommand": "bash .devcontainer/updateContent.sh"
+  // "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  // "postStartCommand": "",
+  // "postAttachCommand": ""
 }
