@@ -3311,8 +3311,9 @@ paths:
 
   /ratings:
     get:
-      tags: [utilities]
-      summary: Retrieve all ratings
+      tags: [utilities:ratings:system]
+      summary: List all ratings
+      description: Retrieve all available rating values defined across the system, including their scores, descriptions, and rating types.
       responses:
         "200":
           description: List of ratings
@@ -3325,9 +3326,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Rating"
+
     post:
-      tags: [utilities]
+      tags: [utilities:ratings:system]
       summary: Create a new rating
+      description: Create a new rating value for a defined rating type, such as "Excellent" under "Likeness" or "10/10" under "Clarity".
       requestBody:
         required: true
         content:
@@ -3341,10 +3344,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Rating"
+
   /ratings/{id}:
+    get:
+      tags: [utilities:ratings:system]
+      summary: Retrieve a specific rating
+      description: Retrieve details of a specific rating record, including its name, numeric score, and associated rating type.
+      parameters:
+        - $ref: "#/components/parameters/RatingId"
+      responses:
+        "200":
+          description: Rating found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [utilities]
-      summary: Update a rating
+      tags: [utilities:ratings:system]
+      summary: Update a specific rating
+      description: Modify the name, score, description, or rating type of a rating record.
       parameters:
         - $ref: "#/components/parameters/RatingId"
       requestBody:
@@ -3360,9 +3385,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Rating"
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
-      tags: [utilities]
-      summary: Delete a rating
+      tags: [utilities:ratings:system]
+      summary: Delete a specific rating
+      description: Permanently remove a rating record. Existing entity or tag ratings referencing this ID should be invalidated or reassigned.
       parameters:
         - $ref: "#/components/parameters/RatingId"
       responses:
@@ -3376,11 +3409,18 @@ paths:
                   status:
                     type: string
                     example: deleted
+        "404":
+          description: Rating not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /rating-types:
     get:
-      tags: [utilities]
-      summary: Retrieve all rating types
+      tags: [utilities:ratings:system]
+      summary: List all rating types
+      description: Retrieve all defined rating categories, such as "Likeness", "Confidence", or "Clarity", which group rating values by meaning.
       responses:
         "200":
           description: List of rating types
@@ -3393,9 +3433,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/RatingType"
+
     post:
-      tags: [utilities]
+      tags: [utilities:ratings:system]
       summary: Create a new rating type
+      description: Define a new rating category to group ratings under a common semantic meaning.
       requestBody:
         required: true
         content:
@@ -3409,10 +3451,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RatingType"
+
   /rating-types/{id}:
+    get:
+      tags: [utilities:ratings:system]
+      summary: Retrieve a specific rating type
+      description: Retrieve information about a specific rating type, including whether it is normalized.
+      parameters:
+        - $ref: "#/components/parameters/RatingTypeId"
+      responses:
+        "200":
+          description: Rating type found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingType"
+        "404":
+          description: Rating type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [utilities]
-      summary: Update a rating type
+      tags: [utilities:ratings:system]
+      summary: Update a specific rating type
+      description: Modify the name or normalization status of a rating type record.
       parameters:
         - $ref: "#/components/parameters/RatingTypeId"
       requestBody:
@@ -3428,9 +3492,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RatingType"
+        "404":
+          description: Rating type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
-      tags: [utilities]
-      summary: Delete a rating type
+      tags: [utilities:ratings:system]
+      summary: Delete a specific rating type
+      description: Permanently delete a rating type record. All ratings depending on this type should be removed or migrated.
       parameters:
         - $ref: "#/components/parameters/RatingTypeId"
       responses:
@@ -3444,6 +3516,12 @@ paths:
                   status:
                     type: string
                     example: deleted
+        "404":
+          description: Rating type not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   ######################################
   # UI CONFIGURATIONS
@@ -4081,140 +4159,87 @@ components:
     # ---- Ratings
     RatingType:
       type: object
-      description: |
-        Defines the **semantic category** of a rating, giving meaning to its numeric value.
-        For example, a rating type of `"likeness"` might express how much a user likes something,
-        while `"clarity"` could measure how clear it is.
       properties:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the rating type.
         name:
           type: string
-          description: Descriptive name of the rating type (e.g., "likeness", "clarity", "confidence").
+          description: Descriptive name for the rating category (e.g., "Likeness", "Confidence").
         is_normalized:
           type: boolean
-          description: |
-            Indicates whether scores under this type are normalized to a [0–1] scale (`true`)
-            or expressed as integer values on a [1–10] scale (`false`).
+          description: Indicates whether scores under this type are normalized to a 0–1 or 1–10 scale.
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-      required:
-        - id
-        - name
-        - is_normalized
       example:
-        id: "11111111-1111-1111-1111-111111111111"
-        name: "likeness"
-        is_normalized: false
-        created_at: "2025-10-07T12:00:00Z"
-        updated_at: "2025-10-07T12:00:00Z"
+        id: "4fd9fbb2-0d7c-4d64-bcfa-b3f2e95b601e"
+        name: "Clarity"
+        is_normalized: true
 
     RatingTypeInput:
       type: object
-      description: |
-        Input model for creating or updating a rating type.
-        Use this to define a new semantic category for ratings or toggle normalization behavior.
+      required: [name]
       properties:
         name:
           type: string
-          description: Descriptive name of the rating type.
+          description: Name of the rating type to create or update.
         is_normalized:
           type: boolean
-          default: false
-          description: |
-            `true` → normalized 0-1 range  
-            `false` → integer 1–10 scale
-      required:
-        - name
-      example:
-        name: "clarity"
-        is_normalized: true
+          description: Whether ratings of this type should use a normalized scale.
 
     Rating:
       type: object
-      description: |
-        Represents a specific **rating value** within a rating type.
-        Examples: `"excellent"` (score = 10, type = likeness) or `"very clear"` (score = 9, type = clarity).
       properties:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the rating.
         name:
           type: string
-          description: Label used to identify the rating (e.g., "excellent", "9/10").
+          description: Label identifying the rating (e.g., "Excellent", "9/10").
         score:
           type: integer
-          minimum: 0
-          maximum: 10
-          description: |
-            Numeric representation of the rating value.  
-            If `is_normalized` = true on its rating type, this value should be between 0 and 1 (use integer 0–1 or float 0.0–1.0 as appropriate).
+          description: Numeric score associated with the rating.
         description:
           type: string
-          description: Optional longer explanation of the rating meaning.
+          description: Optional descriptive text for the rating.
         rating_type_id:
           type: string
           format: uuid
-          description: Foreign key to the rating type this rating belongs to.
+          description: Foreign key referencing the rating type this rating belongs to.
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-      required:
-        - id
-        - name
-        - score
-        - rating_type_id
       example:
-        id: "22222222-2222-2222-2222-222222222222"
-        name: "Excellent"
+        id: "9d1cc219-1a67-4df2-9b5a-dc0038b168f1"
+        name: "10/10"
         score: 10
-        description: "Top-tier evaluation for likeness"
-        rating_type_id: "11111111-1111-1111-1111-111111111111"
-        created_at: "2025-10-07T12:00:00Z"
-        updated_at: "2025-10-07T12:30:00Z"
+        description: "Maximum clarity score."
+        rating_type_id: "4fd9fbb2-0d7c-4d64-bcfa-b3f2e95b601e"
 
     RatingInput:
       type: object
-      description: |
-        Input model for creating or updating a rating value within a given rating type.
-        Each rating defines one discrete point or label on that type’s scale.
+      required: [name, rating_type_id]
       properties:
         name:
           type: string
-          description: Label or textual description for the rating (e.g., "9/10", "good").
+          description: Label identifying the rating value.
         score:
           type: integer
-          minimum: 0
-          maximum: 10
-          description: |
-            Numeric score value for this rating.  
-            The range [0–1] applies when the associated `rating_type.is_normalized` = true.
+          description: Numeric score associated with the rating.
         description:
           type: string
-          description: Optional longer explanation of this rating’s meaning.
+          description: Optional description of the rating’s meaning.
         rating_type_id:
           type: string
           format: uuid
-          description: Reference to the parent rating type.
-      required:
-        - name
-        - score
-        - rating_type_id
-      example:
-        name: "Very Clear"
-        score: 9
-        description: "High clarity rating"
-        rating_type_id: "33333333-3333-3333-3333-333333333333"
+          description: Identifier for the associated rating type.
 
     TagContextualRatingInput:
       type: object
