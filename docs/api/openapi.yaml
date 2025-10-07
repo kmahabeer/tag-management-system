@@ -974,9 +974,40 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/ratings:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: List contextual ratings for a tag
+      description: |
+        Retrieve all contextual ratings applied to this tag, grouped by context.
+        For example, "Dog" might have a `likeness` rating of 9/10 and a `clarity` rating of 8/10.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: List of contextual ratings for the tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tag_id: { type: string, format: uuid }
+                  ratings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TagContextualRatingInput"
+        "404":
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [tags]
-      summary: Rate tag in context
+      tags: [tags, tags:tag-specific]
+      summary: Apply or update contextual ratings for a tag
+      description: |
+        Applies or updates contextual ratings for this tag across one or more contexts.
+        Used to express subjective or objective evaluations (e.g., "Likeness", "Clarity").
       parameters:
         - $ref: "#/components/parameters/TagId"
       requestBody:
@@ -987,7 +1018,7 @@ paths:
               $ref: "#/components/schemas/ContextualRatingUpdate"
       responses:
         "200":
-          description: Contextual ratings applied
+          description: Contextual ratings applied or updated
           content:
             application/json:
               schema:
@@ -1000,6 +1031,32 @@ paths:
                       $ref: "#/components/schemas/TagContextualRatingInput"
         "404":
           description: Tag or context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete contextual ratings for a tag
+      description: |
+        Removes all contextual ratings associated with this tag.
+        Use cautiously — this clears all user-assigned ratings for the tag.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: Contextual ratings deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Tag not found
           content:
             application/json:
               schema:
