@@ -1,35 +1,32 @@
 openapi: 3.0.4
 info:
   title: Tagging Service API
-  version: 0.1.0
+  version: 0.1.1
   description: |
-    The **Tagging Service API** exposes a RESTful interface for managing all tag-related operations—creation, updates, deletion, linking, and querying of tags and their relationships. It also supports metadata assignment for tagged entities such as images, documents, or video stills.
+    The **Tagging Service API** provides RESTful access to all tag-related operations—creation, updates, deletion, linking, and querying of tags and their relationships.
+    It also supports metadata assignment for tagged entities such as images, documents, or video stills.
 
     ## Principles
-    - **RESTful architecture**: Resource-based URIs and standard HTTP verbs (GET, POST, PUT, DELETE).
-    - **JSON payloads**: All requests and responses are structured in JSON.
-    - **Frontend-controlled authentication**: Only frontend clients (CLI, UI) interact with the API through validated tokens; exceptions only for development/testing.
+    - **RESTful architecture** — resource-based URIs and standard HTTP verbs (GET, POST, PATCH, DELETE)
+    - **JSON payloads** — all requests and responses use JSON
+    - **Frontend-controlled authentication** — only frontend clients (CLI, UI) interact with the API through validated tokens (except for development/testing)
+
 servers:
   - url: http://localhost:8000/api/v1
+    description: Local development
+
 tags:
   - name: tags
-    description: Tags
-    externalDocs:
-      description: Find out more
-      url: test
+    description: Manage tags, aliases, compositions, and relationships
   - name: entities
-    description: Entities
-    externalDocs:
-      description: Find out more
-      url: test
+    description: Manage entities and their assigned tags
   - name: utilities
-    description: Utilities
+    description: Retrieve shared lookup data such as contexts and parts of speech
 
 paths:
   /tags:
     post:
-      tags:
-        - tags
+      tags: [tags]
       summary: Create a new tag
       requestBody:
         required: true
@@ -46,49 +43,48 @@ paths:
                 $ref: "#/components/schemas/Tag"
         "400":
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "409":
           description: Tag already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     get:
-      tags:
-        - tags
+      tags: [tags]
       summary: List all tags
       parameters:
         - in: query
           name: limit
-          schema:
-            type: integer
+          schema: { type: integer, example: 25 }
         - in: query
           name: offset
-          schema:
-            type: integer
+          schema: { type: integer, example: 0 }
       responses:
         "200":
-          description: A list of tags
+          description: Paginated list of tags
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Tag"
-                  total:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResponse"
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Tag"
 
   /tags/{id}:
     get:
-      tags:
-        - tags
-      summary: Get tag by ID
+      tags: [tags]
+      summary: Retrieve tag by ID
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       responses:
         "200":
           description: Tag found
@@ -98,18 +94,16 @@ paths:
                 $ref: "#/components/schemas/Tag"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - tags
-      summary: Update a tag
+      tags: [tags]
+      summary: Update tag metadata
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
@@ -125,18 +119,16 @@ paths:
                 $ref: "#/components/schemas/Tag"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags:
-        - tags
+      tags: [tags]
       summary: Delete a tag
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       responses:
         "200":
           description: Tag deleted
@@ -147,21 +139,20 @@ paths:
                 properties:
                   status:
                     type: string
+                    example: deleted
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/aliases:
     get:
-      tags:
-        - tags
+      tags: [tags]
       summary: Get tag aliases
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       responses:
         "200":
           description: List of aliases
@@ -176,56 +167,48 @@ paths:
                       $ref: "#/components/schemas/TagAlias"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - tags
+      tags: [tags]
       summary: Update tag aliases
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                aliases:
-                  type: array
-                  items:
-                    type: string
+              $ref: "#/components/schemas/AliasUpdate"
       responses:
         "200":
-          description: Updated aliases
+          description: Aliases updated
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  tag_id: { type: string, format: uuid }
                   aliases:
                     type: array
                     items:
                       $ref: "#/components/schemas/TagAlias"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/relationships:
     get:
-      tags:
-        - tags
+      tags: [tags]
       summary: Get tag relationships
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       responses:
         "200":
           description: List of tag relationships
@@ -240,29 +223,22 @@ paths:
                       $ref: "#/components/schemas/TagRelationship"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - tags
+      tags: [tags]
       summary: Update tag relationships
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                relationships:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/TagRelationshipInput"
+              $ref: "#/components/schemas/RelationshipUpdate"
       responses:
         "200":
           description: Updated relationships
@@ -277,19 +253,17 @@ paths:
                       $ref: "#/components/schemas/TagRelationship"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/compositions:
     get:
-      tags:
-        - tags
+      tags: [tags]
       summary: Get tag composition components
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       responses:
         "200":
           description: List of tag components
@@ -304,29 +278,22 @@ paths:
                       $ref: "#/components/schemas/TagComponent"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - tags
+      tags: [tags]
       summary: Update tag composition components
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                components:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/TagComponentInput"
+              $ref: "#/components/schemas/CompositionUpdate"
       responses:
         "200":
           description: Updated tag components
@@ -335,39 +302,30 @@ paths:
               schema:
                 type: object
                 properties:
-                  base_tag_id:
-                    type: string
-                    format: uuid
+                  base_tag_id: { type: string, format: uuid }
                   components:
                     type: array
                     items:
                       $ref: "#/components/schemas/TagComponent"
         "404":
           description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/ratings:
     patch:
-      tags:
-        - tags
+      tags: [tags]
       summary: Rate tag in context
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                contextual_ratings:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/TagContextualRatingInput"
+              $ref: "#/components/schemas/ContextualRatingUpdate"
       responses:
         "200":
           description: Contextual ratings applied
@@ -376,39 +334,30 @@ paths:
               schema:
                 type: object
                 properties:
-                  tag_id:
-                    type: string
-                    format: uuid
+                  tag_id: { type: string, format: uuid }
                   ratings:
                     type: array
                     items:
                       $ref: "#/components/schemas/TagContextualRatingInput"
         "404":
           description: Tag or context not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tags/{id}/relationship_ratings:
     patch:
-      tags:
-        - tags
-      summary: Rate tag relationship
+      tags: [tags]
+      summary: Rate tag relationships
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/TagId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                relationship_ratings:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/TagRelationshipRatingInput"
+              $ref: "#/components/schemas/RelationshipRatingUpdate"
       responses:
         "200":
           description: Relationship ratings recorded
@@ -417,20 +366,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  tag_a_id:
-                    type: string
-                    format: uuid
+                  tag_a_id: { type: string, format: uuid }
                   ratings:
                     type: array
                     items:
                       $ref: "#/components/schemas/TagRelationshipRatingInput"
         "404":
           description: Tag or related tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entities:
     post:
-      tags:
-        - entities
+      tags: [entities]
       summary: Create a new entity
       requestBody:
         required: true
@@ -447,47 +397,42 @@ paths:
                 $ref: "#/components/schemas/Entity"
         "400":
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     get:
-      tags:
-        - entities
+      tags: [entities]
       summary: List all entities
       parameters:
         - in: query
           name: limit
-          schema:
-            type: integer
+          schema: { type: integer, example: 25 }
         - in: query
           name: offset
-          schema:
-            type: integer
+          schema: { type: integer, example: 0 }
       responses:
         "200":
-          description: A list of entities
+          description: Paginated list of entities
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Entity"
-                  total:
-                    type: integer
+                allOf:
+                  - $ref: "#/components/schemas/PaginatedResponse"
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Entity"
 
   /entities/{id}:
     get:
-      tags:
-        - entities
-      summary: Get entity by ID
+      tags: [entities]
+      summary: Retrieve entity by ID
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
           description: Entity found
@@ -497,18 +442,16 @@ paths:
                 $ref: "#/components/schemas/Entity"
         "404":
           description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - entities
+      tags: [entities]
       summary: Update an entity
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       requestBody:
         required: true
         content:
@@ -524,18 +467,16 @@ paths:
                 $ref: "#/components/schemas/Entity"
         "404":
           description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     delete:
-      tags:
-        - entities
+      tags: [entities]
       summary: Delete an entity
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
           description: Entity deleted
@@ -546,21 +487,20 @@ paths:
                 properties:
                   status:
                     type: string
+                    example: deleted
         "404":
           description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entities/{id}/tags:
     get:
-      tags:
-        - entities
+      tags: [entities]
       summary: List tags assigned to an entity
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
           description: Tag assignments
@@ -575,29 +515,22 @@ paths:
                       $ref: "#/components/schemas/EntityTagAssignment"
         "404":
           description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - entities
+      tags: [entities]
       summary: Assign or unassign tags to entity
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                tags:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/EntityTagAssignmentInput"
+              $ref: "#/components/schemas/EntityTagUpdate"
       responses:
         "200":
           description: Tags updated
@@ -606,39 +539,30 @@ paths:
               schema:
                 type: object
                 properties:
-                  entity_id:
-                    type: string
-                    format: uuid
+                  entity_id: { type: string, format: uuid }
                   tags:
                     type: array
                     items:
                       $ref: "#/components/schemas/EntityTagAssignment"
         "404":
           description: Entity or tags not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entities/{id}/purpose:
     patch:
-      tags:
-        - entities
+      tags: [entities]
       summary: Update purpose(s) for an entity
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                purposes:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/EntityPurposeInput"
+              $ref: "#/components/schemas/EntityPurposeUpdate"
       responses:
         "200":
           description: Updated purposes
@@ -647,28 +571,24 @@ paths:
               schema:
                 type: object
                 properties:
-                  entity_id:
-                    type: string
-                    format: uuid
+                  entity_id: { type: string, format: uuid }
                   purposes:
                     type: array
                     items:
                       $ref: "#/components/schemas/EntityPurposeInput"
         "404":
           description: Entity or purpose tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /entities/{id}/relationships:
     get:
-      tags:
-        - entities
-      summary: Get entity relationships
+      tags: [entities]
+      summary: Retrieve entity relationships
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       responses:
         "200":
           description: Related entities
@@ -683,29 +603,22 @@ paths:
                       $ref: "#/components/schemas/EntityRelationship"
         "404":
           description: Entity not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
-      tags:
-        - entities
+      tags: [entities]
       summary: Update entity relationships
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - $ref: "#/components/parameters/EntityId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                relationships:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/EntityRelationshipInput"
+              $ref: "#/components/schemas/EntityRelationshipUpdate"
       responses:
         "200":
           description: Relationships updated
@@ -714,20 +627,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  entity_a_id:
-                    type: string
-                    format: uuid
+                  entity_a_id: { type: string, format: uuid }
                   relationships:
                     type: array
                     items:
                       $ref: "#/components/schemas/EntityRelationshipInput"
         "404":
           description: Entity or target not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /contexts:
     get:
-      tags:
-        - utilities
+      tags: [utilities]
       summary: Retrieve all tagging contexts
       responses:
         "200":
@@ -744,8 +658,7 @@ paths:
 
   /parts-of-speech:
     get:
-      tags:
-        - utilities
+      tags: [utilities]
       summary: Retrieve all parts of speech
       responses:
         "200":
@@ -761,240 +674,239 @@ paths:
                       $ref: "#/components/schemas/PartOfSpeech"
 
 components:
+  parameters:
+    TagId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+      description: Unique identifier for the tag
+    EntityId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+      description: Unique identifier for the entity
+
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code: { type: integer, example: 404 }
+        message: { type: string, example: "Resource not found" }
+        details: { type: object }
+      required: [code, message]
+
+    PaginatedResponse:
+      type: object
+      properties:
+        results: { type: array, items: {} }
+        total: { type: integer, example: 42 }
+
     Tag:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        display_name:
-          type: string
-        metadata:
-          type: object
-        part_of_speech_id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        id: { type: string, format: uuid }
+        name: { type: string }
+        display_name: { type: string }
+        metadata: { type: object }
+        part_of_speech_id: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+      example:
+        id: "a123e456-78b9-4cde-8123-456789abcdef"
+        name: "dog"
+        display_name: "Dog"
+        metadata: { source: "Label Studio" }
 
     TagInput:
       type: object
+      required: [name]
       properties:
-        name:
-          type: string
-        display_name:
-          type: string
-        metadata:
-          type: object
-        part_of_speech_id:
-          type: string
-          format: uuid
-      required:
-        - name
+        name: { type: string }
+        display_name: { type: string }
+        metadata: { type: object }
+        part_of_speech_id: { type: string, format: uuid }
 
     TagAlias:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
+        id: { type: string, format: uuid }
+        name: { type: string }
+
+    AliasUpdate:
+      type: object
+      properties:
+        aliases:
+          type: array
+          items: { type: string }
 
     TagRelationship:
       type: object
       properties:
-        tag_a_id:
-          type: string
-          format: uuid
-        tag_b_id:
-          type: string
-          format: uuid
-        relationship_type_id:
-          type: string
-          format: uuid
-        description:
-          type: string
+        tag_a_id: { type: string, format: uuid }
+        tag_b_id: { type: string, format: uuid }
+        relationship_type_id: { type: string, format: uuid }
+        description: { type: string }
+
+    RelationshipUpdate:
+      type: object
+      properties:
+        relationships:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagRelationshipInput"
 
     TagRelationshipInput:
       type: object
       properties:
-        tag_b_id:
-          type: string
-          format: uuid
-        relationship_type_id:
-          type: string
-          format: uuid
-        description:
-          type: string
+        tag_b_id: { type: string, format: uuid }
+        relationship_type_id: { type: string, format: uuid }
+        description: { type: string }
 
     TagComponent:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        position:
-          type: integer
+        id: { type: string, format: uuid }
+        name: { type: string }
+        position: { type: integer }
+
+    CompositionUpdate:
+      type: object
+      properties:
+        components:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagComponentInput"
 
     TagComponentInput:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        position:
-          type: integer
+        id: { type: string, format: uuid }
+        position: { type: integer }
+
+    ContextualRatingUpdate:
+      type: object
+      properties:
+        contextual_ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagContextualRatingInput"
+
+    RelationshipRatingUpdate:
+      type: object
+      properties:
+        relationship_ratings:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagRelationshipRatingInput"
 
     TagContextualRatingInput:
       type: object
       properties:
-        context_id:
-          type: string
-          format: uuid
-        rating_id:
-          type: string
-          format: uuid
-        user_id:
-          type: string
-          format: uuid
+        context_id: { type: string, format: uuid }
+        rating_id: { type: string, format: uuid }
+        user_id: { type: string, format: uuid }
 
     TagRelationshipRatingInput:
       type: object
       properties:
-        tag_b_id:
-          type: string
-          format: uuid
-        context_id:
-          type: string
-          format: uuid
-        rating_id:
-          type: string
-          format: uuid
+        tag_b_id: { type: string, format: uuid }
+        context_id: { type: string, format: uuid }
+        rating_id: { type: string, format: uuid }
 
     Entity:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        location:
-          type: string
-        is_primary:
-          type: boolean
-        metadata:
-          type: object
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        id: { type: string, format: uuid }
+        name: { type: string }
+        location: { type: string }
+        is_primary: { type: boolean }
+        metadata: { type: object }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
 
     EntityInput:
       type: object
+      required: [name]
       properties:
-        name:
-          type: string
-        location:
-          type: string
-        is_primary:
-          type: boolean
-        metadata:
-          type: object
-      required:
-        - name
+        name: { type: string }
+        location: { type: string }
+        is_primary: { type: boolean }
+        metadata: { type: object }
 
     EntityTagAssignment:
       type: object
       properties:
-        tag:
-          $ref: "#/components/schemas/Tag"
-        context:
-          type: string
-        metadata:
-          type: object
+        tag: { $ref: "#/components/schemas/Tag" }
+        context_id: { type: string, format: uuid }
+        metadata: { type: object }
 
     EntityTagAssignmentInput:
       type: object
       properties:
-        tag_id:
-          type: string
-          format: uuid
-        context_id:
-          type: string
-          format: uuid
-        metadata:
-          type: object
+        tag_id: { type: string, format: uuid }
+        context_id: { type: string, format: uuid }
+        metadata: { type: object }
+
+    EntityTagUpdate:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityTagAssignmentInput"
 
     EntityPurposeInput:
       type: object
       properties:
-        purpose_tag_id:
-          type: string
-          format: uuid
-        is_primary:
-          type: boolean
+        purpose_tag_id: { type: string, format: uuid }
+        is_primary: { type: boolean }
+
+    EntityPurposeUpdate:
+      type: object
+      properties:
+        purposes:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityPurposeInput"
 
     EntityRelationship:
       type: object
       properties:
-        entity_a_id:
-          type: string
-          format: uuid
-        entity_b_id:
-          type: string
-          format: uuid
-        relationship_type_id:
-          type: string
-          format: uuid
+        entity_a_id: { type: string, format: uuid }
+        entity_b_id: { type: string, format: uuid }
+        relationship_type_id: { type: string, format: uuid }
 
     EntityRelationshipInput:
       type: object
       properties:
-        entity_b_id:
-          type: string
-          format: uuid
-        relationship_type_id:
-          type: string
-          format: uuid
+        entity_b_id: { type: string, format: uuid }
+        relationship_type_id: { type: string, format: uuid }
+
+    EntityRelationshipUpdate:
+      type: object
+      properties:
+        relationships:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityRelationshipInput"
 
     Context:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
+        id: { type: string, format: uuid }
+        name: { type: string }
         classification_type:
           type: string
           enum: [objective, subjective]
-        description:
-          type: string
-        is_active:
-          type: boolean
+        description: { type: string }
+        is_active: { type: boolean }
 
     PartOfSpeech:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        is_active:
-          type: boolean
+        id: { type: string, format: uuid }
+        name: { type: string }
+        description: { type: string }
+        is_active: { type: boolean }
