@@ -72,10 +72,6 @@ tags:
     description: Define reusable UI grouping elements that segment layouts into labeled sections for improved visual organization.
   - name: ui:fields
     description: Manage individual UI fields that map tags or contexts to specific regions within layouts, determining display and behavior.
-  - name: utilities
-    description: Shared reference data including contexts, ratings, and grammatical metadata that add semantic structure to tags and entities.
-  - name: ui
-    description: Manage user interface configuration endpoints that define how tagging and context data appear within the application.
 
 x-tagGroups:
   - name: Meta
