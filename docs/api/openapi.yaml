@@ -37,13 +37,25 @@ tags:
   - name: tags:relationship_ratings
     description: Manage ratings applied to tag relationships, measuring connection strength or relevance (e.g., “Dog → Animal” = 0.95).
   - name: entities:core
-    description: Core CRUD endpoints for managing digital or physical entities such as files, images, or dataset records.
-  - name: entities:relationships
-    description: Manage relationships between entities to represent derivations, alternates, or dependencies (e.g., “Original → Edited Version”).
+    description: Core CRUD endpoints for managing entities, which represent digital or physical assets such as files, images, documents, or dataset records.
   - name: entities:tags
-    description: Assign, remove, or manage tags on entities, including contextual tagging under specific classification contexts.
+    description: Manage tag assignments on entities, including adding, removing, or updating contextual tags linked to specific contexts or metadata.
+  - name: entities:relationships
+    description: Manage relationships between entities to define derivations, alternates, or dependencies (e.g., “Original Render → Color Corrected Version”).
   - name: entities:purposes
-    description: Manage purpose tags describing an entity’s role, intent, or function within a broader project or workflow.
+    description: Manage purpose tags assigned to entities, describing the entity’s intended role, use, or function within a broader project or workflow.
+  - name: entities:relationships:system
+    description: System-wide endpoints for managing all entity-to-entity relationship records, regardless of which entity acts as the source.
+  - name: entities:relationship_ratings
+    description: Manage ratings applied to relationships between entities, assessing quality, confidence, or relevance between linked files or versions.
+  - name: entities:relationship_ratings:system
+    description: System-wide management of all entity relationship rating records across the database for analytics or administrative review.
+  - name: entities:versions
+    description: Manage entity version lineage, enabling tracking of alternate, derived, or historical versions of digital artifacts through version relationships.
+  - name: entities:ratings
+    description: Manage contextual or performance-based ratings applied to entities, capturing evaluation metrics such as quality, confidence, or completion.
+  - name: entities:ratings:system
+    description: System-wide management of all entity rating records across contexts, including administrative tools for validation and data review.
   - name: utilities:part-of-speech
     description: Manage grammatical classifications of tags (e.g., noun, adjective, adverb) that determine compositional and linguistic validity.
   - name: utilities:contexts
@@ -90,12 +102,14 @@ x-tagGroups:
       - entities:relationships
       - entities:purposes
       - entities:ratings
+      - entities:relationship_ratings
       - entities:versions
 
   - name: Entity System-Wide
     tags:
       - entities:relationships:system
       - entities:ratings:system
+      - entities:relationship_ratings:system
 
   - name: Utilities
     tags:
