@@ -37,25 +37,29 @@ tags:
   - name: tags:relationship_ratings
     description: Manage ratings applied to tag relationships, measuring connection strength or relevance (e.g., “Dog → Animal” = 0.95).
   - name: entities:core
-    description: Core CRUD endpoints for managing entities, which represent digital or physical assets such as files, images, documents, or dataset records.
+    description: Core entity CRUD endpoints for managing digital or physical assets that can be tagged, rated, or related to other entities.
   - name: entities:tags
-    description: Manage tag assignments on entities, including adding, removing, or updating contextual tags linked to specific contexts or metadata.
+    description: Endpoints for assigning, updating, or removing tags from entities, including contextual tagging under defined semantic domains.
   - name: entities:relationships
-    description: Manage relationships between entities to define derivations, alternates, or dependencies (e.g., “Original Render → Color Corrected Version”).
-  - name: entities:purposes
-    description: Manage purpose tags assigned to entities, describing the entity’s intended role, use, or function within a broader project or workflow.
+    description: Manage entity-to-entity relationships where the current entity acts as the source, such as derivations or alternates.
   - name: entities:relationships:system
-    description: System-wide endpoints for managing all entity-to-entity relationship records, regardless of which entity acts as the source.
+    description: System-wide endpoints for listing, creating, and modifying relationships between any entities across the database.
   - name: entities:relationship_ratings
-    description: Manage ratings applied to relationships between entities, assessing quality, confidence, or relevance between linked files or versions.
+    description: Manage contextual ratings applied to specific entity-to-entity relationships, measuring qualities like confidence or relevance.
   - name: entities:relationship_ratings:system
-    description: System-wide management of all entity relationship rating records across the database for analytics or administrative review.
-  - name: entities:versions
-    description: Manage entity version lineage, enabling tracking of alternate, derived, or historical versions of digital artifacts through version relationships.
+    description: Global endpoints for viewing, creating, and updating entity relationship ratings across all entities.
   - name: entities:ratings
-    description: Manage contextual or performance-based ratings applied to entities, capturing evaluation metrics such as quality, confidence, or completion.
+    description: Endpoints for applying or managing contextual ratings directly on entities, representing evaluations like quality or completeness.
   - name: entities:ratings:system
-    description: System-wide management of all entity rating records across contexts, including administrative tools for validation and data review.
+    description: System-wide endpoints for listing, creating, and updating ratings applied to entities across the database.
+  - name: entities:purposes
+    description: Manage purpose tags assigned to entities, defining their intended role or function within a workflow or collection.
+  - name: entities:purposes:system
+    description: Global endpoints for managing all purpose tag assignments across entities, including primary and secondary designations.
+  - name: entities:versions
+    description: Manage version relationships between entities, representing alternates, revisions, or derived versions through self-referential links.
+  - name: entities:versions:system
+    description: System-wide endpoints for managing all version-type relationships, enabling traversal of entity lineage and version history.
   - name: utilities:part-of-speech
     description: Manage grammatical classifications of tags (e.g., noun, adjective, adverb) that determine compositional and linguistic validity.
   - name: utilities:contexts
