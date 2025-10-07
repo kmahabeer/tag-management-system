@@ -1887,6 +1887,10 @@ components:
       properties:
         id: { type: string, format: uuid }
         name: { type: string }
+        tag_id: { type: string, format: uuid }
+      description: |
+        Represents an alias or synonym for a canonical tag.
+        Each alias points to a tag via `tag_id`.
 
     AliasUpdate:
       type: object
@@ -1894,50 +1898,143 @@ components:
         aliases:
           type: array
           items: { type: string }
+      description: |
+        Used for bulk-updating aliases for a tag. Each string value represents an alias name.
 
     TagRelationship:
       type: object
+      description: |
+        Represents a directional relationship between two tags.
+        `tag_a_id` is the source or dominant tag, and `tag_b_id` is the target or dependent tag.
       properties:
+        id: { type: string, format: uuid }
         tag_a_id: { type: string, format: uuid }
         tag_b_id: { type: string, format: uuid }
         relationship_type_id: { type: string, format: uuid }
         description: { type: string }
+      example:
+        id: "b123e456-78b9-4cde-8123-456789abcdef"
+        tag_a_id: "11111111-1111-1111-1111-111111111111"
+        tag_b_id: "22222222-2222-2222-2222-222222222222"
+        relationship_type_id: "33333333-3333-3333-3333-333333333333"
+        description: "Vehicle is the parent of Car"
 
     TagRelationshipInput:
       type: object
+      description: |
+        Input model for creating or updating a tag relationship.
+        Used by both scoped (`/tags/{id}/relationships`) and global (`/tag-relationships`) endpoints.
       properties:
         tag_b_id: { type: string, format: uuid }
         relationship_type_id: { type: string, format: uuid }
         description: { type: string }
+      required: [tag_b_id, relationship_type_id]
+      example:
+        tag_b_id: "22222222-2222-2222-2222-222222222222"
+        relationship_type_id: "33333333-3333-3333-3333-333333333333"
+        description: "Parent-child relationship"
 
     RelationshipUpdate:
       type: object
+      description: |
+        Bulk-update model for tag relationships.
+        Used to update multiple relationships in a single request.
       properties:
         relationships:
           type: array
           items:
             $ref: "#/components/schemas/TagRelationshipInput"
+      required: [relationships]
+      example:
+        relationships:
+          - tag_b_id: "44444444-4444-4444-4444-444444444444"
+            relationship_type_id: "55555555-5555-5555-5555-555555555555"
+            description: "Alternate version of"
 
     TagComponent:
       type: object
+      description: |
+        Represents a single component within a composite tag.
+        Links a **base tag** (composite phrase) to one of its **component tags**,
+        with a defined order (`position`) indicating sequence in the phrase.
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        position: { type: integer }
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the composition record.
+        base_tag_id:
+          type: string
+          format: uuid
+          description: The composite tag being formed (e.g., "very big red car").
+        component_tag_id:
+          type: string
+          format: uuid
+          description: The atomic tag being used as a component (e.g., "big").
+        position:
+          type: integer
+          minimum: 1
+          description: |
+            Order of the component tag within the composite phrase (1-based index).
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - base_tag_id
+        - component_tag_id
+        - position
+      example:
+        id: "b123e456-78b9-4cde-8123-456789abcdef"
+        base_tag_id: "a123e456-78b9-4cde-8123-456789abcdef"
+        component_tag_id: "c123e456-78b9-4cde-8123-456789abcdef"
+        position: 2
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:30:00Z"
 
     TagComponentInput:
       type: object
+      description: |
+        Input model for adding a component to a composite tag.
+        Used by both the scoped (`/tags/{id}/compositions`) and global (`/tag-compositions`) endpoints.
       properties:
-        id: { type: string, format: uuid }
-        position: { type: integer }
+        component_tag_id:
+          type: string
+          format: uuid
+          description: The component tag being added to the composition.
+        position:
+          type: integer
+          minimum: 1
+          description: Position of this component in the composite phrase (1-based index).
+      required:
+        - component_tag_id
+        - position
+      example:
+        component_tag_id: "c123e456-78b9-4cde-8123-456789abcdef"
+        position: 3
 
     CompositionUpdate:
       type: object
+      description: |
+        Bulk-update model for composite tag components.
+        Replaces the full set of component tags for a base tag.
       properties:
         components:
           type: array
           items:
             $ref: "#/components/schemas/TagComponentInput"
+      required:
+        - components
+      example:
+        components:
+          - component_tag_id: "11111111-1111-1111-1111-111111111111"
+            position: 1
+          - component_tag_id: "22222222-2222-2222-2222-222222222222"
+            position: 2
+          - component_tag_id: "33333333-3333-3333-3333-333333333333"
+            position: 3
 
     TagContextualRatingInput:
       type: object
@@ -1945,6 +2042,9 @@ components:
         context_id: { type: string, format: uuid }
         rating_id: { type: string, format: uuid }
         user_id: { type: string, format: uuid }
+      description: |
+        Input model for assigning a rating to a tag within a given context.
+        Supports per-user or global contextual ratings.
 
     ContextualRatingUpdate:
       type: object
@@ -1953,6 +2053,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagContextualRatingInput"
+      required: [contextual_ratings]
+      description: |
+        Bulk-update model for contextual ratings of a tag.
+      example:
+        contextual_ratings:
+          - context_id: "11111111-1111-1111-1111-111111111111"
+            rating_id: "22222222-2222-2222-2222-222222222222"
+            user_id: "33333333-3333-3333-3333-333333333333"
 
     TagRelationshipRatingInput:
       type: object
@@ -1960,6 +2068,8 @@ components:
         tag_b_id: { type: string, format: uuid }
         context_id: { type: string, format: uuid }
         rating_id: { type: string, format: uuid }
+      description: |
+        Input model for assigning a rating to a relationship between two tags.
 
     RelationshipRatingUpdate:
       type: object
@@ -1968,6 +2078,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/TagRelationshipRatingInput"
+      required: [relationship_ratings]
+      description: |
+        Bulk-update model for relationship ratings.
 
     # ---- Entities
     Entity:
