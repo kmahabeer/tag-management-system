@@ -181,13 +181,15 @@ paths:
 
   /tags/{id}/aliases:
     get:
-      tags: [tags]
-      summary: Get tag aliases
+      tags: [tags, tags:tag-specific]
+      summary: List aliases for a tag
+      description: |
+        Retrieve all alias names that belong to this tag. Each alias points to this tag as its canonical reference.
       parameters:
         - $ref: "#/components/parameters/TagId"
       responses:
         "200":
-          description: List of aliases
+          description: List of aliases for the tag
           content:
             application/json:
               schema:
@@ -204,9 +206,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+    post:
+      tags: [tags, tags:tag-specific]
+      summary: Create alias for a tag
+      description: |
+        Adds a new alias for this tag. The alias must be unique across the entire system.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, description: "The alias name to create" }
+      responses:
+        "201":
+          description: Alias created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "400":
+          description: Invalid input or duplicate alias
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     patch:
-      tags: [tags]
-      summary: Update tag aliases
+      tags: [tags, tags:tag-specific]
+      summary: Bulk update aliases for a tag
+      description: |
+        Updates all aliases for this tag. Existing aliases may be replaced with a new set of names.
       parameters:
         - $ref: "#/components/parameters/TagId"
       requestBody:
@@ -228,6 +261,31 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/TagAlias"
+        "404":
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete all aliases for a tag
+      description: |
+        Deletes every alias associated with this tag. Use cautiously — all linked alias names will be removed.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+      responses:
+        "200":
+          description: Aliases deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
         "404":
           description: Tag not found
           content:
