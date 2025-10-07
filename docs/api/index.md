@@ -3,12 +3,15 @@ layout: default
 title: API Specification
 nav_order: 4
 permalink: /api/
-classes: redoc-wide
 ---
 
-<div class="redoc-wide">
-  <div id="redoc-container" style="min-height: 85vh;"></div>
-</div>
+<div id="redoc-container" style="min-height: 85vh;"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.body.classList.add('redoc-wide');
+  });
+</script>
 
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js" defer></script>
 <script>
@@ -20,13 +23,8 @@ classes: redoc-wide
         hideDownloadButton: false,
         expandResponses: "200,201",
         theme: {
-          colors: {
-            primary: { main: "#2b6cb0" }
-          },
-          typography: {
-            fontSize: "16px",
-            lineHeight: "1.6"
-          }
+          colors: { primary: { main: "#2b6cb0" } },
+          typography: { fontSize: "16px", lineHeight: "1.6" }
         }
       },
       document.getElementById('redoc-container')

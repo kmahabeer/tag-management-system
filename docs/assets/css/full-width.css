@@ -1,39 +1,35 @@
-/* Only on pages whose <body> has class 'redoc-wide' */
-.redoc-wide {
-  /* If your JTD build uses CSS vars for widths, blow them open */
-  --content-width: 100vw;
-  --nav-width: auto; /* harmless if unused */
-}
-
+/* Page-scoped full-width for Just the Docs (aggressive + future-proof) */
 @media (min-width: 1024px) {
-  /* Different JTD versions clamp different wrappers—cover them all */
-  .redoc-wide .container,
-  .redoc-wide .container-lg,
-  .redoc-wide .page,
-  .redoc-wide .page-content,
-  .redoc-wide .main,
-  .redoc-wide .main-content {
+  /* nuke width clamps on every common wrapper JTD uses */
+  body.redoc-wide .container,
+  body.redoc-wide .container-lg,
+  body.redoc-wide .page,
+  body.redoc-wide .page-content,
+  body.redoc-wide .main,
+  body.redoc-wide .main-content,
+  body.redoc-wide .content,
+  body.redoc-wide .wrap {
     max-width: none !important;
     width: 100% !important;
   }
 
-  /* Give the content column some breathing room */
-  .redoc-wide .main-content {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+  /* give the content column some breathing room */
+  body.redoc-wide .main-content {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
   }
 
-  /* Redoc itself should stretch */
-  .redoc-wide #redoc-container {
+  /* Redoc container should stretch, no caps */
+  body.redoc-wide #redoc-container {
     max-width: none !important;
     width: 100% !important;
   }
 }
 
-/* Optional: keep long prose readable but let wide blocks expand */
-.redoc-wide .main-content .markdown > *:not(.allow-wide) {
+/* Optional: keep long paragraphs readable, let wide components stretch */
+body.redoc-wide .main-content .markdown > *:not(.allow-wide) {
   max-width: 75ch;
 }
-.redoc-wide .allow-wide {
+body.redoc-wide .allow-wide {
   max-width: none;
 }
