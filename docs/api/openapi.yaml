@@ -293,6 +293,104 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tags/{id}/aliases/{alias_id}:
+    get:
+      tags: [tags, tags:tag-specific]
+      summary: Retrieve alias for a tag
+      description: |
+        Retrieves a single alias record belonging to this tag.
+        Useful for viewing details or verifying the canonical tag relationship.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: alias_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+          description: Unique identifier of the alias record
+      responses:
+        "200":
+          description: Alias found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [tags, tags:tag-specific]
+      summary: Update alias for a tag
+      description: |
+        Updates the name or reassigns the alias to a different canonical tag.
+        Typically used to rename an alias or correct its association.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: alias_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: New alias name
+                tag_id:
+                  type: string
+                  format: uuid
+                  description: Optional — new canonical tag this alias should reference
+      responses:
+        "200":
+          description: Alias updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagAlias"
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [tags, tags:tag-specific]
+      summary: Delete alias for a tag
+      description: |
+        Deletes a single alias record from this tag.
+        The canonical tag itself remains unaffected.
+      parameters:
+        - $ref: "#/components/parameters/TagId"
+        - name: alias_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Alias deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: deleted
+        "404":
+          description: Alias not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /tag-aliases:
     get:
       tags: [tags, tags:system-wide]
