@@ -66,8 +66,6 @@ tags:
     description: Manage semantic contexts that define how tags, entities, and ratings are grouped and interpreted within specific domains.
   - name: utilities:ratings:system
     description: Manage the global rating schema including rating types, scales, and definitions used for tag, entity, and relationship evaluations.
-  - name: utilities:versioning
-    description: Provide metadata and logic for tracking entity and tag versions over time, enabling reconstruction of lineage and alternates.
   - name: ui:layouts
     description: Manage UI layout profiles that organize tags, groups, and contexts for structured presentation in user interfaces.
   - name: ui:groups
@@ -117,7 +115,6 @@ x-tagGroups:
       - utilities:part-of-speech
       - utilities:contexts
       - utilities:ratings:system
-      - utilities:versioning
 
   - name: UI
     tags:
