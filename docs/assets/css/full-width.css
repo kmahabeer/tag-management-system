@@ -1,0 +1,26 @@
+/* Only apply to pages whose body has class redoc-wide */
+@media (min-width: 1024px) {
+  .redoc-wide .main {
+    max-width: none;
+  }
+
+  .redoc-wide .main-content {
+    max-width: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Optional: keep text readable, but allow wide blocks to stretch */
+.redoc-wide .main-content .markdown > *:not(.allow-wide) {
+  max-width: 75ch; /* ~75 characters for body text */
+}
+
+.redoc-wide .allow-wide {
+  max-width: none;
+}
+
+/* Redoc container usually wants edge-to-edge */
+.redoc-wide #redoc-container {
+  max-width: none;
+}

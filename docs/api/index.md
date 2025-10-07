@@ -3,6 +3,7 @@ layout: default
 title: API Specification
 nav_order: 4
 permalink: /api/
+classes: redoc-wide
 ---
 
 <div class="redoc-wide">
