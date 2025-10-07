@@ -1,0 +1,82 @@
+# _data/navigation.yml
+# Sidebar hierarchy and order for your documentation site
+
+- title: Overview
+  nav_order: 1
+  children:
+    - title: Introduction
+      url: /overview/
+    - title: Core Concepts
+      url: /overview/concepts/
+    - title: Project Goals
+      url: /overview/goals/
+    - title: Repository Structure
+      url: /overview/repo/
+
+- title: Database
+  nav_order: 2
+  children:
+    - title: Schema
+      url: /database/schema/
+      children:
+        - title: Entities Schema
+          url: /database/schema/entities/
+          children:
+            - title: Entity Purposes
+              url: /database/schema/entities/entity_purposes/
+            - title: Entity Relationships
+              url: /database/schema/entities/entity_relationships/
+
+        - title: Tags Schema
+          url: /database/schema/tags/
+          children:
+            - title: Tag Aliases
+              url: /database/schema/tags/tag_aliases/
+            - title: Tag Relationships
+              url: /database/schema/tags/tag_relationships/
+            - title: Tag Compositions
+              url: /database/schema/tags/tag_compositions/
+
+        - title: Entity Tagging Schema
+          url: /database/schema/entity_tagging/
+
+        - title: UI Configurations
+          url: /database/schema/ui_configurations/
+
+        - title: Miscellaneous Schema
+          url: /database/schema/miscellaneous/
+          children:
+            - title: Parts of Speech
+              url: /database/schema/miscellaneous/parts_of_speech/
+            - title: Ratings
+              url: /database/schema/miscellaneous/ratings/
+            - title: Versioning
+              url: /database/schema/miscellaneous/versioning/
+
+        - title: Schema Constraints
+          url: /database/schema/schema_constraints/
+
+    - title: Database Scripts
+      url: /database/scripts/
+
+- title: Examples
+  url: /examples/
+  nav_order: 3
+  children:
+
+- title: Logic
+  nav_order: 4
+  url: /logic/
+  children:
+    - title: Composite Tagging
+      url: /logic/composite_tagging/
+
+- title: UI
+  url: /ui/
+  nav_order: 5
+  children:
+
+- title: API
+  url: /api/
+  target: _blank
+  nav_order: 6

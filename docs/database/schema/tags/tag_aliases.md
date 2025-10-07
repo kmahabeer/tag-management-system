@@ -1,7 +1,5 @@
 ---
 title: Tags Aliases
-parent: Tags
-nav_order: 1
 ---
 # Tag Aliases
 

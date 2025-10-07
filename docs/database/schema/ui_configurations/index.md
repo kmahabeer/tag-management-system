@@ -1,7 +1,5 @@
 ---
 title: User Interface (UI) Configurations
-parent: Database
-nav_order: 4
 ---
 # User Interface (UI) Configurations
 

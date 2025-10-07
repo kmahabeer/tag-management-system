@@ -1,7 +1,5 @@
 ---
 title: Ratings
-parent: Miscellaneous
-nav_order: 2
 ---
 # Ratings
 

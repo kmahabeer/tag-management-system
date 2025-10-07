@@ -1,8 +1,5 @@
 ---
 title: Entity-Tag Relationships
-parent: Database
-has_children: false
-nav_order: 3
 ---
 # Entity Tagging
 

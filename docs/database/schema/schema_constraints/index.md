@@ -1,7 +1,5 @@
 ---
 title: Schema Constraints
-parent: Database
-nav_order: 6
 ---
 # Schema Enforcement Rules
 

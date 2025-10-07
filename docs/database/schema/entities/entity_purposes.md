@@ -1,7 +1,5 @@
 ---
 title: Entities Purposes
-parent: Entities
-nav_order: 1
 ---
 # Entity Purposes
 

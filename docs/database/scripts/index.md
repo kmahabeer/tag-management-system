@@ -1,7 +1,5 @@
 ---
 title: Database Scripts
-parent: Database
-nav_order: 2
 ---
 # Database Schema
 

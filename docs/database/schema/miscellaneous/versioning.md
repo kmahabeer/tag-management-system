@@ -1,7 +1,5 @@
 ---
 title: Entity Versioning
-parent: Miscellaneous
-nav_order: 3
 ---
 # Entity Versioning Logic
 

@@ -1,8 +1,5 @@
 ---
 title: Tags
-parent: Database
-has_children: true
-nav_order: 2
 ---
 # Tags
 

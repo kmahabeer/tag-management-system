@@ -1,7 +1,5 @@
 ---
 title: Entities Relationships
-parent: Entities
-nav_order: 2
 ---
 # Entity Relationships
 

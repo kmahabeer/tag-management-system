@@ -1,7 +1,5 @@
 ---
 title: Parts of Speech
-parent: Miscellaneous
-nav_order: 1
 ---
 # Parts of Speech
 

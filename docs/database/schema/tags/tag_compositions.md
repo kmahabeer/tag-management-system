@@ -1,7 +1,5 @@
 ---
 title: Tags Compositions
-parent: Tags
-nav_order: 3
 ---
 # Tag Compositions
 
