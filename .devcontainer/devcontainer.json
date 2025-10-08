@@ -23,7 +23,8 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
-        "ms-python.black-formatter"
+        "ms-python.black-formatter",
+        "DavidAnson.vscode-markdownlint"
       ],
       "settings": {
         "python.defaultInterpreterPath": "./.venv/bin/python",
@@ -61,9 +62,9 @@
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
   ],
   "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
-  "onCreateCommand": "bash .devcontainer/onCreate.sh",
-  "updateContentCommand": "bash .devcontainer/updateContent.sh"
-  // "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  //   "onCreateCommand": "bash .devcontainer/onCreate.sh",
+  //   "updateContentCommand": "bash .devcontainer/updateContent.sh"
+  "postCreateCommand": "bash .devcontainer/postCreate.sh"
   // "postStartCommand": "",
   // "postAttachCommand": ""
 }
