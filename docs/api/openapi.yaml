@@ -4136,7 +4136,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EntityRelationshipInput"
-
     # ---- Utilities
     # ---- Contexts
     Context:
@@ -4352,6 +4351,46 @@ components:
         context_id: "55555555-5555-5555-5555-555555555555"
         rating_id: "66666666-6666-6666-6666-666666666666"
         user_id: "77777777-7777-7777-7777-777777777777"
+        created_at: "2025-10-07T12:00:00Z"
+        updated_at: "2025-10-07T12:30:00Z"
+
+    EntityContextualRatingInput:
+      type: object
+      description: >
+        Represents a contextual rating applied directly to an entity
+        under a given context (e.g., "quality", "accuracy").
+        Mirrors `TagContextualRatingInput` but links to an entity.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the entity rating record.
+        context_id:
+          type: string
+          format: uuid
+          description: Context in which this rating applies.
+        rating_id:
+          type: string
+          format: uuid
+          description: Rating value or scale reference.
+        user_id:
+          type: string
+          format: uuid
+          description: Optional — identifies who applied the rating.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - context_id
+        - rating_id
+      example:
+        id: "7e6a2a09-b38a-43b1-8f1b-f20db2b99861"
+        context_id: "5c02a91e-7d4a-4f1e-9a91-0e4d2b5a20f8"
+        rating_id: "4fd9fbb2-0d7c-4d64-bcfa-b3f2e95b601e"
+        user_id: "bd49d61c-06a8-4a17-94f3-8af3f17afc62"
         created_at: "2025-10-07T12:00:00Z"
         updated_at: "2025-10-07T12:30:00Z"
 
