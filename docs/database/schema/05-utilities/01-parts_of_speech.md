@@ -5,55 +5,75 @@ nav_order: 1
 ---
 # Parts of Speech
 
-Tags in the system can optionally be classified by their grammatical role using **part-of-speech** labels. This enables the construction of semantically valid composite tags (e.g., `"very big car"`) and enforcement of grammar rules during tag creation.
-
-This document defines the `part_of_speech` reference table and its role in validating tag compositions.
+Tags in the system can optionally be classified by their grammatical role using **part-of-speech (POS)** labels.  
+This enables validation of semantically valid composite tags (e.g., `"very big car"`) and ensures grammatically coherent tag creation.
 
 ## Purpose
 
-The primary use of this table is to:
+The `parts_of_speech` table provides grammatical metadata that helps:
 
-- Enforce compositional grammar rules (e.g., only combine an adverb with an adjective, then a noun).
-- Help prevent semantically invalid tags such as `"very big"` (which lacks a noun).
-- Enable intelligent filtering or generation of tag suggestions in the UI.
+- Enforce compositional grammar rules (e.g., only combine an *adverb* with an *adjective*, then a *noun*).  
+- Prevent semantically invalid tags such as `"very big"` (missing a noun).  
+- Enable grammar-aware autocomplete, tag filtering, and intelligent UI suggestions.  
+
+Each tag may optionally reference a part of speech via its `part_of_speech_id` column.
 
 ## `parts_of_speech` Table
 
-| Field        | Type | Description                                             |
-|--------------|------|---------------------------------------------------------|
-| `id`         | UUID | Unique identifier                                       |
-| `name`       | TEXT | Part of speech label (e.g., `noun`, `adjective`, `verb`) |
-| `description`| TEXT | Explanation of the grammatical role                    |
-| `is_active`  | BOOL | Indicates if the POS type is currently in use          |
+| Field | Type | Description |
+|--------|------|--------------|
+| `id` | UUID | Primary key. |
+| `name` | TEXT | Part of speech label (e.g., `"noun"`, `"adjective"`, `"verb"`). |
+| `description` | TEXT | Explanation of the grammatical role. |
+| `is_active` | BOOLEAN | Whether this part of speech is active and valid for tagging. |
 
 ### Recommended Values
 
-| name        | description                                                   |
-|-------------|---------------------------------------------------------------|
-| `noun`      | A person, place, thing, or concept                            |
-| `adjective` | A word that modifies a noun                                   |
-| `adverb`    | A word that modifies an adjective, verb, or another adverb    |
-| `verb`      | An action or state                                            |
-| `modifier`  | General-purpose modifier (fallback)                           |
+| name        	| description                                                   |
+|---------------|---------------------------------------------------------------|
+| `noun`      	| A person, place, thing, or concept                            |
+| `adjective` 	| A word that modifies a noun                                   |
+| `adverb`    	| A word that modifies an adjective, verb, or another adverb    |
+| `verb`      	| An action or state                                            |
+| `modifier`  	| General-purpose modifier (fallback)                           |
 | `preposition` | A word showing relationship between elements (e.g., "under")|
 | `conjunction` | A linking word such as "and", "or"                          |
 
 ## Integration
 
-- Each tag may have an optional `part_of_speech_id` field referencing this table.
-- The system may use this classification to validate:
-	- Composite tag structure
-	- Tag search disambiguation
-	- Filtering logic by POS (e.g., show only adjectives)
+Each tag can optionally reference this table via its `part_of_speech_id`. This allows the system to:
+
+- Validate the **structure of composite tags** (see [`tag_compositions`](../../tags/tag_compositions.md)).  
+- Disambiguate search results (e.g., find only nouns or adjectives).  
+- Filter or group tags in the UI based on linguistic role.
 
 ## Example Usage
 
-- `"very"` → `adverb`
-- `"big"` → `adjective`
-- `"car"` → `noun`
+| Tag | POS | Example Composite |
+|------|------|------------------|
+| `"very"` | `adverb` | `"very big car"` |
+| `"big"` | `adjective` | `"very big car"` |
+| `"car"` | `noun` | `"very big car"` |
 
-Composite tag: `"very big car"`
-Validation rule: ✅ `adverb` → `adjective` → `noun`
+Validation: ✅ `adverb` → `adjective` → `noun`  
+Invalid: ❌ `"very big"` (missing required `noun` root)
 
-Invalid tag: `"very big"`
-Validation rule: ❌ missing required `noun` root
+## API Endpoint Summary
+
+| Category | Endpoint | CRUD Coverage | Description |
+|-----------|-----------|----------------|--------------|
+| **Parts of Speech** | `/parts-of-speech` | **GET**, **POST** | Retrieve or create part-of-speech definitions used for tag classification. |
+| | `/parts-of-speech/{id}` | **GET**, **PATCH**, **DELETE** | Retrieve, update, or delete a specific part-of-speech record. |
+
+### CRUD Parity Overview
+
+| Scope | CRUD | Description |
+|--------|------|--------------|
+| Parts of Speech | ✅ Full | Manage grammatical classifications that influence tag composition and validation. |
+
+✅ = Full REST-compliant CRUD support.
+
+## Summary
+
+Parts of speech provide a **grammatical backbone** to the tagging system, enabling structured and linguistically valid compositions.  
+By embedding basic linguistic logic into the data model, the system gains the ability to generate, validate, and interpret complex tags intelligently and consistently.
