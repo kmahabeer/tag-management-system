@@ -67,9 +67,7 @@ def type_hint_for_param(p: Dict[str, Any]) -> str:
 def collect_params(path_params: List[Dict[str, Any]], op_params: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     merged: Dict[Tuple[str, str], Dict[str, Any]] = {}
     for p in (path_params or []) + (op_params or []):
-        # Handle referenced parameters (skip or deref)
         if "$ref" in p:
-            # resolve later or skip entirely if not loaded
             ref = p["$ref"].split("/")[-1]
             merged[(ref, "ref")] = {"name": ref,
                                     "in": "ref", "schema": {"type": "Any"}}
@@ -82,7 +80,6 @@ def collect_params(path_params: List[Dict[str, Any]], op_params: List[Dict[str, 
     for _, p in merged.items():
         name = p.get("name")
         if not name:
-            # skip malformed or unresolved entries
             continue
         hint = type_hint_for_param(p)
         default = None if p.get("required") else "None"
@@ -92,6 +89,8 @@ def collect_params(path_params: List[Dict[str, Any]], op_params: List[Dict[str, 
             "default": default,
             "in": p.get("in"),
         })
+
+    params.sort(key=lambda p: p["default"] is not None)
     return params
 
 
