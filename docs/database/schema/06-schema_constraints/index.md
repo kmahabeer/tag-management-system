@@ -25,6 +25,12 @@ Defines integrity constraints, validations, and behavioral rules ensuring semant
 - Each `entity_purpose` must reference a tag classified as type “Purpose.”  
 - Only one purpose per entity may have `is_primary = TRUE`.  
 
+## Unique Composite Tags
+
+- Ensure uniqueness of compositions by enforcing:
+	- `base_tag_id` + ordered `component_tag_ids` must be unique.
+	- Prevent equivalent semantic composites from duplicating (e.g., `"very big car"` and `"huge car"` can be aliases, but not both standalone).
+
 ## Rating Normalization
 
 - `is_normalized` in `rating_types` enforces whether associated `ratings.score` must be in `[0–1]` or `[1–10]`.  

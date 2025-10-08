@@ -7,12 +7,11 @@ nav_order: 1
 
 Defines the intended roles or functions of each entity by linking it to one or more *purpose tags*.
 
-A **purpose** represents *why* an entity exists — for example, `"Concept Art"`, `"Reference Photo"`, or `"Storyboard Frame"`.  
-Each entity can have multiple purposes, but only one may be marked as **primary**.
+A **purpose** represents *why* an entity exists — for example, `"Concept Art"`, `"Reference Photo"`, or `"Storyboard Frame"`. Each entity can have multiple purposes, but only one may be marked as **primary**.
 
 ## `entity_purposes` Table
 
-Many-to-many join table linking entities to purpose-defining tags.
+Many-to-many join table linking entities to purpose-defining tags. A "purpose" is an entry within the [`tags`](./tags.md) table. Only one "purpose" should be marked as *primary* for each entity.
 
 | Column | Type | Description |
 |--------|------|--------------|
