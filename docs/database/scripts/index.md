@@ -25,13 +25,13 @@ PostgreSQL (version ≥ 13) is required, with the `uuid-ossp` extension enabled 
 PostgreSQL needs this to generate UUIDs:
 
 ```sql
--- Enables uuid_generate_v4() function
+-- Enables uuid_generate_v4() function for unique IDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
 ## Step 2: Create Shared Lookup Tables
 
-These define **types and classifications** used by other tables.
+These define types and classifications referenced throughout the schema.
 
 ### Step 2a: `parts_of_speech`
 
@@ -234,7 +234,21 @@ CREATE TABLE entity_relationships (
 );
 ```
 
-### Step 4d: `entity_tags`
+### Step 4d: `entity_relationship_ratings`
+
+```sql
+CREATE TABLE entity_relationship_ratings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    entity_a_id UUID NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+    entity_b_id UUID NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+    context_id UUID NOT NULL REFERENCES contexts(id),
+    rating_id UUID NOT NULL REFERENCES ratings(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Step 4e: `entity_tags`
 
 ```sql
 CREATE TABLE entity_tags (
@@ -288,7 +302,7 @@ CREATE TABLE ui_fields (
 );
 ```
 
-## Step 6: Create Table Relationships and Constraints
+## Step 6: Create Cross-Table Constraints and Rules
 
 These are additional **constraints and rules** applied across tables to enforce semantic correctness, data consistency, and uniqueness.
 
@@ -319,7 +333,7 @@ ON tag_relationships(tag_a_id, tag_b_id, relationship_type_id);
 
 ### Step 6d: Prevent Circular Entity Relationships
 
-You may want to enforce this with a function/trigger later (e.g., `entity_a_id != entity_b_id`).
+You may want to enforce this with a function/trigger later (e.g., `entity_a_id != entity_b_id`). Prevents an entity from linking to itself. In the future, this can be expanded with a recursive CTE or trigger to detect indirect cycles.
 
 ```sql
 -- Prevent self-linking
@@ -328,20 +342,21 @@ ADD CONSTRAINT no_self_referencing_entities
 CHECK (entity_a_id <> entity_b_id);
 ```
 
-### Step 6e: Optional: Rating Normalization (if needed)
+### Step 6e: Optional: Rating Normalization
 
 Example constraint if you later enforce normalization on rating scores (optional):
 
 ```sql
--- Example CHECK constraint for normalized scores
--- Only apply this if you're enforcing it through rating_types
+-- Example CHECK constraint for normalized scores.
+-- Only enable if enforcing via rating_types:
 -- ALTER TABLE ratings ADD CHECK (
---     (is_normalized = TRUE AND score BETWEEN 0 AND 1) OR
---     (is_normalized = FALSE AND score BETWEEN 1 AND 10)
+--   (score BETWEEN 0 AND 1 AND rating_type_id IN (SELECT id FROM rating_types WHERE is_normalized = TRUE))
+--   OR
+--   (score BETWEEN 1 AND 10 AND rating_type_id IN (SELECT id FROM rating_types WHERE is_normalized = FALSE))
 -- );
 ```
 
-## Step 7: Create Timestamp Trigger
+## Step 7: Create Timestamp Update Trigger
 
 To automatically keep `updated_at` fresh:
 
@@ -359,86 +374,108 @@ $$ LANGUAGE plpgsql;
 
 > Applies the trigger to update `updated_at` before each row update. Run this once per table that contains an `updated_at` field.
 
-Here are trigger statements for all tables:
+Each trigger automatically updates updated_at before each row update.
 
 ```sql
 -- === Shared Tables ===
 CREATE TRIGGER trg_set_updated_at_parts_of_speech
-BEFORE UPDATE ON parts_of_speech
+BEFORE UPDATE ON parts_of_speech 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_contexts
-BEFORE UPDATE ON contexts
+CREATE TRIGGER trg_set_updated_at_contexts 
+BEFORE UPDATE ON contexts 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_relationship_types
-BEFORE UPDATE ON tag_relationship_types
+CREATE TRIGGER trg_set_updated_at_tag_relationship_types 
+BEFORE UPDATE ON tag_relationship_types 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_entity_relationship_types
-BEFORE UPDATE ON entity_relationship_types
+CREATE TRIGGER trg_set_updated_at_entity_relationship_types 
+BEFORE UPDATE ON entity_relationship_types 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_rating_types
-BEFORE UPDATE ON rating_types
+CREATE TRIGGER trg_set_updated_at_rating_types 
+BEFORE UPDATE ON rating_types 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_ratings
-BEFORE UPDATE ON ratings
+CREATE TRIGGER trg_set_updated_at_ratings 
+BEFORE UPDATE ON ratings 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- === Tags ===
-CREATE TRIGGER trg_set_updated_at_tags
-BEFORE UPDATE ON tags
+CREATE TRIGGER trg_set_updated_at_tags 
+BEFORE UPDATE ON tags 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_aliases
-BEFORE UPDATE ON tag_aliases
+CREATE TRIGGER trg_set_updated_at_tag_aliases 
+BEFORE UPDATE ON tag_aliases 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_relationships
-BEFORE UPDATE ON tag_relationships
+CREATE TRIGGER trg_set_updated_at_tag_relationships 
+BEFORE UPDATE ON tag_relationships 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_compositions
-BEFORE UPDATE ON tag_compositions
+CREATE TRIGGER trg_set_updated_at_tag_compositions 
+BEFORE UPDATE ON tag_compositions 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_context_ratings
-BEFORE UPDATE ON tag_context_ratings
+CREATE TRIGGER trg_set_updated_at_tag_context_ratings 
+BEFORE UPDATE ON tag_context_ratings 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_tag_relationship_ratings
-BEFORE UPDATE ON tag_relationship_ratings
+CREATE TRIGGER trg_set_updated_at_tag_relationship_ratings 
+BEFORE UPDATE ON tag_relationship_ratings 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- === Entities ===
-CREATE TRIGGER trg_set_updated_at_entities
-BEFORE UPDATE ON entities
+CREATE TRIGGER trg_set_updated_at_entities 
+BEFORE UPDATE ON entities 
+OR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_set_updated_at_entity_purposes 
+BEFORE UPDATE ON entity_purposes 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_entity_purposes
-BEFORE UPDATE ON entity_purposes
+CREATE TRIGGER trg_set_updated_at_entity_relationships 
+BEFORE UPDATE ON entity_relationships 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_entity_relationships
-BEFORE UPDATE ON entity_relationships
+CREATE TRIGGER trg_set_updated_at_entity_relationship_ratings 
+BEFORE UPDATE ON entity_relationship_ratings 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_entity_tags
-BEFORE UPDATE ON entity_tags
+CREATE TRIGGER trg_set_updated_at_entity_tags 
+BEFORE UPDATE ON entity_tags 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- === UI Configuration ===
-CREATE TRIGGER trg_set_updated_at_ui_layouts
-BEFORE UPDATE ON ui_layouts
+CREATE TRIGGER trg_set_updated_at_ui_layouts 
+BEFORE UPDATE ON ui_layouts 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_ui_groups
-BEFORE UPDATE ON ui_groups
+CREATE TRIGGER trg_set_updated_at_ui_groups 
+BEFORE UPDATE ON ui_groups 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TRIGGER trg_set_updated_at_ui_fields
-BEFORE UPDATE ON ui_fields
+CREATE TRIGGER trg_set_updated_at_ui_fields 
+BEFORE UPDATE ON ui_fields 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+```
+
+## Step 9: Verification Queries (Optional)
+
+To confirm schema initialization:
+
+```sql
+-- List all tables
+\dt
+
+-- Check foreign keys
+SELECT conname, conrelid::regclass AS table_name, confrelid::regclass AS referenced_table
+FROM pg_constraint WHERE contype = 'f';
+
+-- Validate audit columns
+SELECT table_name, column_name
+FROM information_schema.columns
+WHERE column_name IN ('created_at', 'updated_at');
 ```
