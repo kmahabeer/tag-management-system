@@ -108,6 +108,9 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 
+# FastAPI:
+generated_fastapi
+
 # Scrapy stuff:
 .scrapy
 
