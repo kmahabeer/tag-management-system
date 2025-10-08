@@ -14,6 +14,9 @@ dist-ssr
 *.local
 */.vite/*
 
+# Generated OpenAPI server/client code
+generated_fastapi/
+generated_client/
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -107,9 +110,6 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
-
-# FastAPI:
-generated_fastapi
 
 # Scrapy stuff:
 .scrapy
