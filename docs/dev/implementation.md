@@ -12,7 +12,7 @@ This document outlines the steps for bringing the Tag Management System from spe
 	Example:
 
 	```bash
-	docker exec -it postgres_db psql -U postgres -d tagging_service -f /scripts/schema.sql
+	docker exec -it postgres_db psql -U postgres -d tag_management_system -f /scripts/schema.sql
 	```
 
 2. Verify schema integrity:
@@ -31,7 +31,7 @@ This document outlines the steps for bringing the Tag Management System from spe
 1. Create a `.env` file:
 
 	```txt
-	DATABASE_URL=postgresql+psycopg2://postgres:password@postgres_db:5432/tagging_service
+	DATABASE_URL=postgresql+psycopg2://postgres:password@postgres_db:5432/tag_management_system
 	```
 
 2. Configure SQLAlchemy or ORM to use `DATABASE_URL`.
@@ -41,8 +41,56 @@ This document outlines the steps for bringing the Tag Management System from spe
 
 **Objective:** Populate initial records for testing.
 
-1. Write a `scripts/seed_data.py` that inserts sample `tags`, `entities`, and related records.
-2. Confirm triggers, timestamps, and foreign keys behave as expected.
+Once the database containers are running, you can initialize the schema and load seed data directly from your local machine into the running PostgreSQL container using the **pipe-in method**. This method allows you to execute SQL files located on your host machine without needing to copy them into the container.
+
+### General Command Syntax
+
+```bash
+docker exec -i <container_name> psql -U <username> -d <database> -f /path/inside/container/to/script.sql
+```
+
+Parameters
+
+| Parameter            | Description                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| `postgres`           | The name of the running PostgreSQL container. **Replace this** with your actual container name if different. |
+| `-U postgres`        | Specifies the database user to connect as.                                                               |
+| `-d tag_management_system` | Specifies the database name to execute the script against.                                               |
+| `< scripts/...`      | Pipes the contents of the local SQL file into the PostgreSQL process running inside the container.       |
+
+### 3.1. Run Schema Initialization Script
+
+Execute the following command to create all database tables, relationships, triggers, and constraints:
+
+```bash
+docker exec -i postgres psql -U postgres -d tag_management_system < scripts/00_schema_init.sql
+```
+
+### 3.2. Run Seed Data Script
+
+After the schema is initialized, populate the database with sample lookup and reference data:
+
+```bash
+docker exec -i postgres psql -U postgres -d tag_management_system < scripts/01_seed_data.sql
+```
+
+### 3.3. Verify Schema and Data
+
+After executing the scripts, you can verify that the tables and data were created correctly:
+
+```bash
+docker exec -it postgres psql -U postgres -d tag_management_system
+```
+
+Once inside the PostgreSQL shell, run the following commands:
+
+```sql
+\dt
+SELECT * FROM tags;
+SELECT * FROM entities;
+```
+
+This will confirm that the schema and seed data have been successfully loaded into your database.
 
 ## 4. API Validation
 
