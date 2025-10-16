@@ -15,6 +15,7 @@
     "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
     "ghcr.io/va-h/devcontainers-features/uv:1": {}
   },
+  "runServices": ["postgres_db", "pgadmin"],
   "remoteUser": "root",
   "customizations": {
     "vscode": {
@@ -23,7 +24,8 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
-        "ms-python.black-formatter"
+        "ms-python.black-formatter",
+        "DavidAnson.vscode-markdownlint"
       ],
       "settings": {
         "python.defaultInterpreterPath": "./.venv/bin/python",
@@ -52,7 +54,8 @@
   "portsAttributes": {
     "8000": { "label": "FastAPI" },
     "5173": { "label": "Vite" },
-    "5432": { "label": "Postgres" }
+    "5432": { "label": "Postgres" },
+    "5050": { "label": "PGAdmin" }
   },
   "mounts": [
     "type=cache,target=/root/.cache/pip",
@@ -60,10 +63,11 @@
     "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
   ],
+  "overrideCommand": false,
   "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
-  "onCreateCommand": "bash .devcontainer/onCreate.sh",
-  "updateContentCommand": "bash .devcontainer/updateContent.sh"
-  // "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  //   "onCreateCommand": "bash .devcontainer/onCreate.sh",
+  //   "updateContentCommand": "bash .devcontainer/updateContent.sh"
+  "postCreateCommand": "bash .devcontainer/postCreate.sh"
   // "postStartCommand": "",
   // "postAttachCommand": ""
 }
