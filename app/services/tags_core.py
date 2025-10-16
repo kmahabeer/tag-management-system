@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from app.db.session import get_db
+from typing import Optional
 from app.models.tag_model import TagModel
 from app.schemas.models import Tag, PaginatedResponse
 
@@ -22,5 +21,19 @@ async def get_tags_service(
         query = query.limit(limit)
 
     tags = query.all()
-    results = [Tag.from_orm(tag) for tag in tags]
+
+    # Manual Pydantic mapping to handle reserved 'metadata' column
+    results = [
+        Tag(
+            id=tag.id,
+            name=tag.name,
+            display_name=tag.display_name,
+            metadata=tag.metadata_json,  # map ORM attr -> schema field
+            part_of_speech_id=tag.part_of_speech_id,
+            created_at=tag.created_at,
+            updated_at=tag.updated_at,
+        )
+        for tag in tags
+    ]
+
     return PaginatedResponse(results=results, total=total)
