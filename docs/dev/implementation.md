@@ -1,4 +1,3 @@
-
 # Implementation Plan
 
 This document outlines the steps for bringing the Tag Management System from specification to a running implementation.
@@ -7,22 +6,97 @@ This document outlines the steps for bringing the Tag Management System from spe
 
 **Objective:** Initialize and verify the PostgreSQL schema.
 
-1. Run SQL build scripts inside the Postgres container.
+### 1.1. Start the Containers
 
-	Example:
+Ensure all containers are running:
 
-	```bash
-	docker exec -it postgres_db psql -U postgres -d tag_management_system -f /scripts/schema.sql
-	```
+```bash
+docker compose up -d
+```
 
-2. Verify schema integrity:
+This starts:
 
-	```bash
-	\dt
-	\d+ table_name
-	```
+* `tag-management-system_db` (PostgreSQL)
+* `tag-management-system_pgadmin` (pgAdmin)
+* `tag-management-system_dev` (development container)
 
-3. Optionally install **pgAdmin** or **Adminer** for visual inspection.
+Verify with:
+
+```bash
+docker ps
+```
+
+### 1.2. Register the Server in pgAdmin
+
+Before creating or seeding the database, connect pgAdmin to the running PostgreSQL container.
+
+1. Open pgAdmin in your browser at [http://localhost:5050](http://localhost:5050).
+2. In the left sidebar, right-click **Servers → Register → Server…**
+3. Configure the following:
+
+	#### General Tab
+
+	| Field    | Value                    |
+	| -------- | ------------------------ |
+	| **Name** | Tag Management System DB |
+
+	#### Connection Tab
+
+	| Field                    | Value         |
+	| ------------------------ | ------------- |
+	| **Host name/address**    | `postgres_db` |
+	| **Port**                 | `5432`        |
+	| **Maintenance database** | `app`         |
+	| **Username**             | `app`         |
+	| **Password**             | `app`         |
+
+4. Click **Save**.
+
+pgAdmin should now display a connection under *Servers → Tag Management System DB*. You can expand this to view the default database named `app`.
+
+### 1.3. Create the Project Database
+
+By default, the PostgreSQL container only creates one database (`app`). You can create a dedicated database for the Tag Management System.
+
+#### Option A — via Docker CLI
+
+```bash
+docker exec -i tag-management-system_db psql -U app -c "CREATE DATABASE tag_management_system;"
+```
+
+#### Option B — via pgAdmin
+
+1. Expand your registered server in pgAdmin.
+2. Right-click **Databases → Create → Database…**
+3. Set **Database name** to `tag_management_system`.
+4. Leave **Owner** as `app` and click **Save**.
+
+### 1.4. Troubleshooting Connections
+
+If pgAdmin or `psql` fails to connect, review the following cases:
+
+| Error Message                                                    | Likely Cause                                                         | Resolution                                                                                             |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `connection to server at "127.0.0.1" failed: Connection refused` | pgAdmin is trying to connect via localhost instead of Docker network | Ensure **Host name/address** is set to `postgres_db` (the service name)                                |
+| `FATAL: database "tag_management_system" does not exist`         | Database hasn’t been created yet                                     | Run: `docker exec -i tag-management-system_db psql -U app -c "CREATE DATABASE tag_management_system;"` |
+| `password authentication failed for user "app"`                  | Wrong username or password                                           | Use credentials from your compose file (`POSTGRES_USER=app`, `POSTGRES_PASSWORD=app`)                  |
+| `timeout expired`                                                | Container not yet ready                                              | Wait a few seconds after `docker compose up -d` before connecting                                      |
+| `could not connect to server: No route to host`                  | Containers not on the same network                                   | Ensure both `pgadmin` and `postgres_db` are attached to the `devnet` network                           |
+
+Inspect logs for additional context:
+
+```bash
+docker logs tag-management-system_db
+```
+
+### 1.5. Verify Schema Integrity (optional)
+
+After the schema is loaded (see Section 3), inspect tables:
+
+```sql
+\dt
+\d+ table_name
+```
 
 ## 2. FastAPI Database Connection
 
@@ -31,39 +105,25 @@ This document outlines the steps for bringing the Tag Management System from spe
 1. Create a `.env` file:
 
 	```txt
-	DATABASE_URL=postgresql+psycopg2://postgres:password@postgres_db:5432/tag_management_system
+	DATABASE_URL=postgresql+psycopg2://app:app@postgres_db:5432/tag_management_system
 	```
 
-2. Configure SQLAlchemy or ORM to use `DATABASE_URL`.
-3. Add a `/health/db` endpoint or startup event to check connectivity.
+2. Configure SQLAlchemy or your ORM to use `DATABASE_URL`.
+
+3. Add a `/health/db` endpoint or startup event to verify database connectivity.
 
 ## 3. Seed and Validate Data
 
 **Objective:** Populate initial records for testing.
 
-Once the database containers are running, you can initialize the schema and load seed data directly from your local machine into the running PostgreSQL container using the **pipe-in method**. This method allows you to execute SQL files located on your host machine without needing to copy them into the container.
-
-### General Command Syntax
-
-```bash
-docker exec -i <container_name> psql -U <username> -d <database> -f /path/inside/container/to/script.sql
-```
-
-Parameters
-
-| Parameter            | Description                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `postgres`           | The name of the running PostgreSQL container. **Replace this** with your actual container name if different. |
-| `-U postgres`        | Specifies the database user to connect as.                                                               |
-| `-d tag_management_system` | Specifies the database name to execute the script against.                                               |
-| `< scripts/...`      | Pipes the contents of the local SQL file into the PostgreSQL process running inside the container.       |
+Once the database containers are running and the `tag_management_system` database exists, you can initialize the schema and seed data directly from your local machine using the **pipe-in method**. This allows you to execute SQL files located on your host machine without copying them into the container.
 
 ### 3.1. Run Schema Initialization Script
 
 Execute the following command to create all database tables, relationships, triggers, and constraints:
 
 ```bash
-docker exec -i postgres psql -U postgres -d tag_management_system < scripts/00_schema_init.sql
+docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/00_schema_init.sql
 ```
 
 ### 3.2. Run Seed Data Script
@@ -71,18 +131,18 @@ docker exec -i postgres psql -U postgres -d tag_management_system < scripts/00_s
 After the schema is initialized, populate the database with sample lookup and reference data:
 
 ```bash
-docker exec -i postgres psql -U postgres -d tag_management_system < scripts/01_seed_data.sql
+docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/01_seed_data.sql
 ```
 
 ### 3.3. Verify Schema and Data
 
-After executing the scripts, you can verify that the tables and data were created correctly:
+After executing the scripts, verify that the tables and data were created correctly:
 
 ```bash
-docker exec -it postgres psql -U postgres -d tag_management_system
+docker exec -it tag-management-system_db psql -U app -d tag_management_system
 ```
 
-Once inside the PostgreSQL shell, run the following commands:
+Once inside the PostgreSQL shell, run:
 
 ```sql
 \dt
@@ -90,11 +150,54 @@ SELECT * FROM tags;
 SELECT * FROM entities;
 ```
 
-This will confirm that the schema and seed data have been successfully loaded into your database.
+This confirms that the schema and seed data have been successfully loaded.
+
+### 3.4. Database Reset Script (optional)
+
+For iterative development and testing, you can quickly **drop and recreate the schema** to start from a clean state.
+
+#### Option A — Reset Entire Database
+
+This approach drops and recreates the `tag_management_system` database:
+
+```bash
+docker exec -i tag-management-system_db psql -U app -c "DROP DATABASE IF EXISTS tag_management_system;"
+docker exec -i tag-management-system_db psql -U app -c "CREATE DATABASE tag_management_system;"
+```
+
+Then re-run your initialization scripts:
+
+```bash
+docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/00_schema_init.sql
+docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/01_seed_data.sql
+```
+
+#### Option B — Drop All Tables (Keep Database)
+
+You can also define a helper script (e.g., `scripts/02_reset_schema.sql`) with the following contents:
+
+```sql
+DO $$
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+    EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+  END LOOP;
+END $$;
+```
+
+Run it using:
+
+```bash
+docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/02_reset_schema.sql
+```
+
+Then reapply your schema and seed scripts as needed.
 
 ## 4. API Validation
 
-**Objective:** Ensure FastAPI endpoints are functional and aligned with the OpenAPI spec.
+**Objective:** Ensure FastAPI endpoints are functional and aligned with the OpenAPI specification.
 
 1. Start the API:
 
@@ -103,7 +206,9 @@ This will confirm that the schema and seed data have been successfully loaded in
 	```
 
 2. Verify the interactive documentation at `http://localhost:8000/docs`.
-3. Test all CRUD operations manually or using `curl`.
+
+3. Test CRUD operations manually or using `curl`.
+
 4. Compare `/openapi.json` output against `openapi.yaml`.
 
 ## 5. Testing and Schema Management
@@ -118,19 +223,25 @@ This will confirm that the schema and seed data have been successfully loaded in
 
 **Objective:** Standardize environments through Docker Compose.
 
-1. Define services in `docker-compose.yml`:
+1. The `docker-compose.yml` defines the following services:
 
-	* `postgres_db` (persistent volume)
-	* `api` (FastAPI application)
-	* `pgadmin` (optional)
+	* `postgres_db` — persistent PostgreSQL instance
+	* `pgadmin` — database management UI
+	* `dev` — development container for running scripts and API code
 
-2. Create environment-specific overrides:
+2. To start containers in the background:
 
-	* `docker-compose.dev.yml` – local development
-	* `docker-compose.test.yml` – CI testing
-	* `docker-compose.prod.yml` – production deployment
+	```bash
+	docker compose up -d
+	```
 
-3. Test connectivity from host:
+3. To stop them:
+
+	```bash
+	docker compose down
+	```
+
+4. Test connectivity from host:
 
 	```bash
 	curl http://localhost:8000/entities
@@ -142,11 +253,11 @@ This will confirm that the schema and seed data have been successfully loaded in
 
 1. Integrate `structlog` or `loguru` for request-level logging.
 
-	* Capture:
+	Capture:
 
-		* Request start/stop
-		* Exceptions and SQL errors
-		* Audit metadata (`created_by`, `updated_by`)
+	* Request start/stop
+	* Exceptions and SQL errors
+	* Audit metadata (`created_by`, `updated_by`)
 
 2. Optionally add Prometheus or OpenTelemetry metrics.
 
@@ -169,12 +280,13 @@ This will confirm that the schema and seed data have been successfully loaded in
 2. Add `docs/api/implementation.md` describing the spec-to-code workflow.
 3. Optionally generate static documentation:
 
-  ```bash
-  npx redoc-cli bundle openapi.yaml -o docs/api.html
-  ```
+	```bash
+	npx redoc-cli bundle openapi.yaml -o docs/api.html
+	```
 
 ## 10. Next Milestone
 
 **Objective:** Integrate with the routing and event middleware.
 
-Once the Tag Management System is verified locally, integrate it with the Routing & Scheduling Middleware. This step will connect the Tag Management System to other microservices in the Data Management System ecosystem, such as the Image Processing System and Entity Management System.
+Once the Tag Management System is verified locally, integrate it with the Routing & Scheduling Middleware.
+This step will connect the Tag Management System to other microservices in the Data Management System ecosystem, such as the Image Processing System and Entity Management System.
