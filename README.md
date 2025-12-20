@@ -14,8 +14,60 @@ Frontend clients, such as a web-based graphical user interface (GUI) will read s
 - Link tags to multiple entities with support for aliases and relationships
 - Supports modifier phrases like “very tall” or “bright red”
 
+## Getting Started
+
+### Prerequisites
+
+- Python 3.12+
+- Node.js 18+
+- PostgreSQL (for production) or Docker (for local dev)
+
+### Backend Setup
+
+1. Install Python dependencies using `uv`:
+
+   ```bash
+   uv sync
+   ```
+
+2. Set up the database:
+   - For local development, ensure PostgreSQL is running.
+   - The app will automatically create tables on startup.
+
+3. Run the backend:
+
+   ```bash
+   uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8100
+   ```
+
+   The API will be available at `http://localhost:8100/api/v1`.
+
+### Frontend Setup
+
+1. Install dependencies:
+
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   The frontend will be available at `http://localhost:5175`.
+
+### Development
+
+- Backend API docs: `http://localhost:8100/docs`
+- Frontend connects to backend at `http://localhost:8100/api/v1`
+- Use `make routes` to regenerate API routes from OpenAPI spec
+- Use `make schemas` to regenerate Pydantic models from OpenAPI
+
 ## Usage
 
-The system is designed to expose a RESTful API for creating, updating, and querying tags, as well as managing tag relationships.
+The system exposes a RESTful API for managing tags, relationships, and entity tagging.
 
-See the [documentation](./docs/_index.md) for detailed schema, logic, and integration guides.
+See the [documentation](./docs/index.md) for detailed schema, logic, and integration guides.
