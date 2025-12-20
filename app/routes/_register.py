@@ -1,5 +1,5 @@
 # Auto-generated imports for routers (ordered by x-tagGroups if present)
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 
 from app.routes.meta import router as meta_router
 
@@ -59,60 +59,62 @@ from app.routes.ui_fields import router as ui_fields_router
 
 
 def register_routers(app: FastAPI) -> None:
-    
-    app.include_router(meta_router)
-    
-    app.include_router(tags_core_router)
-    
-    app.include_router(tags_aliases_router)
-    
-    app.include_router(tags_aliases_system_router)
-    
-    app.include_router(tags_relationships_router)
-    
-    app.include_router(tags_relationships_system_router)
-    
-    app.include_router(tags_compositions_router)
-    
-    app.include_router(tags_compositions_system_router)
-    
-    app.include_router(tags_ratings_router)
-    
-    app.include_router(tags_relationship_ratings_router)
-    
-    app.include_router(entities_core_router)
-    
-    app.include_router(entities_tags_router)
-    
-    app.include_router(entities_relationships_router)
-    
-    app.include_router(entities_relationships_system_router)
-    
-    app.include_router(entities_relationship_ratings_router)
-    
-    app.include_router(entities_relationship_ratings_system_router)
-    
-    app.include_router(entities_ratings_router)
-    
-    app.include_router(entities_ratings_system_router)
-    
-    app.include_router(entities_purposes_router)
-    
-    app.include_router(entities_purposes_system_router)
-    
-    app.include_router(entities_versions_router)
-    
-    app.include_router(entities_versions_system_router)
-    
-    app.include_router(utilities_part_of_speech_router)
-    
-    app.include_router(utilities_contexts_router)
-    
-    app.include_router(utilities_ratings_system_router)
-    
-    app.include_router(ui_layouts_router)
-    
-    app.include_router(ui_groups_router)
-    
-    app.include_router(ui_fields_router)
-    
+    api_router = APIRouter(prefix="/api/v1")
+
+    api_router.include_router(meta_router)
+
+    api_router.include_router(tags_core_router)
+
+    api_router.include_router(tags_aliases_router)
+
+    api_router.include_router(tags_aliases_system_router)
+
+    api_router.include_router(tags_relationships_router)
+
+    api_router.include_router(tags_relationships_system_router)
+
+    api_router.include_router(tags_compositions_router)
+
+    api_router.include_router(tags_compositions_system_router)
+
+    api_router.include_router(tags_ratings_router)
+
+    api_router.include_router(tags_relationship_ratings_router)
+
+    api_router.include_router(entities_core_router)
+
+    api_router.include_router(entities_tags_router)
+
+    api_router.include_router(entities_relationships_router)
+
+    api_router.include_router(entities_relationships_system_router)
+
+    api_router.include_router(entities_relationship_ratings_router)
+
+    api_router.include_router(entities_relationship_ratings_system_router)
+
+    api_router.include_router(entities_ratings_router)
+
+    api_router.include_router(entities_ratings_system_router)
+
+    api_router.include_router(entities_purposes_router)
+
+    api_router.include_router(entities_purposes_system_router)
+
+    api_router.include_router(entities_versions_router)
+
+    api_router.include_router(entities_versions_system_router)
+
+    api_router.include_router(utilities_part_of_speech_router)
+
+    api_router.include_router(utilities_contexts_router)
+
+    api_router.include_router(utilities_ratings_system_router)
+
+    api_router.include_router(ui_layouts_router)
+
+    api_router.include_router(ui_groups_router)
+
+    api_router.include_router(ui_fields_router)
+
+    app.include_router(api_router)
