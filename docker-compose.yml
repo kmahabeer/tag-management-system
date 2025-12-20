@@ -10,6 +10,39 @@ services:
       - devnet
     depends_on:
       - postgres_db
+      - backend
+      - frontend
+
+  backend:
+    container_name: tag-management-system_backend
+    build:
+      context: ./backend
+      dockerfile: dockerfile.dev
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://app:app@postgres_db:5432/app
+    networks:
+      - devnet
+    depends_on:
+      - postgres_db
+    volumes:
+      - ./backend:/app
+    command: air -c .air.toml
+
+  frontend:
+    container_name: tag-management-system_frontend
+    build:
+      context: ./frontend
+      dockerfile: dockerfile.dev
+    ports:
+      - "5175:5175"
+    networks:
+      - devnet
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
 
   postgres_db:
     container_name: tag-management-system_db
