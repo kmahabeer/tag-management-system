@@ -35,6 +35,12 @@
 // export default App
 import React from "react";
 import TagManagementMock from "@/tms";
+import { Toaster } from "sonner";
 export default function App() {
-  return <TagManagementMock />;
+  return (
+    <>
+      <TagManagementMock />
+      <Toaster />
+    </>
+  );
 }

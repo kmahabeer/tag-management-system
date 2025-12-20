@@ -27,3 +27,8 @@ export type TagRelationship = {
     relationship_type_id: UUID
     description?: string | null
 }
+
+export type PaginatedResponse = {
+    results?: Tag[]
+    total?: number
+}
