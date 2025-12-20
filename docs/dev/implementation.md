@@ -172,7 +172,7 @@ docker exec -i tag-management-system_db psql -U app -d tag_management_system < s
 docker exec -i tag-management-system_db psql -U app -d tag_management_system < scripts/01_seed_data.sql
 ```
 
-**Drop All Tables (Keep Database)**
+#### Drop All Tables (Keep Database)
 
 ```sql
 DO $$
