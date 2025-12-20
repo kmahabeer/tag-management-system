@@ -1,10 +1,8 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, String, DateTime, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from sqlalchemy.ext.declarative import declarative_base
+from app.db.session import Base
 import uuid
-
-Base = declarative_base()
 
 
 class TagModel(Base):
@@ -14,7 +12,6 @@ class TagModel(Base):
     name = Column(String, nullable=False, unique=True)
     display_name = Column(String)
     metadata_json = Column("metadata", JSON)
-    part_of_speech_id = Column(
-        UUID(as_uuid=True), ForeignKey("parts_of_speech.id"))
+    part_of_speech_id = Column(UUID(as_uuid=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
