@@ -85,12 +85,13 @@ async def patch_tags__id_(TagId: Any = None, body: TagInput = Body(...),) -> Tag
     response_model=Tag,
     status_code=201,
 )
-async def post_tags(body: TagInput = Body(...),) -> Tag:
+async def post_tags(body: TagInput = Body(...), db: Session = Depends(get_db)) -> Tag:
     """
     Create a new tag
-    OperationId: 
+    OperationId:
     Auto-generated stub. Add auth/deps if needed.
     """
-    # TODO: Implement business logic in app/services and call it here.
-    # Example: return await services.tags_core.post_tags(...)
-    raise NotImplementedError("POST /tags not implemented yet")
+    try:
+        return await tags_core.create_tag_service(db=db, tag_input=body)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
