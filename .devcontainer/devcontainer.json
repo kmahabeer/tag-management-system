@@ -50,10 +50,10 @@
   "remoteEnv": {
     "DATABASE_URL": "postgresql://app:app@db:5432/app"
   },
-  "forwardPorts": [8000, 5173, 5432],
+  "forwardPorts": [8100, 5175, 5432, 5050],
   "portsAttributes": {
-    "8000": { "label": "FastAPI" },
-    "5173": { "label": "Vite" },
+    "8100": { "label": "FastAPI" },
+    "5175": { "label": "Vite" },
     "5432": { "label": "Postgres" },
     "5050": { "label": "PGAdmin" }
   },

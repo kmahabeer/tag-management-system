@@ -14,5 +14,9 @@ rm -rf /var/lib/apt/lists/*
 docker network inspect tag-management-system_dev_net >/dev/null 2>&1 || \
   docker network create tag-management-system_dev_net
 
-# # Start backend API
-# uvicorn app.main:app --reload # Needs a way to wait until uv installs all packages
+# Start the backend API
+uv run uvicorn app.main:app --reload --port 8100 # Needs a way to wait until uv installs all packages
+
+# Start the frontend UI
+cd frontend
+npm run dev
