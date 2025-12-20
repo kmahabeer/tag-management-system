@@ -4,48 +4,61 @@
 
 This plan outlines a comprehensive refactoring of the Python FastAPI backend to Go, maintaining full API compatibility with the existing OpenAPI specification while leveraging Go's performance and concurrency advantages. The design prioritizes minimal third-party dependencies, using Go's standard library where possible.
 
+The Go backend will be implemented within the existing monorepo structure, replacing the Python code in the `app/` directory (renamed to `backend/`) while keeping shared resources like `scripts/`, `docs/`, and `openapi.yaml` at the project root.
+
 ## 1. Project Structure
 
+The Go backend will be located in the `backend/` directory within the monorepo, alongside the `frontend/` directory and shared resources.
+
 ```txt
-tag-management-system-go/
-├── cmd/
-│   └── server/
-│       └── main.go              # Application entry point
-├── internal/
-│   ├── config/
-│   │   └── config.go            # Configuration management
-│   ├── database/
-│   │   ├── connection.go        # DB connection and migration
-│   │   ├── queries/
-│   │   │   ├── tags.go          # Tag-related queries
-│   │   │   ├── entities.go      # Entity-related queries
-│   │   │   └── ...              # Other domain queries
-│   │   └── migrations/
-│   │       └── 000001_initial.sql
-│   ├── handlers/
-│   │   ├── tags.go              # Tag HTTP handlers
-│   │   ├── entities.go          # Entity HTTP handlers
-│   │   └── ...                  # Other handlers
-│   ├── middleware/
-│   │   ├── cors.go              # CORS middleware
-│   │   ├── logging.go           # Request logging
-│   │   └── error.go             # Error handling
-│   ├── models/
-│   │   ├── tag.go               # Tag structs
-│   │   ├── entity.go            # Entity structs
-│   │   └── ...                  # Other model structs
-│   └── services/
-│       ├── tags.go              # Tag business logic
-│       ├── entities.go          # Entity business logic
-│       └── ...                  # Other services
-├── pkg/
-│   └── utils/
-│       └── validation.go        # Shared utilities
-├── go.mod
-├── go.sum
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
+tag-management-system/
+├── backend/                      # Go microservice (replaces app/)
+│   ├── cmd/
+│   │   └── server/
+│   │       └── main.go           # Application entry point
+│   ├── internal/
+│   │   ├── config/
+│   │   │   └── config.go         # Configuration management
+│   │   ├── database/
+│   │   │   ├── connection.go     # DB connection and migration
+│   │   │   ├── queries/
+│   │   │   │   ├── tags.go       # Tag-related queries
+│   │   │   │   ├── entities.go   # Entity-related queries
+│   │   │   │   └── ...           # Other domain queries
+│   │   │   └── migrations/
+│   │   │       └── 000001_initial.sql
+│   │   ├── handlers/
+│   │   │   ├── tags.go           # Tag HTTP handlers
+│   │   │   ├── entities.go       # Entity HTTP handlers
+│   │   │   └── ...               # Other handlers
+│   │   ├── middleware/
+│   │   │   ├── cors.go           # CORS middleware
+│   │   │   ├── logging.go        # Request logging
+│   │   │   └── error.go          # Error handling
+│   │   ├── models/
+│   │   │   ├── tag.go            # Tag structs
+│   │   │   ├── entity.go         # Entity structs
+│   │   │   └── ...               # Other model structs
+│   │   └── services/
+│   │       ├── tags.go           # Tag business logic
+│   │       ├── entities.go       # Entity business logic
+│   │       └── ...               # Other services
+│   ├── pkg/
+│   │   └── utils/
+│   │       └── validation.go     # Shared utilities
+│   ├── go.mod
+│   ├── go.sum
+│   ├── Dockerfile
+│   └── README.md
+├── frontend/                      # React micro frontend
+├── scripts/                       # Shared database scripts
+├── docs/                         # Shared documentation
+├── openapi.yaml                   # API contract
+├── docker-compose.yml             # Local development setup
+├── Makefile                      # Shared build tasks
+└── .github/workflows/            # Separate CI/CD pipelines
+    ├── backend.yml
+    └── frontend.yml
 ```
 
 ## 2. Dependencies
@@ -366,22 +379,22 @@ func LoadConfig() (*Config, error) {
 
 ### Phase 2: Parallel Development
 
-- Develop Go backend alongside Python backend
+- Develop Go backend in `backend/` directory alongside existing Python `app/` backend
 - Use same database for both applications during transition
 - Implement comprehensive logging and monitoring
 
 ### Phase 3: Gradual Migration
 
-1. Deploy Go backend to staging environment
-2. Run both backends with load balancer
+1. Rename `app/` to `backend/` and deploy Go implementation
+2. Run both backends with load balancer (if needed) or switch traffic at container level
 3. Gradually shift traffic from Python to Go
 4. Monitor for performance improvements and errors
 
 ### Phase 4: Full Cutover
 
 - Complete traffic migration to Go backend
-- Decommission Python backend
-- Update deployment pipelines
+- Remove Python code and dependencies
+- Update deployment pipelines to use `backend/` directory
 
 ### Data Preservation
 
@@ -473,7 +486,8 @@ CMD ["./server"]
 
 ### CI/CD Pipeline
 
-- GitHub Actions for automated testing and deployment
+- Separate GitHub Actions workflows for `backend/` and `frontend/` directories
+- Backend workflow triggered by changes in `backend/` and shared files (`openapi.yaml`, `scripts/`)
 - Multi-stage Docker builds for optimized images
 - Database migrations in CI pipeline
 - Integration tests against staging database
