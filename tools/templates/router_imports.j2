@@ -1,0 +1,10 @@
+# Auto-generated imports for routers (ordered by x-tagGroups if present)
+from fastapi import FastAPI
+{% for tag in tags %}
+from app.routes.{{ tag.module }} import router as {{ tag.module }}_router
+{% endfor %}
+
+def register_routers(app: FastAPI) -> None:
+    {% for tag in tags %}
+    app.include_router({{ tag.module }}_router)
+    {% endfor %}

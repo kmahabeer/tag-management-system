@@ -14,6 +14,9 @@ dist-ssr
 *.local
 */.vite/*
 
+# Generated OpenAPI server/client code
+generated_fastapi/
+generated_client/
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

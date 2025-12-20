@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = "http://localhost:8000/api/v1"
+const DEFAULT_BASE_URL = "http://localhost:8100/api/v1"
 
 export async function api<T>(path: string, opts?: RequestInit & { baseUrl?: string }) {
     const baseUrl = opts?.baseUrl ?? DEFAULT_BASE_URL

@@ -12,7 +12,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "./api";
-import { Tag } from "./types";
+import { Tag, PaginatedResponse } from "./types";
 import { mockListTags, useMock } from "./mock";
 import CreateTagDialog from "./CreateTagDialog";
 import EditableTagRow from "./EditableTagRow";
@@ -26,7 +26,7 @@ export default function TagsTable({ baseUrl }: { baseUrl?: string }) {
       setLoading(true);
       const data = useMock
         ? await mockListTags()
-        : await api<Tag[]>("/tags", { baseUrl });
+        : (await api<PaginatedResponse>("/tags", { baseUrl })).results || [];
       setRows(data);
     } catch (e: any) {
       toast.error(e.message ?? "Failed to load tags");

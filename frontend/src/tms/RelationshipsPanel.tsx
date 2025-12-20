@@ -34,13 +34,13 @@ export default function RelationshipsPanel({ baseUrl }: { baseUrl?: string }) {
     try {
       setLoading(true);
       const [t, rt, r] = await Promise.all([
-        useMock ? mockListTags() : api<Tag[]>("/tags", { baseUrl }),
+        useMock ? mockListTags() : (await api<any>("/tags", { baseUrl })).results || [],
         useMock
           ? mockListRelTypes()
-          : api<RelationshipType[]>("/tag_relationship_types", { baseUrl }),
+          : api<RelationshipType[]>("/utilities/contexts", { baseUrl }),
         useMock
           ? mockListTagRels()
-          : api<TagRelationship[]>("/tag_relationships", { baseUrl }),
+          : (await api<any>("/tag-relationships", { baseUrl })).relationships || [],
       ]);
       setTags(t);
       setRelTypes(rt);

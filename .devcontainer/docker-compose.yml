@@ -1,16 +1,18 @@
 services:
 
   dev:
+    container_name: tag-management-system_dev
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
-      - ..:/workspaces/tagging-service:cached
+      - ..:/workspaces/tag-management-system:cached
     command: sleep infinity
     networks:
       - devnet
     depends_on:
-      - db
+      - postgres_db
 
-  db:
+  postgres_db:
+    container_name: tag-management-system_db
     image: postgres:16
     restart: unless-stopped
     environment:
@@ -19,10 +21,25 @@ services:
       POSTGRES_DB: app
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      # Optionally replace the above with a host bind mount if you want to browse data locally:
+      # - ./.data/postgres:/var/lib/postgresql/data
     networks:
       - devnet
     ports:
       - "5432:5432"
+
+  pgadmin:
+    container_name: tag-management-system_pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres_db
+    networks:
+      - devnet
 
 networks:
   devnet:
@@ -30,3 +47,5 @@ networks:
 
 volumes:
   postgres-data:
+    name: tag-management-system_postgres_data
+    external: false
