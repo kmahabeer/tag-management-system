@@ -15,3 +15,12 @@ type TagRepository interface {
 	Update(ctx context.Context, tag *models.Tag) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
+
+// EntityRepository defines the interface for entity database operations
+type EntityRepository interface {
+	GetByID(ctx context.Context, id uuid.UUID) (*models.Entity, error)
+	List(ctx context.Context, limit, offset int) ([]*models.Entity, error)
+	Create(ctx context.Context, entity *models.Entity) error
+	Update(ctx context.Context, entity *models.Entity) error
+	Delete(ctx context.Context, id uuid.UUID) error
+}
