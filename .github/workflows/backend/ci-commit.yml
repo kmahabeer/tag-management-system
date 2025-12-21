@@ -2,8 +2,11 @@ name: Backend CI - Commit
 
 on:
   push:
-    branches-ignore: [main]
-    paths: ["backend/**", "openapi.yaml"]
+    branches-ignore:
+      - 'main'
+    paths:
+      - 'backend/**'
+      - 'openapi.yaml'
 
 jobs:
   fast-checks:
@@ -15,7 +18,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21"
+          go-version: '1.21'
 
       - name: Cache Go modules
         uses: actions/cache@v3
