@@ -1,4 +1,4 @@
-# Architectural Plan for Refactoring Tag Management System Backend to Go
+# Plan for Refactoring Tag Management System Backend to Go
 
 ## Overview
 
