@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,4 +18,18 @@ type Tag struct {
 	PartOfSpeechID uuid.UUID       `db:"part_of_speech_id" json:"part_of_speech_id"`
 	CreatedAt      time.Time       `db:"created_at" json:"created_at"`
 	UpdatedAt      time.Time       `db:"updated_at" json:"updated_at"`
+}
+
+// Validate checks if the Tag is valid
+func (t *Tag) Validate() error {
+	if t.ID == uuid.Nil {
+		return errors.New("id is required")
+	}
+	if t.Name == "" {
+		return errors.New("name is required")
+	}
+	if t.PartOfSpeechID == uuid.Nil {
+		return errors.New("part_of_speech_id is required")
+	}
+	return nil
 }
