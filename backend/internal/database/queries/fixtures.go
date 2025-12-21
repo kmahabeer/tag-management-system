@@ -340,3 +340,91 @@ func (f *Fixtures) CreateTestEntityRelationshipRating(ctx context.Context, entit
 	err := f.entityRelationshipRatingQueries.Create(ctx, entityRelationshipRating)
 	return entityRelationshipRating, err
 }
+
+// CleanupAll removes all test data from the database
+func (f *Fixtures) CleanupAll(ctx context.Context) error {
+	// Delete in reverse dependency order to avoid foreign key constraints
+
+	// Ratings and relationships
+	if err := f.cleanupTable(ctx, "entity_relationship_ratings"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "tag_context_ratings"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "tag_relationship_ratings"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "ratings"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "rating_types"); err != nil {
+		return err
+	}
+
+	// UI configurations
+	if err := f.cleanupTable(ctx, "ui_fields"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "ui_groups"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "ui_layouts"); err != nil {
+		return err
+	}
+
+	// Entity tagging
+	if err := f.cleanupTable(ctx, "entity_tags"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "contexts"); err != nil {
+		return err
+	}
+
+	// Tag relationships and compositions
+	if err := f.cleanupTable(ctx, "tag_compositions"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "tag_relationships"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "tag_relationship_types"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "tag_aliases"); err != nil {
+		return err
+	}
+
+	// Entity relationships
+	if err := f.cleanupTable(ctx, "entity_relationships"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "entity_relationship_types"); err != nil {
+		return err
+	}
+
+	// Entities and purposes
+	if err := f.cleanupTable(ctx, "entity_purposes"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "entities"); err != nil {
+		return err
+	}
+
+	// Tags and utilities
+	if err := f.cleanupTable(ctx, "tags"); err != nil {
+		return err
+	}
+	if err := f.cleanupTable(ctx, "parts_of_speech"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// cleanupTable truncates all records from a table
+func (f *Fixtures) cleanupTable(ctx context.Context, tableName string) error {
+	query := `TRUNCATE TABLE ` + tableName + ` CASCADE`
+	_, err := f.entityQueries.db.ExecContext(ctx, query)
+	return err
+}
