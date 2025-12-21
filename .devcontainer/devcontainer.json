@@ -1,15 +1,13 @@
 {
   "name": "Tag Management System Development",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "../docker-compose.yml",
   "service": "dev",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.12"
     },
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.21"
-    },
+    "ghcr.io/devcontainers/features/go:latest": {},
     "ghcr.io/devcontainers/features/node:1": {
       "version": "20"
     },
