@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
@@ -56,4 +57,32 @@ func InitDB(cfg *config.DatabaseConfig, migrationsDir string) (*DB, error) {
 // Close closes the database connection
 func (db *DB) Close() error {
 	return db.DB.Close()
+}
+
+// RunInTransaction executes a function within a database transaction
+func (db *DB) RunInTransaction(ctx context.Context, fn func(*sql.Tx) error) error {
+	tx, err := db.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	if err := fn(tx); err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return fmt.Errorf("transaction failed and rollback failed: %v (original error: %w)", rbErr, err)
+		}
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return nil
 }
