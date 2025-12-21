@@ -1,11 +1,14 @@
 {
-  "name": "Fullstack Development",
+  "name": "Tag Management System Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.21"
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "20"
@@ -21,6 +24,7 @@
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
+        "golang.go",
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
@@ -50,10 +54,10 @@
   "remoteEnv": {
     "DATABASE_URL": "postgresql://app:app@db:5432/app"
   },
-  "forwardPorts": [8100, 5175, 5432, 5050],
+  "forwardPorts": [8080, 5175, 5432, 5050],
   "portsAttributes": {
-    "8100": { "label": "FastAPI" },
-    "5175": { "label": "Vite" },
+    "8080": { "label": "Go Backend" },
+    "5175": { "label": "Vite Frontend" },
     "5432": { "label": "Postgres" },
     "5050": { "label": "PGAdmin" }
   },
