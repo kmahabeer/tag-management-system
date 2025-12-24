@@ -630,3 +630,199 @@ type UiFieldsGet200Response struct {
 type TagsIdDelete200Response struct {
 	Status string `json:"status"`
 }
+
+// Additional input structs for patch requests
+
+// TagsIdAliasesPostRequest represents input for POST /tags/{id}/aliases
+type TagsIdAliasesPostRequest struct {
+	Name string `json:"name"`
+}
+
+// Validate checks if the TagsIdAliasesPostRequest is valid
+func (t *TagsIdAliasesPostRequest) Validate() error {
+	if strings.TrimSpace(t.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
+}
+
+// TagAliasesPostRequest represents input for POST /tag-aliases
+type TagAliasesPostRequest struct {
+	Name  string    `json:"name"`
+	TagID uuid.UUID `json:"tag_id"`
+}
+
+// Validate checks if the TagAliasesPostRequest is valid
+func (t *TagAliasesPostRequest) Validate() error {
+	if strings.TrimSpace(t.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	if t.TagID == uuid.Nil {
+		return errors.New("tag_id is required")
+	}
+	return nil
+}
+
+// TagsIdAliasesAliasIdPatchRequest represents input for PATCH /tags/{id}/aliases/{alias_id}
+type TagsIdAliasesAliasIdPatchRequest struct {
+	Name  string    `json:"name"`
+	TagID uuid.UUID `json:"tag_id"`
+}
+
+// Validate checks if the TagsIdAliasesAliasIdPatchRequest is valid
+func (t *TagsIdAliasesAliasIdPatchRequest) Validate() error {
+	// Both optional, but if provided, validate
+	if t.Name != "" && strings.TrimSpace(t.Name) == "" {
+		return errors.New("name cannot be empty if provided")
+	}
+	return nil
+}
+
+// TagRelationshipsIdPatchRequest represents input for PATCH /tag-relationships/{id}
+type TagRelationshipsIdPatchRequest struct {
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+	Description        *string   `json:"description,omitempty"`
+}
+
+// Validate checks if the TagRelationshipsIdPatchRequest is valid
+func (t *TagRelationshipsIdPatchRequest) Validate() error {
+	if t.RelationshipTypeID == uuid.Nil {
+		return errors.New("relationship_type_id is required")
+	}
+	return nil
+}
+
+// TagsIdRelationshipsRelationshipIdPatchRequest represents input for PATCH /tags/{id}/relationships/{relationship_id}
+type TagsIdRelationshipsRelationshipIdPatchRequest struct {
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+	Description        *string   `json:"description,omitempty"`
+}
+
+// Validate checks if the TagsIdRelationshipsRelationshipIdPatchRequest is valid
+func (t *TagsIdRelationshipsRelationshipIdPatchRequest) Validate() error {
+	if t.RelationshipTypeID == uuid.Nil {
+		return errors.New("relationship_type_id is required")
+	}
+	return nil
+}
+
+// TagCompositionsPostRequest represents input for POST /tag-compositions
+type TagCompositionsPostRequest struct {
+	BaseTagID      uuid.UUID `json:"base_tag_id"`
+	ComponentTagID uuid.UUID `json:"component_tag_id"`
+	Position       int       `json:"position"`
+}
+
+// Validate checks if the TagCompositionsPostRequest is valid
+func (t *TagCompositionsPostRequest) Validate() error {
+	if t.BaseTagID == uuid.Nil {
+		return errors.New("base_tag_id is required")
+	}
+	if t.ComponentTagID == uuid.Nil {
+		return errors.New("component_tag_id is required")
+	}
+	if t.Position < 1 {
+		return errors.New("position must be at least 1")
+	}
+	return nil
+}
+
+// TagsIdCompositionsCompositionIdPatchRequest represents input for PATCH /tags/{id}/compositions/{composition_id}
+type TagsIdCompositionsCompositionIdPatchRequest struct {
+	Position int `json:"position"`
+}
+
+// Validate checks if the TagsIdCompositionsCompositionIdPatchRequest is valid
+func (t *TagsIdCompositionsCompositionIdPatchRequest) Validate() error {
+	if t.Position < 1 {
+		return errors.New("position must be at least 1")
+	}
+	return nil
+}
+
+// TagCompositionsIdPatchRequest represents input for PATCH /tag-compositions/{id}
+type TagCompositionsIdPatchRequest struct {
+	Position int `json:"position"`
+}
+
+// Validate checks if the TagCompositionsIdPatchRequest is valid
+func (t *TagCompositionsIdPatchRequest) Validate() error {
+	if t.Position < 1 {
+		return errors.New("position must be at least 1")
+	}
+	return nil
+}
+
+// EntitiesIdPurposesPurposeIdPatchRequest represents input for PATCH /entities/{id}/purposes/{purpose_id}
+type EntitiesIdPurposesPurposeIdPatchRequest struct {
+	PurposeTagID uuid.UUID `json:"purpose_tag_id"`
+	IsPrimary    bool      `json:"is_primary"`
+}
+
+// Validate checks if the EntitiesIdPurposesPurposeIdPatchRequest is valid
+func (e *EntitiesIdPurposesPurposeIdPatchRequest) Validate() error {
+	if e.PurposeTagID == uuid.Nil {
+		return errors.New("purpose_tag_id is required")
+	}
+	return nil
+}
+
+// EntitiesIdRelationshipsRelationshipIdPatchRequest represents input for PATCH /entities/{id}/relationships/{relationship_id}
+type EntitiesIdRelationshipsRelationshipIdPatchRequest struct {
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+}
+
+// Validate checks if the EntitiesIdRelationshipsRelationshipIdPatchRequest is valid
+func (e *EntitiesIdRelationshipsRelationshipIdPatchRequest) Validate() error {
+	if e.RelationshipTypeID == uuid.Nil {
+		return errors.New("relationship_type_id is required")
+	}
+	return nil
+}
+
+// EntitiesIdVersionsVersionIdPatchRequest represents input for PATCH /entities/{id}/versions/{version_id}
+type EntitiesIdVersionsVersionIdPatchRequest struct {
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+}
+
+// Validate checks if the EntitiesIdVersionsVersionIdPatchRequest is valid
+func (e *EntitiesIdVersionsVersionIdPatchRequest) Validate() error {
+	if e.RelationshipTypeID == uuid.Nil {
+		return errors.New("relationship_type_id is required")
+	}
+	return nil
+}
+
+// EntitiesIdRatingsRatingIdPatchRequest represents input for PATCH /entities/{id}/ratings/{rating_id}
+type EntitiesIdRatingsRatingIdPatchRequest struct {
+	ContextID uuid.UUID `json:"context_id"`
+	RatingID  uuid.UUID `json:"rating_id"`
+}
+
+// Validate checks if the EntitiesIdRatingsRatingIdPatchRequest is valid
+func (e *EntitiesIdRatingsRatingIdPatchRequest) Validate() error {
+	if e.ContextID == uuid.Nil {
+		return errors.New("context_id is required")
+	}
+	if e.RatingID == uuid.Nil {
+		return errors.New("rating_id is required")
+	}
+	return nil
+}
+
+// TagsIdRelationshipRatingsRatingIdPatchRequest represents input for PATCH /tags/{id}/relationship_ratings/{rating_id}
+type TagsIdRelationshipRatingsRatingIdPatchRequest struct {
+	ContextID uuid.UUID `json:"context_id"`
+	RatingID  uuid.UUID `json:"rating_id"`
+}
+
+// Validate checks if the TagsIdRelationshipRatingsRatingIdPatchRequest is valid
+func (t *TagsIdRelationshipRatingsRatingIdPatchRequest) Validate() error {
+	if t.ContextID == uuid.Nil {
+		return errors.New("context_id is required")
+	}
+	if t.RatingID == uuid.Nil {
+		return errors.New("rating_id is required")
+	}
+	return nil
+}
