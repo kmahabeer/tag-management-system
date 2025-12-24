@@ -1,23 +1,8 @@
 # Development Dockerfile for Backend
-FROM golang:1.21-alpine
-
-# Install security updates, build tools, and air for hot reload
-RUN apk update && apk upgrade && apk add --no-cache git ca-certificates dumb-init
+FROM golang:1.24-alpine3.22 AS builder
 
 # Install air for hot reloading
 RUN go install github.com/cosmtrek/air@latest
-
-# Create app directory
-WORKDIR /app
-
-# Copy go mod files
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
-
-# Copy source code
-COPY . .
 
 # Create non-root user
 RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001 -G appgroup

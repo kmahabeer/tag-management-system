@@ -1,20 +1,8 @@
 # Development Dockerfile for Frontend
-FROM node:20-alpine
+FROM frontend AS builder
 
 # Install security updates and development tools
-RUN apk update && apk upgrade && apk add --no-cache dumb-init git
-
-# Create app directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install all dependencies (including dev)
-RUN npm install
-
-# Copy source code
-COPY . .
+RUN apt update && apt upgrade -y && apt install -y --no-install-recommends dumb-init git
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
