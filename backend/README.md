@@ -1,4 +1,29 @@
-# Tag Management System - Database
+# Tag Management System - Backend
+
+This is the Go backend for the Tag Management System, providing RESTful APIs for managing tags, entities, relationships, and UI configurations.
+
+## Building and Running
+
+### Prerequisites
+
+- Go 1.25.5 or later
+- PostgreSQL database
+
+### Setup
+
+1. Ensure dependencies are installed: `make go-tidy`
+2. Build the server: `make go-build`
+3. Run the server: `make go-run`
+
+### Development Workflow
+
+- To clean build artifacts: `make go-clean`
+- To rebuild from scratch: `make go-rebuild`
+- To run after building: `make go-run`
+
+The binary is output to `bin/server` and can be run directly: `./bin/server`
+
+## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.
 
