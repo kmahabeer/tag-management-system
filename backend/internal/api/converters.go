@@ -113,3 +113,49 @@ func EntityInputToDB(e EntityInput) models.Entity {
 
 	return entity
 }
+
+// Data transformation utilities
+
+// TagsToAPI converts a slice of database Tag models to API Tag schemas
+func TagsToAPI(tags []models.Tag) []Tag {
+	apiTags := make([]Tag, len(tags))
+	for i, tag := range tags {
+		apiTags[i] = TagToAPI(tag)
+	}
+	return apiTags
+}
+
+// EntitiesToAPI converts a slice of database Entity models to API Entity schemas
+func EntitiesToAPI(entities []models.Entity) []Entity {
+	apiEntities := make([]Entity, len(entities))
+	for i, entity := range entities {
+		apiEntities[i] = EntityToAPI(entity)
+	}
+	return apiEntities
+}
+
+// TransformToPaginatedTags converts database models to paginated API response
+func TransformToPaginatedTags(tags []models.Tag, total int) PaginatedResponse {
+	apiTags := TagsToAPI(tags)
+	results := make([]any, len(apiTags))
+	for i, tag := range apiTags {
+		results[i] = tag
+	}
+	return PaginatedResponse{
+		Results: results,
+		Total:   total,
+	}
+}
+
+// TransformToPaginatedEntities converts database entities to paginated API response
+func TransformToPaginatedEntities(entities []models.Entity, total int) PaginatedResponse {
+	apiEntities := EntitiesToAPI(entities)
+	results := make([]any, len(apiEntities))
+	for i, entity := range apiEntities {
+		results[i] = entity
+	}
+	return PaginatedResponse{
+		Results: results,
+		Total:   total,
+	}
+}

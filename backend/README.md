@@ -42,6 +42,17 @@ The `backend/internal/api/converters.go` file provides functions to convert betw
 
 These functions handle type conversions between nullable database fields (`sql.NullString`, `json.RawMessage`) and API fields (`*string`, `any`), using dedicated null handling utilities for robust conversion.
 
+### Data Transformation Utilities
+
+Additional utilities for transforming collections and responses:
+
+- `TagsToAPI([]models.Tag) []Tag`: Bulk converts database tags to API tags
+- `EntitiesToAPI([]models.Entity) []Entity`: Bulk converts database entities to API entities
+- `TransformToPaginatedTags([]models.Tag, int) PaginatedResponse`: Converts tags to paginated API response
+- `TransformToPaginatedEntities([]models.Entity, int) PaginatedResponse`: Converts entities to paginated API response
+
+These utilities streamline data transformation for API responses and bulk operations.
+
 ## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.
