@@ -23,6 +23,10 @@ This is the Go backend for the Tag Management System, providing RESTful APIs for
 
 The binary is output to `bin/server` and can be run directly: `./bin/server`
 
+### Validation
+
+API input structs include `Validate()` methods that enforce required fields and basic constraints as defined in the OpenAPI specification. These validations ensure data integrity before processing requests.
+
 ## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.

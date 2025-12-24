@@ -1,6 +1,8 @@
 package api
 
 import (
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,6 +40,17 @@ type TagInput struct {
 	PartOfSpeechID uuid.UUID `json:"part_of_speech_id"`
 }
 
+// Validate checks if the TagInput is valid
+func (t *TagInput) Validate() error {
+	if strings.TrimSpace(t.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	if t.PartOfSpeechID == uuid.Nil {
+		return errors.New("part_of_speech_id is required")
+	}
+	return nil
+}
+
 // TagAlias represents an alias for a tag
 type TagAlias struct {
 	ID    uuid.UUID `json:"id"`
@@ -66,6 +79,17 @@ type TagRelationshipInput struct {
 	Description        *string   `json:"description,omitempty"`
 }
 
+// Validate checks if the TagRelationshipInput is valid
+func (t *TagRelationshipInput) Validate() error {
+	if t.TagBID == uuid.Nil {
+		return errors.New("tag_b_id is required")
+	}
+	if t.RelationshipTypeID == uuid.Nil {
+		return errors.New("relationship_type_id is required")
+	}
+	return nil
+}
+
 // RelationshipUpdate represents bulk update for relationships
 type RelationshipUpdate struct {
 	Relationships []TagRelationshipInput `json:"relationships"`
@@ -85,6 +109,17 @@ type TagComponent struct {
 type TagComponentInput struct {
 	ComponentTagID uuid.UUID `json:"component_tag_id"`
 	Position       int       `json:"position"`
+}
+
+// Validate checks if the TagComponentInput is valid
+func (t *TagComponentInput) Validate() error {
+	if t.ComponentTagID == uuid.Nil {
+		return errors.New("component_tag_id is required")
+	}
+	if t.Position < 1 {
+		return errors.New("position must be at least 1")
+	}
+	return nil
 }
 
 // CompositionUpdate represents bulk update for compositions
@@ -109,6 +144,14 @@ type EntityInput struct {
 	Location  *string `json:"location,omitempty"`
 	IsPrimary bool    `json:"is_primary"`
 	Metadata  any     `json:"metadata,omitempty"`
+}
+
+// Validate checks if the EntityInput is valid
+func (e *EntityInput) Validate() error {
+	if strings.TrimSpace(e.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
 }
 
 // EntityTagAssignment represents a tag assignment to an entity
@@ -178,6 +221,17 @@ type ContextInput struct {
 	IsActive           bool    `json:"is_active"`
 }
 
+// Validate checks if the ContextInput is valid
+func (c *ContextInput) Validate() error {
+	if strings.TrimSpace(c.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	if c.ClassificationType != "objective" && c.ClassificationType != "subjective" {
+		return errors.New("classification_type must be either 'objective' or 'subjective'")
+	}
+	return nil
+}
+
 // PartOfSpeech represents a grammatical classification
 type PartOfSpeech struct {
 	ID          uuid.UUID `json:"id"`
@@ -195,6 +249,14 @@ type PartOfSpeechInput struct {
 	IsActive    bool    `json:"is_active"`
 }
 
+// Validate checks if the PartOfSpeechInput is valid
+func (p *PartOfSpeechInput) Validate() error {
+	if strings.TrimSpace(p.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
+}
+
 // RatingType represents a category for ratings
 type RatingType struct {
 	ID           uuid.UUID `json:"id"`
@@ -208,6 +270,14 @@ type RatingType struct {
 type RatingTypeInput struct {
 	Name         string `json:"name"`
 	IsNormalized bool   `json:"is_normalized"`
+}
+
+// Validate checks if the RatingTypeInput is valid
+func (r *RatingTypeInput) Validate() error {
+	if strings.TrimSpace(r.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
 }
 
 // Rating represents a specific rating value
@@ -227,6 +297,17 @@ type RatingInput struct {
 	Score        int       `json:"score"`
 	Description  *string   `json:"description,omitempty"`
 	RatingTypeID uuid.UUID `json:"rating_type_id"`
+}
+
+// Validate checks if the RatingInput is valid
+func (r *RatingInput) Validate() error {
+	if strings.TrimSpace(r.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	if r.RatingTypeID == uuid.Nil {
+		return errors.New("rating_type_id is required")
+	}
+	return nil
 }
 
 // TagContextualRatingInput represents a rating applied to a tag
@@ -305,6 +386,14 @@ type UiLayoutInput struct {
 	Name         string     `json:"name"`
 }
 
+// Validate checks if the UiLayoutInput is valid
+func (u *UiLayoutInput) Validate() error {
+	if strings.TrimSpace(u.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
+}
+
 // UiGroup represents a UI group
 type UiGroup struct {
 	ID        uuid.UUID `json:"id"`
@@ -316,6 +405,14 @@ type UiGroup struct {
 // UiGroupInput represents input for creating or updating a UI group
 type UiGroupInput struct {
 	Name string `json:"name"`
+}
+
+// Validate checks if the UiGroupInput is valid
+func (u *UiGroupInput) Validate() error {
+	if strings.TrimSpace(u.Name) == "" {
+		return errors.New("name is required and cannot be empty")
+	}
+	return nil
 }
 
 // UiField represents a UI field
@@ -337,6 +434,17 @@ type UiFieldInput struct {
 	ContextID     *uuid.UUID `json:"context_id,omitempty"`
 	CategoryTagID *uuid.UUID `json:"category_tag_id,omitempty"`
 	SortOrder     int        `json:"sort_order"`
+}
+
+// Validate checks if the UiFieldInput is valid
+func (u *UiFieldInput) Validate() error {
+	if u.UiLayoutID == uuid.Nil {
+		return errors.New("ui_layout_id is required")
+	}
+	if u.UiGroupID == uuid.Nil {
+		return errors.New("ui_group_id is required")
+	}
+	return nil
 }
 
 // Response wrappers
