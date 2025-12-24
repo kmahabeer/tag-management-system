@@ -2,6 +2,7 @@
   "name": "Tag Management System Development",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "dev",
+  "init": false,
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
@@ -16,7 +17,7 @@
     "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
     "ghcr.io/va-h/devcontainers-features/uv:1": {}
   },
-  "runServices": ["postgres_db", "pgadmin"],
+  "runServices": ["postgres_db", "pgadmin", "backend", "frontend"],
   "remoteUser": "vscode",
   "customizations": {
     "vscode": {
@@ -61,11 +62,10 @@
   },
   "mounts": [
     "type=cache,target=/home/vscode/.cache/pip",
-    "type=cache,target=/home/vscode/.npm",
+    "type=cache,target=/home/vscode/.cache/npm",
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind"
   ],
   "overrideCommand": false,
-  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && mkdir -p \"$HOME/.ssh\"'",
-  "postCreateCommand": "bash .devcontainer/postCreate.sh"
+  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && mkdir -p \"$HOME/.ssh\"'"
 }

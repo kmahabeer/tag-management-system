@@ -29,7 +29,7 @@ services:
       - postgres_db
     volumes:
       - ./backend:/app
-    command: air -c .air.toml
+    command: ./server
 
   frontend:
     container_name: tag-management-system_frontend

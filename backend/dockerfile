@@ -2,7 +2,7 @@
 FROM golang:1.25 AS builder
 
 # Install security updates and build tools
-RUN apt update && apt upgrade && apt add --no-cache git ca-certificates
+RUN apt update && apt upgrade && apt install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /app
@@ -19,9 +19,6 @@ COPY . .
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
 
-# Install air for hot reloading
-RUN go install github.com/air-verse/air@latest
-
 # Create non-root user
 RUN addgroup --gid 1001 appgroup && adduser --uid 1001 --gid 1001 --disabled-password --gecos "" appuser
 
@@ -30,5 +27,5 @@ USER appuser
 # Expose port
 EXPOSE 8080
 
-# Use air for development
-CMD ["air", "-c", ".air.toml"]
+# Run the server
+CMD ["./server"]
