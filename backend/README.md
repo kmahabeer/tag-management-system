@@ -31,6 +31,17 @@ API input structs include `Validate()` methods that enforce required fields and 
 
 API schemas include optional `embedding` fields (`[]float64`) in `Tag`, `Entity`, `TagInput`, and `EntityInput` structs for compatibility with vector databases like pgVector. These fields allow storing and retrieving vector embeddings for similarity search and AI-powered features.
 
+### Type Conversions
+
+The `backend/internal/api/converters.go` file provides functions to convert between database models and API schemas:
+
+- `TagToAPI(models.Tag) Tag`: Converts database Tag to API Tag
+- `TagInputToDB(TagInput) models.Tag`: Converts API TagInput to database Tag
+- `EntityToAPI(models.Entity) Entity`: Converts database Entity to API Entity
+- `EntityInputToDB(EntityInput) models.Entity`: Converts API EntityInput to database Entity
+
+These functions handle type conversions between nullable database fields (`sql.NullString`, `json.RawMessage`) and API fields (`*string`, `any`).
+
 ## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.
