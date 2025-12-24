@@ -1,5 +1,5 @@
 # Development Dockerfile for Frontend
-FROM frontend AS builder
+FROM node:24 AS builder
 
 # Install security updates and development tools
 RUN apt update && apt upgrade -y && apt install -y --no-install-recommends dumb-init git

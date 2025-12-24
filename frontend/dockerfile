@@ -1,5 +1,5 @@
 # Base Dockerfile for Frontend
-FROM node:20-alpine3.22 AS builder
+FROM node:24 AS builder
 
 # Install security updates
 RUN apt update && apt upgrade -y
