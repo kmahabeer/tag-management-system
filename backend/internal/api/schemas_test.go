@@ -1,7 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -78,4 +80,38 @@ func TestEntityInputValidate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestTagJSONMarshaling(t *testing.T) {
+	tag := Tag{
+		ID:             uuid.MustParse("a123e456-78b9-4cde-8123-456789abcdef"),
+		Name:           "dog",
+		DisplayName:    stringPtr("Dog"),
+		Metadata:       map[string]interface{}{"source": "Label Studio"},
+		PartOfSpeechID: uuid.MustParse("046b6c7f-0b8a-43b9-b35d-6489e6daee91"),
+		CreatedAt:      time.Date(2025, 10, 7, 12, 0, 0, 0, time.UTC),
+		UpdatedAt:      time.Date(2025, 10, 7, 12, 30, 0, 0, time.UTC),
+	}
+
+	data, err := json.Marshal(tag)
+	if err != nil {
+		t.Fatalf("Failed to marshal Tag: %v", err)
+	}
+
+	var unmarshaled Tag
+	err = json.Unmarshal(data, &unmarshaled)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal Tag: %v", err)
+	}
+
+	if unmarshaled.ID != tag.ID {
+		t.Errorf("ID mismatch: got %v, want %v", unmarshaled.ID, tag.ID)
+	}
+	if unmarshaled.Name != tag.Name {
+		t.Errorf("Name mismatch: got %v, want %v", unmarshaled.Name, tag.Name)
+	}
+}
+
+func stringPtr(s string) *string {
+	return &s
 }
