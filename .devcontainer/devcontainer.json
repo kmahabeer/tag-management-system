@@ -17,7 +17,7 @@
     "ghcr.io/va-h/devcontainers-features/uv:1": {}
   },
   "runServices": ["postgres_db", "pgadmin"],
-  "remoteUser": "root",
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -60,16 +60,12 @@
     "5050": { "label": "PGAdmin" }
   },
   "mounts": [
-    "type=cache,target=/root/.cache/pip",
-    "type=cache,target=/root/.npm",
-    "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind",
-    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
+    "type=cache,target=/home/vscode/.cache/pip",
+    "type=cache,target=/home/vscode/.npm",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind"
   ],
   "overrideCommand": false,
-  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && test -d \"$HOME/.ssh\" || mkdir -p \"$HOME/.ssh\"'",
-  //   "onCreateCommand": "bash .devcontainer/onCreate.sh",
-  //   "updateContentCommand": "bash .devcontainer/updateContent.sh"
+  "initializeCommand": "bash -lc 'test -f \"$HOME/.gitconfig\" || touch \"$HOME/.gitconfig\" && mkdir -p \"$HOME/.ssh\"'",
   "postCreateCommand": "bash .devcontainer/postCreate.sh"
-  // "postStartCommand": "",
-  // "postAttachCommand": ""
 }
