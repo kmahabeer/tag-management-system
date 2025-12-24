@@ -1,0 +1,524 @@
+package api
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+// ErrorResponse represents an error response
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Details any    `json:"details,omitempty"`
+}
+
+// PaginatedResponse represents a paginated response
+type PaginatedResponse struct {
+	Results []any `json:"results"`
+	Total   int   `json:"total"`
+}
+
+// Tag represents a tag
+type Tag struct {
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	DisplayName    *string   `json:"display_name,omitempty"`
+	Metadata       any       `json:"metadata,omitempty"`
+	PartOfSpeechID uuid.UUID `json:"part_of_speech_id"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+}
+
+// TagInput represents input for creating or updating a tag
+type TagInput struct {
+	Name           string    `json:"name"`
+	DisplayName    *string   `json:"display_name,omitempty"`
+	Metadata       any       `json:"metadata,omitempty"`
+	PartOfSpeechID uuid.UUID `json:"part_of_speech_id"`
+}
+
+// TagAlias represents an alias for a tag
+type TagAlias struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	TagID uuid.UUID `json:"tag_id"`
+}
+
+// AliasUpdate represents bulk update for aliases
+type AliasUpdate struct {
+	Aliases []string `json:"aliases"`
+}
+
+// TagRelationship represents a relationship between two tags
+type TagRelationship struct {
+	ID                 uuid.UUID `json:"id"`
+	TagAID             uuid.UUID `json:"tag_a_id"`
+	TagBID             uuid.UUID `json:"tag_b_id"`
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+	Description        *string   `json:"description,omitempty"`
+}
+
+// TagRelationshipInput represents input for creating a tag relationship
+type TagRelationshipInput struct {
+	TagBID             uuid.UUID `json:"tag_b_id"`
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+	Description        *string   `json:"description,omitempty"`
+}
+
+// RelationshipUpdate represents bulk update for relationships
+type RelationshipUpdate struct {
+	Relationships []TagRelationshipInput `json:"relationships"`
+}
+
+// TagComponent represents a component in a composite tag
+type TagComponent struct {
+	ID             uuid.UUID `json:"id"`
+	BaseTagID      uuid.UUID `json:"base_tag_id"`
+	ComponentTagID uuid.UUID `json:"component_tag_id"`
+	Position       int       `json:"position"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+}
+
+// TagComponentInput represents input for adding a component
+type TagComponentInput struct {
+	ComponentTagID uuid.UUID `json:"component_tag_id"`
+	Position       int       `json:"position"`
+}
+
+// CompositionUpdate represents bulk update for compositions
+type CompositionUpdate struct {
+	Components []TagComponentInput `json:"components"`
+}
+
+// Entity represents an entity
+type Entity struct {
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	Location  *string   `json:"location,omitempty"`
+	IsPrimary bool      `json:"is_primary"`
+	Metadata  any       `json:"metadata,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// EntityInput represents input for creating or updating an entity
+type EntityInput struct {
+	Name      string  `json:"name"`
+	Location  *string `json:"location,omitempty"`
+	IsPrimary bool    `json:"is_primary"`
+	Metadata  any     `json:"metadata,omitempty"`
+}
+
+// EntityTagAssignment represents a tag assignment to an entity
+type EntityTagAssignment struct {
+	Tag       Tag       `json:"tag"`
+	ContextID uuid.UUID `json:"context_id"`
+	Metadata  any       `json:"metadata,omitempty"`
+}
+
+// EntityTagAssignmentInput represents input for assigning a tag
+type EntityTagAssignmentInput struct {
+	TagID     uuid.UUID `json:"tag_id"`
+	ContextID uuid.UUID `json:"context_id"`
+	Metadata  any       `json:"metadata,omitempty"`
+}
+
+// EntityTagUpdate represents bulk update for entity tags
+type EntityTagUpdate struct {
+	Tags []EntityTagAssignmentInput `json:"tags"`
+}
+
+// EntityPurposeInput represents input for assigning a purpose
+type EntityPurposeInput struct {
+	PurposeTagID uuid.UUID `json:"purpose_tag_id"`
+	IsPrimary    bool      `json:"is_primary"`
+}
+
+// EntityPurposeUpdate represents bulk update for purposes
+type EntityPurposeUpdate struct {
+	Purposes []EntityPurposeInput `json:"purposes"`
+}
+
+// EntityRelationship represents a relationship between entities
+type EntityRelationship struct {
+	EntityAID          uuid.UUID `json:"entity_a_id"`
+	EntityBID          uuid.UUID `json:"entity_b_id"`
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+}
+
+// EntityRelationshipInput represents input for creating an entity relationship
+type EntityRelationshipInput struct {
+	EntityBID          uuid.UUID `json:"entity_b_id"`
+	RelationshipTypeID uuid.UUID `json:"relationship_type_id"`
+}
+
+// EntityRelationshipUpdate represents bulk update for entity relationships
+type EntityRelationshipUpdate struct {
+	Relationships []EntityRelationshipInput `json:"relationships"`
+}
+
+// Context represents a semantic context
+type Context struct {
+	ID                 uuid.UUID `json:"id"`
+	Name               string    `json:"name"`
+	ClassificationType string    `json:"classification_type"`
+	Description        *string   `json:"description,omitempty"`
+	IsActive           bool      `json:"is_active"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+}
+
+// ContextInput represents input for creating or updating a context
+type ContextInput struct {
+	Name               string  `json:"name"`
+	ClassificationType string  `json:"classification_type"`
+	Description        *string `json:"description,omitempty"`
+	IsActive           bool    `json:"is_active"`
+}
+
+// PartOfSpeech represents a grammatical classification
+type PartOfSpeech struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description,omitempty"`
+	IsActive    bool      `json:"is_active"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// PartOfSpeechInput represents input for creating or updating a part of speech
+type PartOfSpeechInput struct {
+	Name        string  `json:"name"`
+	Description *string `json:"description,omitempty"`
+	IsActive    bool    `json:"is_active"`
+}
+
+// RatingType represents a category for ratings
+type RatingType struct {
+	ID           uuid.UUID `json:"id"`
+	Name         string    `json:"name"`
+	IsNormalized bool      `json:"is_normalized"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+// RatingTypeInput represents input for creating or updating a rating type
+type RatingTypeInput struct {
+	Name         string `json:"name"`
+	IsNormalized bool   `json:"is_normalized"`
+}
+
+// Rating represents a specific rating value
+type Rating struct {
+	ID           uuid.UUID `json:"id"`
+	Name         string    `json:"name"`
+	Score        int       `json:"score"`
+	Description  *string   `json:"description,omitempty"`
+	RatingTypeID uuid.UUID `json:"rating_type_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+// RatingInput represents input for creating or updating a rating
+type RatingInput struct {
+	Name         string    `json:"name"`
+	Score        int       `json:"score"`
+	Description  *string   `json:"description,omitempty"`
+	RatingTypeID uuid.UUID `json:"rating_type_id"`
+}
+
+// TagContextualRatingInput represents a rating applied to a tag
+type TagContextualRatingInput struct {
+	ID        uuid.UUID  `json:"id"`
+	ContextID uuid.UUID  `json:"context_id"`
+	RatingID  uuid.UUID  `json:"rating_id"`
+	UserID    *uuid.UUID `json:"user_id,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+}
+
+// EntityContextualRatingInput represents a rating applied to an entity
+type EntityContextualRatingInput struct {
+	ID        uuid.UUID  `json:"id"`
+	ContextID uuid.UUID  `json:"context_id"`
+	RatingID  uuid.UUID  `json:"rating_id"`
+	UserID    *uuid.UUID `json:"user_id,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+}
+
+// EntityContextualRatingUpdate represents update for entity ratings
+type EntityContextualRatingUpdate struct {
+	Rating  float64 `json:"rating"`
+	Context string  `json:"context"`
+}
+
+// ContextualRatingUpdate represents bulk update for tag ratings
+type ContextualRatingUpdate struct {
+	ContextualRatings []TagContextualRatingInput `json:"contextual_ratings"`
+}
+
+// TagRelationshipRatingInput represents a rating on a tag relationship
+type TagRelationshipRatingInput struct {
+	ID        uuid.UUID `json:"id"`
+	TagBID    uuid.UUID `json:"tag_b_id"`
+	ContextID uuid.UUID `json:"context_id"`
+	RatingID  uuid.UUID `json:"rating_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// EntityRelationshipRatingInput represents a rating on an entity relationship
+type EntityRelationshipRatingInput struct {
+	ID        uuid.UUID `json:"id"`
+	EntityBID uuid.UUID `json:"entity_b_id"`
+	ContextID uuid.UUID `json:"context_id"`
+	RatingID  uuid.UUID `json:"rating_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// EntityRelationshipRatingUpdate represents bulk update for entity relationship ratings
+type EntityRelationshipRatingUpdate struct {
+	RelationshipRatings []EntityRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// RelationshipRatingUpdate represents bulk update for tag relationship ratings
+type RelationshipRatingUpdate struct {
+	RelationshipRatings []TagRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// UiLayout represents a UI layout profile
+type UiLayout struct {
+	ID           uuid.UUID  `json:"id"`
+	PurposeTagID *uuid.UUID `json:"purpose_tag_id,omitempty"`
+	Name         string     `json:"name"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+}
+
+// UiLayoutInput represents input for creating or updating a UI layout
+type UiLayoutInput struct {
+	PurposeTagID *uuid.UUID `json:"purpose_tag_id,omitempty"`
+	Name         string     `json:"name"`
+}
+
+// UiGroup represents a UI group
+type UiGroup struct {
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// UiGroupInput represents input for creating or updating a UI group
+type UiGroupInput struct {
+	Name string `json:"name"`
+}
+
+// UiField represents a UI field
+type UiField struct {
+	ID            uuid.UUID  `json:"id"`
+	UiLayoutID    uuid.UUID  `json:"ui_layout_id"`
+	UiGroupID     uuid.UUID  `json:"ui_group_id"`
+	ContextID     *uuid.UUID `json:"context_id,omitempty"`
+	CategoryTagID *uuid.UUID `json:"category_tag_id,omitempty"`
+	SortOrder     int        `json:"sort_order"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+}
+
+// UiFieldInput represents input for creating or updating a UI field
+type UiFieldInput struct {
+	UiLayoutID    uuid.UUID  `json:"ui_layout_id"`
+	UiGroupID     uuid.UUID  `json:"ui_group_id"`
+	ContextID     *uuid.UUID `json:"context_id,omitempty"`
+	CategoryTagID *uuid.UUID `json:"category_tag_id,omitempty"`
+	SortOrder     int        `json:"sort_order"`
+}
+
+// Response wrappers
+
+// TagsGet200Response represents the response for GET /tags
+type TagsGet200Response struct {
+	Results []Tag `json:"results"`
+	Total   int   `json:"total"`
+}
+
+// EntitiesGet200Response represents the response for GET /entities
+type EntitiesGet200Response struct {
+	Results []Entity `json:"results"`
+	Total   int      `json:"total"`
+}
+
+// TagsIdAliasesGet200Response represents the response for GET /tags/{id}/aliases
+type TagsIdAliasesGet200Response struct {
+	Aliases []TagAlias `json:"aliases"`
+}
+
+// TagsIdRelationshipsGet200Response represents the response for GET /tags/{id}/relationships
+type TagsIdRelationshipsGet200Response struct {
+	Relationships []TagRelationship `json:"relationships"`
+}
+
+// TagsIdCompositionsGet200Response represents the response for GET /tags/{id}/compositions
+type TagsIdCompositionsGet200Response struct {
+	BaseTagID  uuid.UUID      `json:"base_tag_id"`
+	Components []TagComponent `json:"components"`
+}
+
+// TagCompositionsGet200Response represents the response for GET /tag-compositions
+type TagCompositionsGet200Response struct {
+	Compositions []TagComponent `json:"compositions"`
+}
+
+// TagsIdRatingsGet200Response represents the response for GET /tags/{id}/ratings
+type TagsIdRatingsGet200Response struct {
+	TagID   uuid.UUID                  `json:"tag_id"`
+	Ratings []TagContextualRatingInput `json:"ratings"`
+}
+
+// TagsIdRelationshipRatingsGet200Response represents the response for GET /tags/{id}/relationship_ratings
+type TagsIdRelationshipRatingsGet200Response struct {
+	TagAID              uuid.UUID                    `json:"tag_a_id"`
+	RelationshipRatings []TagRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// TagsIdRelationshipRatingsPatch200Response represents the response for PATCH /tags/{id}/relationship_ratings
+type TagsIdRelationshipRatingsPatch200Response struct {
+	TagAID  uuid.UUID                    `json:"tag_a_id"`
+	Ratings []TagRelationshipRatingInput `json:"ratings"`
+}
+
+// EntitiesIdTagsGet200Response represents the response for GET /entities/{id}/tags
+type EntitiesIdTagsGet200Response struct {
+	Tags []EntityTagAssignment `json:"tags"`
+}
+
+// EntitiesIdTagsPatch200Response represents the response for PATCH /entities/{id}/tags
+type EntitiesIdTagsPatch200Response struct {
+	EntityID uuid.UUID             `json:"entity_id"`
+	Tags     []EntityTagAssignment `json:"tags"`
+}
+
+// EntitiesIdPurposesGet200Response represents the response for GET /entities/{id}/purposes
+type EntitiesIdPurposesGet200Response struct {
+	Purposes []EntityPurposeInput `json:"purposes"`
+}
+
+// EntitiesIdPurposesPatch200Response represents the response for PATCH /entities/{id}/purposes
+type EntitiesIdPurposesPatch200Response struct {
+	Purposes []EntityPurposeInput `json:"purposes"`
+	EntityID uuid.UUID            `json:"entity_id"`
+}
+
+// EntitiesIdVersionsGet200Response represents the response for GET /entities/{id}/versions
+type EntitiesIdVersionsGet200Response struct {
+	Versions []Entity `json:"versions"`
+}
+
+// EntitiesIdVersionsPatch200Response represents the response for PATCH /entities/{id}/versions
+type EntitiesIdVersionsPatch200Response struct {
+	EntityAID uuid.UUID            `json:"entity_a_id"`
+	Versions  []EntityRelationship `json:"versions"`
+}
+
+// EntitiesIdRelationshipsGet200Response represents the response for GET /entities/{id}/relationships
+type EntitiesIdRelationshipsGet200Response struct {
+	Relationships []EntityRelationship `json:"relationships"`
+}
+
+// EntitiesIdRelationshipsPatch200Response represents the response for PATCH /entities/{id}/relationships
+type EntitiesIdRelationshipsPatch200Response struct {
+	EntityAID     uuid.UUID            `json:"entity_a_id"`
+	Relationships []EntityRelationship `json:"relationships"`
+}
+
+// EntitiesIdRatingsGet200Response represents the response for GET /entities/{id}/ratings
+type EntitiesIdRatingsGet200Response struct {
+	Ratings []EntityContextualRatingInput `json:"ratings"`
+}
+
+// EntitiesIdRatingsPatch200Response represents the response for PATCH /entities/{id}/ratings
+type EntitiesIdRatingsPatch200Response struct {
+	EntityID uuid.UUID                     `json:"entity_id"`
+	Ratings  []EntityContextualRatingInput `json:"ratings"`
+}
+
+// EntitiesIdRelationshipRatingsGet200Response represents the response for GET /entities/{id}/relationship_ratings
+type EntitiesIdRelationshipRatingsGet200Response struct {
+	RelationshipRatings []EntityRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// EntitiesIdRelationshipRatingsPatch200Response represents the response for PATCH /entities/{id}/relationship_ratings
+type EntitiesIdRelationshipRatingsPatch200Response struct {
+	EntityAID           uuid.UUID                       `json:"entity_a_id"`
+	RelationshipRatings []EntityRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// EntityVersionsGet200Response represents the response for GET /entity-versions
+type EntityVersionsGet200Response struct {
+	Versions []EntityRelationship `json:"versions"`
+}
+
+// EntityRelationshipsGet200Response represents the response for GET /entity-relationships
+type EntityRelationshipsGet200Response struct {
+	Relationships []EntityRelationship `json:"relationships"`
+}
+
+// EntityRelationshipRatingsGet200Response represents the response for GET /entity-relationship-ratings
+type EntityRelationshipRatingsGet200Response struct {
+	RelationshipRatings []EntityRelationshipRatingInput `json:"relationship_ratings"`
+}
+
+// EntityRatingsGet200Response represents the response for GET /entity-ratings
+type EntityRatingsGet200Response struct {
+	Ratings []EntityContextualRatingInput `json:"ratings"`
+}
+
+// EntityPurposesGet200Response represents the response for GET /entity-purposes
+type EntityPurposesGet200Response struct {
+	Purposes []EntityPurposeInput `json:"purposes"`
+}
+
+// ContextsGet200Response represents the response for GET /contexts
+type ContextsGet200Response struct {
+	Contexts []Context `json:"contexts"`
+}
+
+// PartsOfSpeechGet200Response represents the response for GET /parts-of-speech
+type PartsOfSpeechGet200Response struct {
+	PartsOfSpeech []PartOfSpeech `json:"parts_of_speech"`
+}
+
+// RatingsGet200Response represents the response for GET /ratings
+type RatingsGet200Response struct {
+	Ratings []Rating `json:"ratings"`
+}
+
+// RatingTypesGet200Response represents the response for GET /rating-types
+type RatingTypesGet200Response struct {
+	RatingTypes []RatingType `json:"rating_types"`
+}
+
+// UiLayoutsGet200Response represents the response for GET /ui/layouts
+type UiLayoutsGet200Response struct {
+	UiLayouts []UiLayout `json:"ui_layouts"`
+}
+
+// UiGroupsGet200Response represents the response for GET /ui/groups
+type UiGroupsGet200Response struct {
+	UiGroups []UiGroup `json:"ui_groups"`
+}
+
+// UiFieldsGet200Response represents the response for GET /ui/fields
+type UiFieldsGet200Response struct {
+	UiFields []UiField `json:"ui_fields"`
+}
+
+// TagsIdDelete200Response represents the response for DELETE operations
+type TagsIdDelete200Response struct {
+	Status string `json:"status"`
+}
