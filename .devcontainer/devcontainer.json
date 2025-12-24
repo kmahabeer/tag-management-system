@@ -28,7 +28,8 @@
         "ms-python.vscode-pylance",
         "ms-azuretools.vscode-docker",
         "ms-python.black-formatter",
-        "DavidAnson.vscode-markdownlint"
+        "DavidAnson.vscode-markdownlint",
+        "kilocode.kilo-code"
       ],
       "settings": {
         "python.defaultInterpreterPath": "./.venv/bin/python",
