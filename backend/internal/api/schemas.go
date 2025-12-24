@@ -826,3 +826,34 @@ func (t *TagsIdRelationshipRatingsRatingIdPatchRequest) Validate() error {
 	}
 	return nil
 }
+
+// LabelStudio-compatible structs for data import
+
+// LabelStudioData represents the data field in LabelStudio export
+type LabelStudioData struct {
+	Image string `json:"image"`
+}
+
+// LabelStudioValue represents the value field in annotations
+type LabelStudioValue struct {
+	Labels []string `json:"labels"`
+}
+
+// LabelStudioResult represents a single result in annotations
+type LabelStudioResult struct {
+	Value    LabelStudioValue `json:"value"`
+	FromName string           `json:"from_name"`
+	ToName   string           `json:"to_name"`
+	Type     string           `json:"type"`
+}
+
+// LabelStudioAnnotation represents an annotation
+type LabelStudioAnnotation struct {
+	Result []LabelStudioResult `json:"result"`
+}
+
+// LabelStudioExport represents the full LabelStudio export JSON
+type LabelStudioExport struct {
+	Data        LabelStudioData         `json:"data"`
+	Annotations []LabelStudioAnnotation `json:"annotations"`
+}

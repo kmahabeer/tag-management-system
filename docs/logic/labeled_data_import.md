@@ -18,6 +18,10 @@ This document describes the logic for importing labeled data from external tools
 
 **Input:** JSON export or webhook payload from an external annotation tool (e.g., Label Studio)
 
+### Integration with API Schemas
+
+The backend includes Go structs in `backend/internal/api/schemas.go` that are compatible with LabelStudio's JSON export format. These structs (`LabelStudioExport`, `LabelStudioAnnotation`, etc.) allow direct unmarshaling of LabelStudio payloads for processing.
+
 ### Example
 
 ```json
@@ -44,8 +48,9 @@ This document describes the logic for importing labeled data from external tools
 
 ### Action
 
-- Parse out the entity reference (e.g., image URL or ID)
-- Parse out the label values (e.g., "Red", "Car")
+- Unmarshal the JSON into `LabelStudioExport` struct
+- Parse out the entity reference (e.g., image URL or ID) from `Data.Image`
+- Parse out the label values (e.g., "Red", "Car") from `Annotations[].Result[].Value.Labels`
 - Capture any available metadata:
 	- Tool name (`label_studio`)
 	- Task ID / Annotation ID

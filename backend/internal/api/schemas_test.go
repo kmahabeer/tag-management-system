@@ -115,3 +115,43 @@ func TestTagJSONMarshaling(t *testing.T) {
 func stringPtr(s string) *string {
 	return &s
 }
+
+func TestLabelStudioExportJSONMarshaling(t *testing.T) {
+	export := LabelStudioExport{
+		Data: LabelStudioData{
+			Image: "https://example.com/image.jpg",
+		},
+		Annotations: []LabelStudioAnnotation{
+			{
+				Result: []LabelStudioResult{
+					{
+						Value: LabelStudioValue{
+							Labels: []string{"Red", "Car"},
+						},
+						FromName: "label",
+						ToName:   "image",
+						Type:     "choices",
+					},
+				},
+			},
+		},
+	}
+
+	data, err := json.Marshal(export)
+	if err != nil {
+		t.Fatalf("Failed to marshal LabelStudioExport: %v", err)
+	}
+
+	var unmarshaled LabelStudioExport
+	err = json.Unmarshal(data, &unmarshaled)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal LabelStudioExport: %v", err)
+	}
+
+	if unmarshaled.Data.Image != export.Data.Image {
+		t.Errorf("Image mismatch: got %v, want %v", unmarshaled.Data.Image, export.Data.Image)
+	}
+	if len(unmarshaled.Annotations[0].Result[0].Value.Labels) != 2 {
+		t.Errorf("Labels count mismatch")
+	}
+}
