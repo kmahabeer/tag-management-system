@@ -36,6 +36,16 @@ jobs:
         working-directory: backend
         run: go test -v -race -coverprofile=coverage.out ./...
 
+      - name: Check coverage
+        working-directory: backend
+        run: |
+          coverage=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          if (( $(echo "$coverage < 20.0" | bc -l) )); then
+            echo "Coverage $coverage% is below 20%"
+            exit 1
+          fi
+          echo "Coverage: $coverage%"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
