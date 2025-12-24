@@ -81,4 +81,4 @@ networks:
 volumes:
   postgres-data:
     name: tag-management-system_postgres_data
-    external: false
+    external: true
