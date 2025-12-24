@@ -1,20 +1,22 @@
-SPEC=openapi.yaml
+# Tag Management System - Build Targets
 
-.PHONY: validate schemas routes format run
+.PHONY: go-tidy go-build go-clean go-run go-rebuild
 
-validate:
-\topenapi-spec-validator $(SPEC)
+# Go module management
+go-tidy:
+	cd backend && go mod tidy
 
-schemas:
-\tdatamodel-codegen --input $(SPEC) --input-file-type openapi --output app/schemas/models.py --target-python-version 3.11 --reuse-model --strict-nullable
+# Build the Go server binary to bin/ directory
+go-build:
+	cd backend && mkdir -p bin && go build -o bin/server ./cmd/server
 
-routes:
-\tpython tools/generate_routes.py $(SPEC)
+# Clean build artifacts
+go-clean:
+	cd backend && rm -rf bin/
 
-format:
-\tpython -m black app tools && python -m isort app tools
+# Run the server (builds if needed)
+go-run: go-build
+	cd backend && ./bin/server
 
-run:
-\tuvicorn app.main:app --reload
-
-all: validate schemas routes format
+# Rebuild from scratch
+go-rebuild: go-clean go-build
