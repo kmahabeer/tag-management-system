@@ -40,7 +40,7 @@ The `backend/internal/api/converters.go` file provides functions to convert betw
 - `EntityToAPI(models.Entity) Entity`: Converts database Entity to API Entity
 - `EntityInputToDB(EntityInput) models.Entity`: Converts API EntityInput to database Entity
 
-These functions handle type conversions between nullable database fields (`sql.NullString`, `json.RawMessage`) and API fields (`*string`, `any`).
+These functions handle type conversions between nullable database fields (`sql.NullString`, `json.RawMessage`) and API fields (`*string`, `any`), using dedicated null handling utilities for robust conversion.
 
 ## Database Schema
 

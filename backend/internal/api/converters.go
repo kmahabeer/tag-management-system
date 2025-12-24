@@ -7,6 +7,43 @@ import (
 	"github.com/kmahabeer/tag-management-system/backend/internal/models"
 )
 
+// Null handling utilities
+
+// stringToNullString converts a *string to sql.NullString
+func stringToNullString(s *string) sql.NullString {
+	if s == nil {
+		return sql.NullString{Valid: false}
+	}
+	return sql.NullString{String: *s, Valid: true}
+}
+
+// nullStringToStringPtr converts sql.NullString to *string
+func nullStringToStringPtr(ns sql.NullString) *string {
+	if !ns.Valid {
+		return nil
+	}
+	return &ns.String
+}
+
+// metadataToRawMessage converts any to json.RawMessage, handling nil
+func metadataToRawMessage(metadata any) json.RawMessage {
+	if metadata == nil {
+		return nil
+	}
+	data, _ := json.Marshal(metadata)
+	return data
+}
+
+// rawMessageToAny converts json.RawMessage to any, handling null
+func rawMessageToAny(raw json.RawMessage) any {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil
+	}
+	var result any
+	json.Unmarshal(raw, &result)
+	return result
+}
+
 // Tag conversions
 
 // TagToAPI converts a database Tag model to API Tag schema
@@ -14,15 +51,13 @@ func TagToAPI(t models.Tag) Tag {
 	tag := Tag{
 		ID:             t.ID,
 		Name:           t.Name,
-		Metadata:       t.Metadata,
+		Metadata:       rawMessageToAny(t.Metadata),
 		PartOfSpeechID: t.PartOfSpeechID,
 		CreatedAt:      t.CreatedAt,
 		UpdatedAt:      t.UpdatedAt,
 	}
 
-	if t.DisplayName.Valid {
-		tag.DisplayName = &t.DisplayName.String
-	}
+	tag.DisplayName = nullStringToStringPtr(t.DisplayName)
 
 	// Note: Embedding field not in DB model yet, so omitted
 
@@ -36,14 +71,8 @@ func TagInputToDB(t TagInput) models.Tag {
 		PartOfSpeechID: t.PartOfSpeechID,
 	}
 
-	if t.DisplayName != nil {
-		tag.DisplayName = sql.NullString{String: *t.DisplayName, Valid: true}
-	}
-
-	if t.Metadata != nil {
-		metadata, _ := json.Marshal(t.Metadata)
-		tag.Metadata = metadata
-	}
+	tag.DisplayName = stringToNullString(t.DisplayName)
+	tag.Metadata = metadataToRawMessage(t.Metadata)
 
 	// Note: Embedding field not in DB model yet, so omitted
 
@@ -58,14 +87,12 @@ func EntityToAPI(e models.Entity) Entity {
 		ID:        e.ID,
 		Name:      e.Name,
 		IsPrimary: e.IsPrimary,
-		Metadata:  e.Metadata,
+		Metadata:  rawMessageToAny(e.Metadata),
 		CreatedAt: e.CreatedAt,
 		UpdatedAt: e.UpdatedAt,
 	}
 
-	if e.Location.Valid {
-		entity.Location = &e.Location.String
-	}
+	entity.Location = nullStringToStringPtr(e.Location)
 
 	// Note: Embedding field not in DB model yet, so omitted
 
@@ -79,14 +106,8 @@ func EntityInputToDB(e EntityInput) models.Entity {
 		IsPrimary: e.IsPrimary,
 	}
 
-	if e.Location != nil {
-		entity.Location = sql.NullString{String: *e.Location, Valid: true}
-	}
-
-	if e.Metadata != nil {
-		metadata, _ := json.Marshal(e.Metadata)
-		entity.Metadata = metadata
-	}
+	entity.Location = stringToNullString(e.Location)
+	entity.Metadata = metadataToRawMessage(e.Metadata)
 
 	// Note: Embedding field not in DB model yet, so omitted
 
