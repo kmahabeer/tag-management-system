@@ -4,7 +4,7 @@ services:
     container_name: tag-management-system_dev
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
-      - ..:/workspaces/tag-management-system:cached
+      - .:/workspaces/tag-management-system:cached
     entrypoint: []
     command: sleep infinity
     networks:
