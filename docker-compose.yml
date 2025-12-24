@@ -5,6 +5,7 @@ services:
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ..:/workspaces/tag-management-system:cached
+    entrypoint: []
     command: sleep infinity
     networks:
       - devnet
