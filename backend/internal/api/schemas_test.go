@@ -155,3 +155,34 @@ func TestLabelStudioExportJSONMarshaling(t *testing.T) {
 		t.Errorf("Labels count mismatch")
 	}
 }
+
+func TestVectorEmbeddingJSONMarshaling(t *testing.T) {
+	tag := Tag{
+		ID:             uuid.MustParse("a123e456-78b9-4cde-8123-456789abcdef"),
+		Name:           "dog",
+		DisplayName:    stringPtr("Dog"),
+		Metadata:       map[string]interface{}{"source": "Label Studio"},
+		PartOfSpeechID: uuid.MustParse("046b6c7f-0b8a-43b9-b35d-6489e6daee91"),
+		Embedding:      []float64{0.1, 0.2, 0.3, 0.4, 0.5}, // pgVector compatible
+		CreatedAt:      time.Date(2025, 10, 7, 12, 0, 0, 0, time.UTC),
+		UpdatedAt:      time.Date(2025, 10, 7, 12, 30, 0, 0, time.UTC),
+	}
+
+	data, err := json.Marshal(tag)
+	if err != nil {
+		t.Fatalf("Failed to marshal Tag with embedding: %v", err)
+	}
+
+	var unmarshaled Tag
+	err = json.Unmarshal(data, &unmarshaled)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal Tag with embedding: %v", err)
+	}
+
+	if len(unmarshaled.Embedding) != 5 {
+		t.Errorf("Embedding length mismatch: got %d, want 5", len(unmarshaled.Embedding))
+	}
+	if unmarshaled.Embedding[0] != 0.1 {
+		t.Errorf("Embedding[0] mismatch: got %v, want 0.1", unmarshaled.Embedding[0])
+	}
+}

@@ -27,6 +27,10 @@ The binary is output to `bin/server` and can be run directly: `./bin/server`
 
 API input structs include `Validate()` methods that enforce required fields and basic constraints as defined in the OpenAPI specification. These validations ensure data integrity before processing requests.
 
+### Vector Database Compatibility
+
+API schemas include optional `embedding` fields (`[]float64`) in `Tag`, `Entity`, `TagInput`, and `EntityInput` structs for compatibility with vector databases like pgVector. These fields allow storing and retrieving vector embeddings for similarity search and AI-powered features.
+
 ## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.

@@ -28,6 +28,7 @@ type Tag struct {
 	DisplayName    *string   `json:"display_name,omitempty"`
 	Metadata       any       `json:"metadata,omitempty"`
 	PartOfSpeechID uuid.UUID `json:"part_of_speech_id"`
+	Embedding      []float64 `json:"embedding,omitempty"` // pgVector compatible
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
@@ -38,6 +39,7 @@ type TagInput struct {
 	DisplayName    *string   `json:"display_name,omitempty"`
 	Metadata       any       `json:"metadata,omitempty"`
 	PartOfSpeechID uuid.UUID `json:"part_of_speech_id"`
+	Embedding      []float64 `json:"embedding,omitempty"` // pgVector compatible
 }
 
 // Validate checks if the TagInput is valid
@@ -134,16 +136,18 @@ type Entity struct {
 	Location  *string   `json:"location,omitempty"`
 	IsPrimary bool      `json:"is_primary"`
 	Metadata  any       `json:"metadata,omitempty"`
+	Embedding []float64 `json:"embedding,omitempty"` // pgVector compatible
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // EntityInput represents input for creating or updating an entity
 type EntityInput struct {
-	Name      string  `json:"name"`
-	Location  *string `json:"location,omitempty"`
-	IsPrimary bool    `json:"is_primary"`
-	Metadata  any     `json:"metadata,omitempty"`
+	Name      string    `json:"name"`
+	Location  *string   `json:"location,omitempty"`
+	IsPrimary bool      `json:"is_primary"`
+	Metadata  any       `json:"metadata,omitempty"`
+	Embedding []float64 `json:"embedding,omitempty"` // pgVector compatible
 }
 
 // Validate checks if the EntityInput is valid
