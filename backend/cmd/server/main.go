@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/kmahabeer/tag-management-system/backend/internal/handlers"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -34,10 +34,7 @@ func main() {
 	r.Use(corsMiddleware)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Get("/meta/health", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
-		})
+		r.Get("/meta/health", handlers.HealthCheck)
 	})
 
 	server := &http.Server{
