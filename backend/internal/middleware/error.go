@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type ErrorResponse struct {
@@ -30,5 +33,30 @@ func ErrorHandler(next http.Handler) http.Handler {
 			}
 		}()
 		next.ServeHTTP(w, r)
+	})
+}
+
+type responseWriter struct {
+	http.ResponseWriter
+	status int
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+	rw.status = code
+	rw.ResponseWriter.WriteHeader(code)
+}
+
+func LoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID := uuid.New().String()
+		r.Header.Set("X-Request-ID", requestID)
+
+		rw := &responseWriter{w, http.StatusOK}
+
+		start := time.Now()
+
+		next.ServeHTTP(rw, r)
+
+		log.Printf("%s %s %d %v %s", r.Method, r.URL.Path, rw.status, time.Since(start), requestID)
 	})
 }
