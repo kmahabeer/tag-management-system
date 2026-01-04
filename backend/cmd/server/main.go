@@ -10,8 +10,9 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/kmahabeer/tag-management-system/backend/internal/handlers"
+	"github.com/kmahabeer/tag-management-system/backend/internal/middleware"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -30,8 +31,9 @@ func corsMiddleware(next http.Handler) http.Handler {
 func main() {
 	r := chi.NewRouter()
 
-	r.Use(middleware.Logger)
+	r.Use(chiMiddleware.Logger)
 	r.Use(corsMiddleware)
+	r.Use(middleware.ErrorHandler)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/meta/health", handlers.HealthCheck)
