@@ -32,6 +32,7 @@ func main() {
 
 	r.Use(middleware.LoggingMiddleware)
 	r.Use(corsMiddleware)
+	r.Use(middleware.ValidationMiddleware)
 	r.Use(middleware.ErrorHandler)
 
 	r.Route("/api/v1", func(r chi.Router) {
