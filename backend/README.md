@@ -19,6 +19,7 @@ This is the Go backend for the Tag Management System, providing RESTful APIs for
 
 - To clean build artifacts: `make go-clean`
 - To rebuild from scratch: `make go-rebuild`
+- To run tests: `cd backend && go test ./...`
 - To run after building: `make go-run`
 
 The binary is output to `bin/server` and can be run directly: `./bin/server`
