@@ -1,4 +1,60 @@
-# Tag Management System - Database
+# Tag Management System - Backend
+
+This is the Go backend for the Tag Management System, providing RESTful APIs for managing tags, entities, relationships, and UI configurations.
+
+## Building and Running
+
+### Prerequisites
+
+- Go 1.25.5 or later
+- PostgreSQL database
+
+### Setup
+
+1. Ensure dependencies are installed: `make go-tidy`
+2. Build the server: `make go-build`
+3. Run the server: `make go-run`
+
+### Development Workflow
+
+- To clean build artifacts: `make go-clean`
+- To rebuild from scratch: `make go-rebuild`
+- To run tests: `cd backend && go test ./...`
+- To run after building: `make go-run`
+
+The binary is output to `bin/server` and can be run directly: `./bin/server`
+
+### Validation
+
+API input structs include `Validate()` methods that enforce required fields and basic constraints as defined in the OpenAPI specification. These validations ensure data integrity before processing requests.
+
+### Vector Database Compatibility
+
+API schemas include optional `embedding` fields (`[]float64`) in `Tag`, `Entity`, `TagInput`, and `EntityInput` structs for compatibility with vector databases like pgVector. These fields allow storing and retrieving vector embeddings for similarity search and AI-powered features.
+
+### Type Conversions
+
+The `backend/internal/api/converters.go` file provides functions to convert between database models and API schemas:
+
+- `TagToAPI(models.Tag) Tag`: Converts database Tag to API Tag
+- `TagInputToDB(TagInput) models.Tag`: Converts API TagInput to database Tag
+- `EntityToAPI(models.Entity) Entity`: Converts database Entity to API Entity
+- `EntityInputToDB(EntityInput) models.Entity`: Converts API EntityInput to database Entity
+
+These functions handle type conversions between nullable database fields (`sql.NullString`, `json.RawMessage`) and API fields (`*string`, `any`), using dedicated null handling utilities for robust conversion.
+
+### Data Transformation Utilities
+
+Additional utilities for transforming collections and responses:
+
+- `TagsToAPI([]models.Tag) []Tag`: Bulk converts database tags to API tags
+- `EntitiesToAPI([]models.Entity) []Entity`: Bulk converts database entities to API entities
+- `TransformToPaginatedTags([]models.Tag, int) PaginatedResponse`: Converts tags to paginated API response
+- `TransformToPaginatedEntities([]models.Entity, int) PaginatedResponse`: Converts entities to paginated API response
+
+These utilities streamline data transformation for API responses and bulk operations.
+
+## Database Schema
 
 The Tag Management System uses a PostgreSQL database schema designed to manage digital artifacts (entities), hierarchical and composite tags, contextual tagging, ratings, and UI configurations. The schema emphasizes semantic relationships, versioning, and flexible tagging to support workflows like content classification, annotation, and retrieval. Below is a detailed summary based on the SQL initialization script and documentation.
 

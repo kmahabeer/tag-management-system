@@ -4,7 +4,8 @@ services:
     container_name: tag-management-system_dev
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
-      - ..:/workspaces/tag-management-system:cached
+      - .:/workspaces/tag-management-system:cached
+    entrypoint: []
     command: sleep infinity
     networks:
       - devnet
@@ -17,7 +18,7 @@ services:
     container_name: tag-management-system_backend
     build:
       context: ./backend
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -28,13 +29,14 @@ services:
       - postgres_db
     volumes:
       - ./backend:/app
-    command: air -c .air.toml
+    command: go run ./cmd/server
 
   frontend:
     container_name: tag-management-system_frontend
     build:
       context: ./frontend
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile
+    user: root
     ports:
       - "5175:5175"
     networks:
@@ -81,4 +83,4 @@ networks:
 volumes:
   postgres-data:
     name: tag-management-system_postgres_data
-    external: false
+    external: true
