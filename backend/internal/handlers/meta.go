@@ -1,10 +1,7 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
-
-	"github.com/kmahabeer/tag-management-system/backend/internal/middleware"
 )
 
 type HealthResponse struct {
@@ -16,11 +13,5 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 		Status: "ok",
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		middleware.WriteError(w, http.StatusInternalServerError, "Internal server error", nil)
-		return
-	}
+	WriteJSON(w, http.StatusOK, response)
 }
