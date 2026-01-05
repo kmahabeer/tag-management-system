@@ -198,6 +198,13 @@
 - Add pagination and sorting
 - Optimize query performance
 
+### 9.4 Enhanced Request Validation
+
+- Add query parameter validation (limit, offset as non-negative integers)
+- Implement request body validation for required fields and data types
+- Validate enum path parameters (e.g., direction: outgoing/incoming)
+- Extend middleware without external dependencies
+
 ## Phase 10: Testing and Validation
 
 **Goal**: Ensure system reliability and API compatibility
