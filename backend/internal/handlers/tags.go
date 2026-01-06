@@ -16,7 +16,7 @@ func ListTags(w http.ResponseWriter, r *http.Request) {
 		Total:   0,
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTag(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +36,7 @@ func CreateTag(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, tag)
+	WriteJSON(w, r, http.StatusCreated, tag)
 }
 
 func GetTag(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func GetTag(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, tag)
+	WriteJSON(w, r, http.StatusOK, tag)
 }
 
 func UpdateTag(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +91,7 @@ func UpdateTag(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, tag)
+	WriteJSON(w, r, http.StatusOK, tag)
 }
 
 func DeleteTag(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +99,7 @@ func DeleteTag(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagAliases(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +107,7 @@ func ListTagAliases(w http.ResponseWriter, r *http.Request) {
 		Aliases: []api.TagAlias{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTagAlias(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +122,7 @@ func CreateTagAlias(w http.ResponseWriter, r *http.Request) {
 		TagID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusCreated, alias)
+	WriteJSON(w, r, http.StatusCreated, alias)
 }
 
 func UpdateTagAliases(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +135,7 @@ func UpdateTagAliases(w http.ResponseWriter, r *http.Request) {
 		Aliases: []api.TagAlias{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func DeleteTagAliases(w http.ResponseWriter, r *http.Request) {
@@ -143,7 +143,7 @@ func DeleteTagAliases(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetTagAlias(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +153,7 @@ func GetTagAlias(w http.ResponseWriter, r *http.Request) {
 		TagID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, alias)
+	WriteJSON(w, r, http.StatusOK, alias)
 }
 
 func UpdateTagAlias(w http.ResponseWriter, r *http.Request) {
@@ -168,7 +168,7 @@ func UpdateTagAlias(w http.ResponseWriter, r *http.Request) {
 		TagID: input.TagID,
 	}
 
-	WriteJSON(w, http.StatusOK, alias)
+	WriteJSON(w, r, http.StatusOK, alias)
 }
 
 func DeleteTagAlias(w http.ResponseWriter, r *http.Request) {
@@ -176,7 +176,7 @@ func DeleteTagAlias(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagAliasesSystem(w http.ResponseWriter, r *http.Request) {
@@ -184,7 +184,7 @@ func ListTagAliasesSystem(w http.ResponseWriter, r *http.Request) {
 		Aliases: []api.TagAlias{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTagAliasSystem(w http.ResponseWriter, r *http.Request) {
@@ -199,7 +199,7 @@ func CreateTagAliasSystem(w http.ResponseWriter, r *http.Request) {
 		TagID: input.TagID,
 	}
 
-	WriteJSON(w, http.StatusCreated, alias)
+	WriteJSON(w, r, http.StatusCreated, alias)
 }
 
 func GetTagAliasSystem(w http.ResponseWriter, r *http.Request) {
@@ -209,7 +209,7 @@ func GetTagAliasSystem(w http.ResponseWriter, r *http.Request) {
 		TagID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, alias)
+	WriteJSON(w, r, http.StatusOK, alias)
 }
 
 func UpdateTagAliasSystem(w http.ResponseWriter, r *http.Request) {
@@ -224,7 +224,7 @@ func UpdateTagAliasSystem(w http.ResponseWriter, r *http.Request) {
 		TagID: input.TagID,
 	}
 
-	WriteJSON(w, http.StatusOK, alias)
+	WriteJSON(w, r, http.StatusOK, alias)
 }
 
 func DeleteTagAliasSystem(w http.ResponseWriter, r *http.Request) {
@@ -232,7 +232,7 @@ func DeleteTagAliasSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagRelationships(w http.ResponseWriter, r *http.Request) {
@@ -268,7 +268,7 @@ func ListTagRelationshipsSystem(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.TagRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -285,7 +285,7 @@ func CreateTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Description:        input.Description,
 	}
 
-	WriteJSON(w, http.StatusCreated, relationship)
+	WriteJSON(w, r, http.StatusCreated, relationship)
 }
 
 func GetTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -297,7 +297,7 @@ func GetTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Description:        nil,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func UpdateTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -314,7 +314,7 @@ func UpdateTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Description:        input.Description,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func DeleteTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -322,7 +322,7 @@ func DeleteTagRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagCompositions(w http.ResponseWriter, r *http.Request) {
@@ -331,7 +331,7 @@ func ListTagCompositions(w http.ResponseWriter, r *http.Request) {
 		Components: []api.TagComponent{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTagComposition(w http.ResponseWriter, r *http.Request) {
@@ -349,7 +349,7 @@ func CreateTagComposition(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, component)
+	WriteJSON(w, r, http.StatusCreated, component)
 }
 
 func UpdateTagCompositions(w http.ResponseWriter, r *http.Request) {
@@ -363,7 +363,7 @@ func UpdateTagCompositions(w http.ResponseWriter, r *http.Request) {
 		Components: []api.TagComponent{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func DeleteTagCompositions(w http.ResponseWriter, r *http.Request) {
@@ -371,7 +371,7 @@ func DeleteTagCompositions(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetTagComposition(w http.ResponseWriter, r *http.Request) {
@@ -384,7 +384,7 @@ func GetTagComposition(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, component)
+	WriteJSON(w, r, http.StatusOK, component)
 }
 
 func UpdateTagComposition(w http.ResponseWriter, r *http.Request) {
@@ -402,7 +402,7 @@ func UpdateTagComposition(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, component)
+	WriteJSON(w, r, http.StatusOK, component)
 }
 
 func DeleteTagComposition(w http.ResponseWriter, r *http.Request) {
@@ -410,7 +410,7 @@ func DeleteTagComposition(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagCompositionsSystem(w http.ResponseWriter, r *http.Request) {
@@ -418,7 +418,7 @@ func ListTagCompositionsSystem(w http.ResponseWriter, r *http.Request) {
 		Compositions: []api.TagComponent{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
@@ -436,7 +436,7 @@ func CreateTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, component)
+	WriteJSON(w, r, http.StatusCreated, component)
 }
 
 func GetTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
@@ -449,7 +449,7 @@ func GetTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, component)
+	WriteJSON(w, r, http.StatusOK, component)
 }
 
 func UpdateTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
@@ -467,7 +467,7 @@ func UpdateTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, component)
+	WriteJSON(w, r, http.StatusOK, component)
 }
 
 func DeleteTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
@@ -475,7 +475,7 @@ func DeleteTagCompositionSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagRatings(w http.ResponseWriter, r *http.Request) {
@@ -484,7 +484,7 @@ func ListTagRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.TagContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateTagRatings(w http.ResponseWriter, r *http.Request) {
@@ -498,7 +498,7 @@ func UpdateTagRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.TagContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func DeleteTagRatings(w http.ResponseWriter, r *http.Request) {
@@ -506,7 +506,7 @@ func DeleteTagRatings(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetTagRating(w http.ResponseWriter, r *http.Request) {
@@ -519,7 +519,7 @@ func GetTagRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateTagRating(w http.ResponseWriter, r *http.Request) {
@@ -537,7 +537,7 @@ func UpdateTagRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteTagRating(w http.ResponseWriter, r *http.Request) {
@@ -545,7 +545,7 @@ func DeleteTagRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -554,7 +554,7 @@ func ListTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		RelationshipRatings: []api.TagRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -568,7 +568,7 @@ func UpdateTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.TagRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func DeleteTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -576,7 +576,7 @@ func DeleteTagRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -589,7 +589,7 @@ func GetTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -607,7 +607,7 @@ func UpdateTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -615,5 +615,5 @@ func DeleteTagRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }

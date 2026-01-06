@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,30 +11,28 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/kmahabeer/tag-management-system/backend/internal/config"
 	"github.com/kmahabeer/tag-management-system/backend/internal/handlers"
 	"github.com/kmahabeer/tag-management-system/backend/internal/middleware"
 )
 
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
+	cfg, _ := config.LoadConfig()
+
+	if err := middleware.InitLogger(cfg); err != nil {
+		log.Fatal(err)
+	}
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.LoggingMiddleware)
-	r.Use(corsMiddleware)
+	r.Use(middleware.RateLimitMiddleware(cfg.RateLimit))
+	r.Use(middleware.CORSMiddleware(cfg.CORS))
+	r.Use(middleware.SecurityHeadersMiddleware(cfg.Security))
 	r.Use(middleware.ValidationMiddleware)
 	r.Use(middleware.ErrorHandler)
+
+	r.Get("/metrics", handlers.MetricsHandler)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/meta/health", handlers.HealthCheck)
@@ -303,9 +302,10 @@ func main() {
 	}
 
 	go func() {
-		log.Println("Server starting on :8080")
+		slog.Info("Server starting", "addr", ":8080")
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal(err)
+			slog.Error("Server failed to start", "error", err)
+			os.Exit(1)
 		}
 	}()
 
@@ -313,14 +313,14 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	<-sigChan
-	log.Println("Shutting down server...")
+	slog.Info("Shutting down server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown: %v", err)
+		slog.Error("Server forced to shutdown", "error", err)
 	}
 
-	log.Println("Server exited")
+	slog.Info("Server exited")
 }

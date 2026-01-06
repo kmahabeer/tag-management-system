@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -16,7 +17,12 @@ func ListEntities(w http.ResponseWriter, r *http.Request) {
 		Total:   0,
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	slog.InfoContext(r.Context(), "Entities listed successfully",
+		"operation", "list_entities",
+		"total", response.Total,
+	)
+
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntity(w http.ResponseWriter, r *http.Request) {
@@ -36,17 +42,31 @@ func CreateEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, entity)
+	slog.InfoContext(r.Context(), "Entity created successfully",
+		"operation", "create_entity",
+		"entity_id", entity.ID,
+		"entity_name", entity.Name,
+	)
+
+	WriteJSON(w, r, http.StatusCreated, entity)
 }
 
 func GetEntity(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "get_entity",
+		)
 		return
 	}
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
 		return
 	}
 
@@ -61,17 +81,30 @@ func GetEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, entity)
+	slog.InfoContext(r.Context(), "Entity retrieved successfully",
+		"operation", "get_entity",
+		"entity_id", entity.ID,
+	)
+
+	WriteJSON(w, r, http.StatusOK, entity)
 }
 
 func UpdateEntity(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity",
+		)
 		return
 	}
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
 		return
 	}
 
@@ -91,43 +124,153 @@ func UpdateEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, entity)
+	slog.InfoContext(r.Context(), "Entity updated successfully",
+		"operation", "update_entity",
+		"entity_id", entity.ID,
+	)
+
+	WriteJSON(w, r, http.StatusOK, entity)
 }
 
 func DeleteEntity(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "delete_entity",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity deleted successfully",
+		"operation", "delete_entity",
+		"entity_id", id,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityTags(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "list_entity_tags",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "list_entity_tags",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	response := api.EntitiesIdTagsGet200Response{
 		Tags: []api.EntityTagAssignment{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	slog.InfoContext(r.Context(), "Entity tags listed successfully",
+		"operation", "list_entity_tags",
+		"entity_id", id,
+		"total_tags", len(response.Tags),
+	)
+
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityTags(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity_tags",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_tags",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntityTagUpdate
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.ErrorContext(r.Context(), "Failed to decode request body",
+			"operation", "update_entity_tags",
+			"entity_id", id,
+			"error", err,
+		)
 		return
 	}
 
 	response := api.EntitiesIdTagsPatch200Response{
-		EntityID: uuid.New(),
+		EntityID: id,
 		Tags:     []api.EntityTagAssignment{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	slog.InfoContext(r.Context(), "Entity tags updated successfully",
+		"operation", "update_entity_tags",
+		"entity_id", id,
+		"total_tags", len(response.Tags),
+	)
+
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityTag(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	tagIDStr := chi.URLParam(r, "tag_id")
+	if entityIDStr == "" || tagIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or tag ID in request",
+			"operation", "get_entity_tag",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity_tag",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	tagID, err := uuid.Parse(tagIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid tag ID format",
+			"operation", "get_entity_tag",
+			"tag_id_str", tagIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	tag := api.EntityTagAssignment{
 		Tag: api.Tag{
-			ID:             uuid.New(),
+			ID:             tagID,
 			Name:           "example",
 			DisplayName:    nil,
 			Metadata:       nil,
@@ -140,49 +283,207 @@ func GetEntityTag(w http.ResponseWriter, r *http.Request) {
 		Metadata:  nil,
 	}
 
-	WriteJSON(w, http.StatusOK, tag)
+	slog.InfoContext(r.Context(), "Entity tag retrieved successfully",
+		"operation", "get_entity_tag",
+		"entity_id", entityID,
+		"tag_id", tagID,
+	)
+
+	WriteJSON(w, r, http.StatusOK, tag)
 }
 
 func DeleteEntityTag(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	tagIDStr := chi.URLParam(r, "tag_id")
+	if entityIDStr == "" || tagIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or tag ID in request",
+			"operation", "delete_entity_tag",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity_tag",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	tagID, err := uuid.Parse(tagIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid tag ID format",
+			"operation", "delete_entity_tag",
+			"tag_id_str", tagIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity tag deleted successfully",
+		"operation", "delete_entity_tag",
+		"entity_id", entityID,
+		"tag_id", tagID,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityPurposes(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "list_entity_purposes",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "list_entity_purposes",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	response := api.EntitiesIdPurposesGet200Response{
 		Purposes: []api.EntityPurposeInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	slog.InfoContext(r.Context(), "Entity purposes listed successfully",
+		"operation", "list_entity_purposes",
+		"entity_id", id,
+		"total_purposes", len(response.Purposes),
+	)
+
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityPurposes(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity_purposes",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_purposes",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntityPurposeUpdate
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.ErrorContext(r.Context(), "Failed to decode request body",
+			"operation", "update_entity_purposes",
+			"entity_id", id,
+			"error", err,
+		)
 		return
 	}
 
 	response := api.EntitiesIdPurposesPatch200Response{
 		Purposes: []api.EntityPurposeInput{},
-		EntityID: uuid.New(),
+		EntityID: id,
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	slog.InfoContext(r.Context(), "Entity purposes updated successfully",
+		"operation", "update_entity_purposes",
+		"entity_id", id,
+		"total_purposes", len(response.Purposes),
+	)
+
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "get_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "get_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	purpose := api.EntityPurposeInput{
-		PurposeTagID: uuid.New(),
+		PurposeTagID: purposeID,
 		IsPrimary:    true,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	slog.InfoContext(r.Context(), "Entity purpose retrieved successfully",
+		"operation", "get_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
+
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "update_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "update_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntitiesIdPurposesPurposeIdPatchRequest
 	if err := DecodeAndValidate(r, &input); err != nil {
 		return
@@ -193,15 +494,56 @@ func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	slog.InfoContext(r.Context(), "Entity purpose updated successfully",
+		"operation", "update_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
+
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func DeleteEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "delete_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "delete_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity purpose deleted successfully",
+		"operation", "delete_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityVersions(w http.ResponseWriter, r *http.Request) {
@@ -209,7 +551,7 @@ func ListEntityVersions(w http.ResponseWriter, r *http.Request) {
 		Versions: []api.Entity{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityVersions(w http.ResponseWriter, r *http.Request) {
@@ -223,7 +565,7 @@ func UpdateEntityVersions(w http.ResponseWriter, r *http.Request) {
 		Versions:  []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -238,7 +580,7 @@ func GetEntityVersion(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func UpdateEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -253,7 +595,7 @@ func UpdateEntityVersion(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func DeleteEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -261,7 +603,7 @@ func DeleteEntityVersion(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRatings(w http.ResponseWriter, r *http.Request) {
@@ -269,7 +611,7 @@ func ListEntityRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRatings(w http.ResponseWriter, r *http.Request) {
@@ -283,7 +625,7 @@ func UpdateEntityRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings:  []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -296,7 +638,7 @@ func GetEntityRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -314,7 +656,7 @@ func UpdateEntityRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -322,7 +664,7 @@ func DeleteEntityRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationships(w http.ResponseWriter, r *http.Request) {
@@ -330,7 +672,7 @@ func ListEntityRelationships(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRelationships(w http.ResponseWriter, r *http.Request) {
@@ -344,7 +686,7 @@ func UpdateEntityRelationships(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -354,7 +696,7 @@ func GetEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func UpdateEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -369,7 +711,7 @@ func UpdateEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func DeleteEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -377,7 +719,7 @@ func DeleteEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -385,7 +727,7 @@ func ListEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -399,7 +741,7 @@ func UpdateEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -412,7 +754,7 @@ func GetEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -430,7 +772,7 @@ func UpdateEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -438,7 +780,7 @@ func DeleteEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipsSystem(w http.ResponseWriter, r *http.Request) {
@@ -446,7 +788,7 @@ func ListEntityRelationshipsSystem(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -461,7 +803,7 @@ func CreateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusCreated, relationship)
+	WriteJSON(w, r, http.StatusCreated, relationship)
 }
 
 func GetEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -471,7 +813,7 @@ func GetEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func UpdateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -486,7 +828,7 @@ func UpdateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func DeleteEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -494,7 +836,7 @@ func DeleteEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipRatingsSystem(w http.ResponseWriter, r *http.Request) {
@@ -502,7 +844,7 @@ func ListEntityRelationshipRatingsSystem(w http.ResponseWriter, r *http.Request)
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -520,7 +862,7 @@ func CreateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rating)
+	WriteJSON(w, r, http.StatusCreated, rating)
 }
 
 func GetEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -533,7 +875,7 @@ func GetEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -551,7 +893,7 @@ func UpdateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -559,7 +901,7 @@ func DeleteEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRatingsSystem(w http.ResponseWriter, r *http.Request) {
@@ -567,7 +909,7 @@ func ListEntityRatingsSystem(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -585,7 +927,7 @@ func CreateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rating)
+	WriteJSON(w, r, http.StatusCreated, rating)
 }
 
 func GetEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -598,7 +940,7 @@ func GetEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -616,7 +958,7 @@ func UpdateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -624,7 +966,7 @@ func DeleteEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityPurposesSystem(w http.ResponseWriter, r *http.Request) {
@@ -632,7 +974,7 @@ func ListEntityPurposesSystem(w http.ResponseWriter, r *http.Request) {
 		Purposes: []api.EntityPurposeInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -646,7 +988,7 @@ func CreateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
-	WriteJSON(w, http.StatusCreated, purpose)
+	WriteJSON(w, r, http.StatusCreated, purpose)
 }
 
 func GetEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -655,7 +997,7 @@ func GetEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    true,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func UpdateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -669,7 +1011,7 @@ func UpdateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func DeleteEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -677,7 +1019,7 @@ func DeleteEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityVersionsSystem(w http.ResponseWriter, r *http.Request) {
@@ -685,7 +1027,7 @@ func ListEntityVersionsSystem(w http.ResponseWriter, r *http.Request) {
 		Versions: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -700,7 +1042,7 @@ func CreateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusCreated, version)
+	WriteJSON(w, r, http.StatusCreated, version)
 }
 
 func GetEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -710,7 +1052,7 @@ func GetEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func UpdateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -725,7 +1067,7 @@ func UpdateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func DeleteEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -733,5 +1075,5 @@ func DeleteEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
