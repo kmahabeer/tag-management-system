@@ -10,28 +10,18 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/kmahabeer/tag-management-system/backend/internal/config"
 	"github.com/kmahabeer/tag-management-system/backend/internal/handlers"
 	"github.com/kmahabeer/tag-management-system/backend/internal/middleware"
 )
 
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
+	cfg, _ := config.LoadConfig()
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.LoggingMiddleware)
-	r.Use(corsMiddleware)
+	r.Use(middleware.CORSMiddleware(cfg.CORS))
 	r.Use(middleware.ValidationMiddleware)
 	r.Use(middleware.ErrorHandler)
 

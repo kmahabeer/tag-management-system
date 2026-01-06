@@ -2,12 +2,15 @@ package config
 
 import (
 	"os"
+	"strconv"
+	"strings"
 )
 
 // Config holds all configuration for the application
 type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
+	CORS     CORSConfig
 }
 
 // ServerConfig holds server-related configuration
@@ -27,6 +30,14 @@ type DatabaseConfig struct {
 	SSLMode    string
 }
 
+// CORSConfig holds CORS-related configuration
+type CORSConfig struct {
+	AllowedOrigins   []string
+	AllowedMethods   []string
+	AllowedHeaders   []string
+	AllowCredentials bool
+}
+
 // LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	return &Config{
@@ -43,7 +54,27 @@ func LoadConfig() (*Config, error) {
 			TestDBName: getEnv("DB_TEST_NAME", "app_test"),
 			SSLMode:    getEnv("DB_SSLMODE", "disable"),
 		},
+		CORS: CORSConfig{
+			AllowedOrigins:   parseStringSlice(getEnv("CORS_ALLOWED_ORIGINS", "*"), ","),
+			AllowedMethods:   parseStringSlice(getEnv("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS"), ","),
+			AllowedHeaders:   parseStringSlice(getEnv("CORS_ALLOWED_HEADERS", "*"), ","),
+			AllowCredentials: parseBool(getEnv("CORS_ALLOW_CREDENTIALS", "false")),
+		},
 	}, nil
+}
+
+// parseStringSlice parses a comma-separated string into a slice of strings
+func parseStringSlice(value, sep string) []string {
+	if value == "" {
+		return []string{}
+	}
+	return strings.Split(value, sep)
+}
+
+// parseBool parses a string into a boolean
+func parseBool(value string) bool {
+	result, _ := strconv.ParseBool(value)
+	return result
 }
 
 // getEnv gets an environment variable or returns a default value
