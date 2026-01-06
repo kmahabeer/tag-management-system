@@ -8,9 +8,10 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
-	CORS     CORSConfig
+	Server    ServerConfig
+	Database  DatabaseConfig
+	CORS      CORSConfig
+	RateLimit RateLimitConfig
 }
 
 // ServerConfig holds server-related configuration
@@ -38,6 +39,11 @@ type CORSConfig struct {
 	AllowCredentials bool
 }
 
+// RateLimitConfig holds rate limiting configuration
+type RateLimitConfig struct {
+	RequestsPerMinute int
+}
+
 // LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	return &Config{
@@ -60,6 +66,9 @@ func LoadConfig() (*Config, error) {
 			AllowedHeaders:   parseStringSlice(getEnv("CORS_ALLOWED_HEADERS", "*"), ","),
 			AllowCredentials: parseBool(getEnv("CORS_ALLOW_CREDENTIALS", "false")),
 		},
+		RateLimit: RateLimitConfig{
+			RequestsPerMinute: parseInt(getEnv("RATE_LIMIT_REQUESTS_PER_MINUTE", "60")),
+		},
 	}, nil
 }
 
@@ -74,6 +83,12 @@ func parseStringSlice(value, sep string) []string {
 // parseBool parses a string into a boolean
 func parseBool(value string) bool {
 	result, _ := strconv.ParseBool(value)
+	return result
+}
+
+// parseInt parses a string into an int
+func parseInt(value string) int {
+	result, _ := strconv.Atoi(value)
 	return result
 }
 

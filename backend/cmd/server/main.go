@@ -21,6 +21,7 @@ func main() {
 	r := chi.NewRouter()
 
 	r.Use(middleware.LoggingMiddleware)
+	r.Use(middleware.RateLimitMiddleware(cfg.RateLimit))
 	r.Use(middleware.CORSMiddleware(cfg.CORS))
 	r.Use(middleware.ValidationMiddleware)
 	r.Use(middleware.ErrorHandler)
