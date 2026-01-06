@@ -32,6 +32,8 @@ func main() {
 	r.Use(middleware.ValidationMiddleware)
 	r.Use(middleware.ErrorHandler)
 
+	r.Get("/metrics", handlers.MetricsHandler)
+
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/meta/health", handlers.HealthCheck)
 

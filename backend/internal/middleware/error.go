@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/kmahabeer/tag-management-system/backend/internal/metrics"
 )
 
 type contextKey string
@@ -76,6 +78,8 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(rw, r)
 
 		duration := time.Since(start)
+		metrics.Collector.RequestCount.WithLabelValues(r.Method, r.URL.Path, strconv.Itoa(rw.status)).Inc()
+		metrics.Collector.RequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration.Seconds())
 		slog.InfoContext(ctx, "Request completed",
 			"request_id", requestID,
 			"method", r.Method,

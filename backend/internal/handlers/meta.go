@@ -3,6 +3,8 @@ package handlers
 import (
 	"log/slog"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type HealthResponse struct {
@@ -19,4 +21,8 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	)
 
 	WriteJSON(w, r, http.StatusOK, response)
+}
+
+func MetricsHandler(w http.ResponseWriter, r *http.Request) {
+	promhttp.Handler().ServeHTTP(w, r)
 }
