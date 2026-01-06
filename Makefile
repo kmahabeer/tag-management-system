@@ -1,6 +1,6 @@
 # Tag Management System - Build Targets
 
-.PHONY: go-tidy go-build go-clean go-run go-rebuild
+.PHONY: go-tidy go-build go-clean go-run go-rebuild go-test
 
 # Go module management
 go-tidy:
@@ -20,3 +20,7 @@ go-run: go-build
 
 # Rebuild from scratch
 go-rebuild: go-clean go-build
+
+# Run all Go tests
+go-test:
+	cd backend && go test ./...

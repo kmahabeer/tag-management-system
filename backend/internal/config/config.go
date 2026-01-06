@@ -8,9 +8,12 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
-	CORS     CORSConfig
+	Server    ServerConfig
+	Database  DatabaseConfig
+	CORS      CORSConfig
+	RateLimit RateLimitConfig
+	Security  SecurityConfig
+	Logging   LoggingConfig
 }
 
 // ServerConfig holds server-related configuration
@@ -38,6 +41,32 @@ type CORSConfig struct {
 	AllowCredentials bool
 }
 
+// RateLimitConfig holds rate limiting configuration
+type RateLimitConfig struct {
+	RequestsPerMinute int
+}
+
+// SecurityConfig holds security-related configuration
+type SecurityConfig struct {
+	ContentSecurityPolicy   string
+	StrictTransportSecurity string
+	XContentTypeOptions     string
+	XFrameOptions           string
+	XXSSProtection          string
+	ReferrerPolicy          string
+	PermissionsPolicy       string
+	ServerHeader            string
+	RemoveXPoweredBy        bool
+	CacheControl            string
+}
+
+// LoggingConfig holds logging-related configuration
+type LoggingConfig struct {
+	Level  string
+	Format string
+	Output string
+}
+
 // LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	return &Config{
@@ -60,6 +89,26 @@ func LoadConfig() (*Config, error) {
 			AllowedHeaders:   parseStringSlice(getEnv("CORS_ALLOWED_HEADERS", "*"), ","),
 			AllowCredentials: parseBool(getEnv("CORS_ALLOW_CREDENTIALS", "false")),
 		},
+		RateLimit: RateLimitConfig{
+			RequestsPerMinute: parseInt(getEnv("RATE_LIMIT_REQUESTS_PER_MINUTE", "60")),
+		},
+		Security: SecurityConfig{
+			ContentSecurityPolicy:   getEnv("SECURITY_CONTENT_SECURITY_POLICY", "default-src 'self'"),
+			StrictTransportSecurity: getEnv("SECURITY_STRICT_TRANSPORT_SECURITY", "max-age=31536000; includeSubDomains"),
+			XContentTypeOptions:     getEnv("SECURITY_X_CONTENT_TYPE_OPTIONS", "nosniff"),
+			XFrameOptions:           getEnv("SECURITY_X_FRAME_OPTIONS", "DENY"),
+			XXSSProtection:          getEnv("SECURITY_X_XSS_PROTECTION", "1; mode=block"),
+			ReferrerPolicy:          getEnv("SECURITY_REFERRER_POLICY", "strict-origin-when-cross-origin"),
+			PermissionsPolicy:       getEnv("SECURITY_PERMISSIONS_POLICY", ""),
+			ServerHeader:            getEnv("SECURITY_SERVER_HEADER", ""),
+			RemoveXPoweredBy:        parseBool(getEnv("SECURITY_REMOVE_X_POWERED_BY", "true")),
+			CacheControl:            getEnv("SECURITY_CACHE_CONTROL", "no-cache, no-store, must-revalidate"),
+		},
+		Logging: LoggingConfig{
+			Level:  getEnv("LOG_LEVEL", "info"),
+			Format: getEnv("LOG_FORMAT", "json"),
+			Output: getEnv("LOG_OUTPUT", "stdout"),
+		},
 	}, nil
 }
 
@@ -74,6 +123,12 @@ func parseStringSlice(value, sep string) []string {
 // parseBool parses a string into a boolean
 func parseBool(value string) bool {
 	result, _ := strconv.ParseBool(value)
+	return result
+}
+
+// parseInt parses a string into an int
+func parseInt(value string) int {
+	result, _ := strconv.Atoi(value)
 	return result
 }
 
