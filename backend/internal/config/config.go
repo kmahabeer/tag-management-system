@@ -13,6 +13,7 @@ type Config struct {
 	CORS      CORSConfig
 	RateLimit RateLimitConfig
 	Security  SecurityConfig
+	Logging   LoggingConfig
 }
 
 // ServerConfig holds server-related configuration
@@ -59,6 +60,13 @@ type SecurityConfig struct {
 	CacheControl            string
 }
 
+// LoggingConfig holds logging-related configuration
+type LoggingConfig struct {
+	Level  string
+	Format string
+	Output string
+}
+
 // LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	return &Config{
@@ -95,6 +103,11 @@ func LoadConfig() (*Config, error) {
 			ServerHeader:            getEnv("SECURITY_SERVER_HEADER", ""),
 			RemoveXPoweredBy:        parseBool(getEnv("SECURITY_REMOVE_X_POWERED_BY", "true")),
 			CacheControl:            getEnv("SECURITY_CACHE_CONTROL", "no-cache, no-store, must-revalidate"),
+		},
+		Logging: LoggingConfig{
+			Level:  getEnv("LOG_LEVEL", "info"),
+			Format: getEnv("LOG_FORMAT", "json"),
+			Output: getEnv("LOG_OUTPUT", "stdout"),
 		},
 	}, nil
 }

@@ -1,13 +1,25 @@
 package middleware
 
 import (
+	"context"
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type contextKey string
+
+const requestIDKey contextKey = "request_id"
+
+func getRequestID(ctx context.Context) string {
+	if id, ok := ctx.Value(requestIDKey).(string); ok {
+		return id
+	}
+	return ""
+}
 
 type ErrorResponse struct {
 	Code    int    `json:"code"`
@@ -28,7 +40,11 @@ func ErrorHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("Panic recovered: %v", err)
+				requestID := getRequestID(r.Context())
+				slog.ErrorContext(r.Context(), "Panic recovered",
+					"request_id", requestID,
+					"error", err,
+				)
 				WriteError(w, http.StatusInternalServerError, "Internal server error", nil)
 			}
 		}()
@@ -50,6 +66,8 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID := uuid.New().String()
 		r.Header.Set("X-Request-ID", requestID)
+		ctx := context.WithValue(r.Context(), requestIDKey, requestID)
+		r = r.WithContext(ctx)
 
 		rw := &responseWriter{w, http.StatusOK}
 
@@ -57,6 +75,13 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 		next.ServeHTTP(rw, r)
 
-		log.Printf("%s %s %d %v %s", r.Method, r.URL.Path, rw.status, time.Since(start), requestID)
+		duration := time.Since(start)
+		slog.InfoContext(ctx, "Request completed",
+			"request_id", requestID,
+			"method", r.Method,
+			"path", r.URL.Path,
+			"status", rw.status,
+			"duration", duration,
+		)
 	})
 }

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 	"sync"
@@ -80,6 +81,15 @@ func RateLimitMiddleware(rateLimitConfig config.RateLimitConfig) func(http.Handl
 
 			allowed, waitTime := limiter.Allow(ip)
 			if !allowed {
+				requestID := getRequestID(r.Context())
+				slog.WarnContext(r.Context(), "Rate limit exceeded",
+					"request_id", requestID,
+					"ip", ip,
+					"method", r.Method,
+					"path", r.URL.Path,
+					"wait_time", waitTime,
+				)
+
 				// Return 429 Too Many Requests
 				w.Header().Set("Retry-After", waitTime.Round(time.Second).String())
 				w.Header().Set("X-RateLimit-Limit", fmt.Sprintf("%d", rateLimitConfig.RequestsPerMinute))

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -12,6 +13,11 @@ func ListUILayouts(w http.ResponseWriter, r *http.Request) {
 	response := api.UiLayoutsGet200Response{
 		UiLayouts: []api.UiLayout{},
 	}
+
+	slog.InfoContext(r.Context(), "UI layouts listed successfully",
+		"operation", "list_ui_layouts",
+		"total_layouts", len(response.UiLayouts),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
@@ -29,6 +35,12 @@ func CreateUILayout(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
+
+	slog.InfoContext(r.Context(), "UI layout created successfully",
+		"operation", "create_ui_layout",
+		"layout_id", layout.ID,
+		"layout_name", layout.Name,
+	)
 
 	WriteJSON(w, http.StatusCreated, layout)
 }

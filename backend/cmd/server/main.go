@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,6 +18,10 @@ import (
 
 func main() {
 	cfg, _ := config.LoadConfig()
+
+	if err := middleware.InitLogger(cfg); err != nil {
+		log.Fatal(err)
+	}
 
 	r := chi.NewRouter()
 
@@ -295,9 +300,10 @@ func main() {
 	}
 
 	go func() {
-		log.Println("Server starting on :8080")
+		slog.Info("Server starting", "addr", ":8080")
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal(err)
+			slog.Error("Server failed to start", "error", err)
+			os.Exit(1)
 		}
 	}()
 
@@ -305,14 +311,14 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	<-sigChan
-	log.Println("Shutting down server...")
+	slog.Info("Shutting down server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown: %v", err)
+		slog.Error("Server forced to shutdown", "error", err)
 	}
 
-	log.Println("Server exited")
+	slog.Info("Server exited")
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -15,6 +16,11 @@ func ListEntities(w http.ResponseWriter, r *http.Request) {
 		Results: []api.Entity{},
 		Total:   0,
 	}
+
+	slog.InfoContext(r.Context(), "Entities listed successfully",
+		"operation", "list_entities",
+		"total", response.Total,
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
@@ -36,17 +42,31 @@ func CreateEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
+	slog.InfoContext(r.Context(), "Entity created successfully",
+		"operation", "create_entity",
+		"entity_id", entity.ID,
+		"entity_name", entity.Name,
+	)
+
 	WriteJSON(w, http.StatusCreated, entity)
 }
 
 func GetEntity(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "get_entity",
+		)
 		return
 	}
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
 		return
 	}
 
@@ -61,17 +81,30 @@ func GetEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
+	slog.InfoContext(r.Context(), "Entity retrieved successfully",
+		"operation", "get_entity",
+		"entity_id", entity.ID,
+	)
+
 	WriteJSON(w, http.StatusOK, entity)
 }
 
 func UpdateEntity(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity",
+		)
 		return
 	}
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
 		return
 	}
 
@@ -91,10 +124,38 @@ func UpdateEntity(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
+	slog.InfoContext(r.Context(), "Entity updated successfully",
+		"operation", "update_entity",
+		"entity_id", entity.ID,
+	)
+
 	WriteJSON(w, http.StatusOK, entity)
 }
 
 func DeleteEntity(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "delete_entity",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity deleted successfully",
+		"operation", "delete_entity",
+		"entity_id", id,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}
@@ -103,31 +164,113 @@ func DeleteEntity(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListEntityTags(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "list_entity_tags",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "list_entity_tags",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	response := api.EntitiesIdTagsGet200Response{
 		Tags: []api.EntityTagAssignment{},
 	}
+
+	slog.InfoContext(r.Context(), "Entity tags listed successfully",
+		"operation", "list_entity_tags",
+		"entity_id", id,
+		"total_tags", len(response.Tags),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
 
 func UpdateEntityTags(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity_tags",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_tags",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntityTagUpdate
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.ErrorContext(r.Context(), "Failed to decode request body",
+			"operation", "update_entity_tags",
+			"entity_id", id,
+			"error", err,
+		)
 		return
 	}
 
 	response := api.EntitiesIdTagsPatch200Response{
-		EntityID: uuid.New(),
+		EntityID: id,
 		Tags:     []api.EntityTagAssignment{},
 	}
+
+	slog.InfoContext(r.Context(), "Entity tags updated successfully",
+		"operation", "update_entity_tags",
+		"entity_id", id,
+		"total_tags", len(response.Tags),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
 
 func GetEntityTag(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	tagIDStr := chi.URLParam(r, "tag_id")
+	if entityIDStr == "" || tagIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or tag ID in request",
+			"operation", "get_entity_tag",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity_tag",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	tagID, err := uuid.Parse(tagIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid tag ID format",
+			"operation", "get_entity_tag",
+			"tag_id_str", tagIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	tag := api.EntityTagAssignment{
 		Tag: api.Tag{
-			ID:             uuid.New(),
+			ID:             tagID,
 			Name:           "example",
 			DisplayName:    nil,
 			Metadata:       nil,
@@ -140,10 +283,51 @@ func GetEntityTag(w http.ResponseWriter, r *http.Request) {
 		Metadata:  nil,
 	}
 
+	slog.InfoContext(r.Context(), "Entity tag retrieved successfully",
+		"operation", "get_entity_tag",
+		"entity_id", entityID,
+		"tag_id", tagID,
+	)
+
 	WriteJSON(w, http.StatusOK, tag)
 }
 
 func DeleteEntityTag(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	tagIDStr := chi.URLParam(r, "tag_id")
+	if entityIDStr == "" || tagIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or tag ID in request",
+			"operation", "delete_entity_tag",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity_tag",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	tagID, err := uuid.Parse(tagIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid tag ID format",
+			"operation", "delete_entity_tag",
+			"tag_id_str", tagIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity tag deleted successfully",
+		"operation", "delete_entity_tag",
+		"entity_id", entityID,
+		"tag_id", tagID,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}
@@ -152,37 +336,154 @@ func DeleteEntityTag(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListEntityPurposes(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "list_entity_purposes",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "list_entity_purposes",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	response := api.EntitiesIdPurposesGet200Response{
 		Purposes: []api.EntityPurposeInput{},
 	}
+
+	slog.InfoContext(r.Context(), "Entity purposes listed successfully",
+		"operation", "list_entity_purposes",
+		"entity_id", id,
+		"total_purposes", len(response.Purposes),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
 
 func UpdateEntityPurposes(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID in request",
+			"operation", "update_entity_purposes",
+		)
+		return
+	}
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_purposes",
+			"entity_id_str", idStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntityPurposeUpdate
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		slog.ErrorContext(r.Context(), "Failed to decode request body",
+			"operation", "update_entity_purposes",
+			"entity_id", id,
+			"error", err,
+		)
 		return
 	}
 
 	response := api.EntitiesIdPurposesPatch200Response{
 		Purposes: []api.EntityPurposeInput{},
-		EntityID: uuid.New(),
+		EntityID: id,
 	}
+
+	slog.InfoContext(r.Context(), "Entity purposes updated successfully",
+		"operation", "update_entity_purposes",
+		"entity_id", id,
+		"total_purposes", len(response.Purposes),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
 
 func GetEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "get_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "get_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "get_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	purpose := api.EntityPurposeInput{
-		PurposeTagID: uuid.New(),
+		PurposeTagID: purposeID,
 		IsPrimary:    true,
 	}
+
+	slog.InfoContext(r.Context(), "Entity purpose retrieved successfully",
+		"operation", "get_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
 
 	WriteJSON(w, http.StatusOK, purpose)
 }
 
 func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "update_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "update_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "update_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
 	var input api.EntitiesIdPurposesPurposeIdPatchRequest
 	if err := DecodeAndValidate(r, &input); err != nil {
 		return
@@ -193,10 +494,51 @@ func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
+	slog.InfoContext(r.Context(), "Entity purpose updated successfully",
+		"operation", "update_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
+
 	WriteJSON(w, http.StatusOK, purpose)
 }
 
 func DeleteEntityPurpose(w http.ResponseWriter, r *http.Request) {
+	entityIDStr := chi.URLParam(r, "id")
+	purposeIDStr := chi.URLParam(r, "purpose_id")
+	if entityIDStr == "" || purposeIDStr == "" {
+		slog.WarnContext(r.Context(), "Missing entity ID or purpose ID in request",
+			"operation", "delete_entity_purpose",
+		)
+		return
+	}
+
+	entityID, err := uuid.Parse(entityIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid entity ID format",
+			"operation", "delete_entity_purpose",
+			"entity_id_str", entityIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	purposeID, err := uuid.Parse(purposeIDStr)
+	if err != nil {
+		slog.ErrorContext(r.Context(), "Invalid purpose ID format",
+			"operation", "delete_entity_purpose",
+			"purpose_id_str", purposeIDStr,
+			"error", err,
+		)
+		return
+	}
+
+	slog.InfoContext(r.Context(), "Entity purpose deleted successfully",
+		"operation", "delete_entity_purpose",
+		"entity_id", entityID,
+		"purpose_id", purposeID,
+	)
+
 	response := api.TagsIdDelete200Response{
 		Status: "deleted",
 	}

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log/slog"
 	"net/http"
 )
 
@@ -12,6 +13,10 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	response := HealthResponse{
 		Status: "ok",
 	}
+
+	slog.InfoContext(r.Context(), "Health check performed successfully",
+		"operation", "health_check",
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }

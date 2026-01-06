@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -12,6 +13,11 @@ func ListContexts(w http.ResponseWriter, r *http.Request) {
 	response := api.ContextsGet200Response{
 		Contexts: []api.Context{},
 	}
+
+	slog.InfoContext(r.Context(), "Contexts listed successfully",
+		"operation", "list_contexts",
+		"total_contexts", len(response.Contexts),
+	)
 
 	WriteJSON(w, http.StatusOK, response)
 }
@@ -31,6 +37,12 @@ func CreateContext(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:          time.Now(),
 		UpdatedAt:          time.Now(),
 	}
+
+	slog.InfoContext(r.Context(), "Context created successfully",
+		"operation", "create_context",
+		"context_id", context.ID,
+		"context_name", context.Name,
+	)
 
 	WriteJSON(w, http.StatusCreated, context)
 }
