@@ -12,11 +12,11 @@ type Validatable interface {
 	Validate() error
 }
 
-func WriteJSON(w http.ResponseWriter, status int, data any) error {
+func WriteJSON(w http.ResponseWriter, r *http.Request, status int, data any) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		slog.Error("Failed to encode JSON response",
+		slog.ErrorContext(r.Context(), "Failed to encode JSON response",
 			"operation", "encode_response",
 			"status", status,
 			"error", err,

@@ -18,5 +18,5 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"operation", "health_check",
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }

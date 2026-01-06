@@ -19,7 +19,7 @@ func ListContexts(w http.ResponseWriter, r *http.Request) {
 		"total_contexts", len(response.Contexts),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateContext(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +44,7 @@ func CreateContext(w http.ResponseWriter, r *http.Request) {
 		"context_name", context.Name,
 	)
 
-	WriteJSON(w, http.StatusCreated, context)
+	WriteJSON(w, r, http.StatusCreated, context)
 }
 
 func GetContext(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +58,7 @@ func GetContext(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:          time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, context)
+	WriteJSON(w, r, http.StatusOK, context)
 }
 
 func UpdateContext(w http.ResponseWriter, r *http.Request) {
@@ -77,7 +77,7 @@ func UpdateContext(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:          time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, context)
+	WriteJSON(w, r, http.StatusOK, context)
 }
 
 func DeleteContext(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +85,7 @@ func DeleteContext(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListPartsOfSpeech(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +93,7 @@ func ListPartsOfSpeech(w http.ResponseWriter, r *http.Request) {
 		PartsOfSpeech: []api.PartOfSpeech{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreatePartOfSpeech(w http.ResponseWriter, r *http.Request) {
@@ -111,7 +111,7 @@ func CreatePartOfSpeech(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, pos)
+	WriteJSON(w, r, http.StatusCreated, pos)
 }
 
 func GetPartOfSpeech(w http.ResponseWriter, r *http.Request) {
@@ -124,7 +124,7 @@ func GetPartOfSpeech(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, pos)
+	WriteJSON(w, r, http.StatusOK, pos)
 }
 
 func UpdatePartOfSpeech(w http.ResponseWriter, r *http.Request) {
@@ -142,7 +142,7 @@ func UpdatePartOfSpeech(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, pos)
+	WriteJSON(w, r, http.StatusOK, pos)
 }
 
 func DeletePartOfSpeech(w http.ResponseWriter, r *http.Request) {
@@ -150,7 +150,7 @@ func DeletePartOfSpeech(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListRatings(w http.ResponseWriter, r *http.Request) {
@@ -158,7 +158,7 @@ func ListRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.Rating{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateRating(w http.ResponseWriter, r *http.Request) {
@@ -177,7 +177,7 @@ func CreateRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rating)
+	WriteJSON(w, r, http.StatusCreated, rating)
 }
 
 func GetRating(w http.ResponseWriter, r *http.Request) {
@@ -191,7 +191,7 @@ func GetRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateRating(w http.ResponseWriter, r *http.Request) {
@@ -210,7 +210,7 @@ func UpdateRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteRating(w http.ResponseWriter, r *http.Request) {
@@ -218,7 +218,7 @@ func DeleteRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListRatingTypes(w http.ResponseWriter, r *http.Request) {
@@ -226,7 +226,7 @@ func ListRatingTypes(w http.ResponseWriter, r *http.Request) {
 		RatingTypes: []api.RatingType{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateRatingType(w http.ResponseWriter, r *http.Request) {
@@ -243,7 +243,7 @@ func CreateRatingType(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rt)
+	WriteJSON(w, r, http.StatusCreated, rt)
 }
 
 func GetRatingType(w http.ResponseWriter, r *http.Request) {
@@ -255,7 +255,7 @@ func GetRatingType(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rt)
+	WriteJSON(w, r, http.StatusOK, rt)
 }
 
 func UpdateRatingType(w http.ResponseWriter, r *http.Request) {
@@ -272,7 +272,7 @@ func UpdateRatingType(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rt)
+	WriteJSON(w, r, http.StatusOK, rt)
 }
 
 func DeleteRatingType(w http.ResponseWriter, r *http.Request) {
@@ -280,5 +280,5 @@ func DeleteRatingType(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }

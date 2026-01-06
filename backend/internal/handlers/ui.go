@@ -19,7 +19,7 @@ func ListUILayouts(w http.ResponseWriter, r *http.Request) {
 		"total_layouts", len(response.UiLayouts),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateUILayout(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func CreateUILayout(w http.ResponseWriter, r *http.Request) {
 		"layout_name", layout.Name,
 	)
 
-	WriteJSON(w, http.StatusCreated, layout)
+	WriteJSON(w, r, http.StatusCreated, layout)
 }
 
 func GetUILayout(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func GetUILayout(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, layout)
+	WriteJSON(w, r, http.StatusOK, layout)
 }
 
 func UpdateUILayout(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +71,7 @@ func UpdateUILayout(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:    time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, layout)
+	WriteJSON(w, r, http.StatusOK, layout)
 }
 
 func DeleteUILayout(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ func DeleteUILayout(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListUIGroups(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +87,7 @@ func ListUIGroups(w http.ResponseWriter, r *http.Request) {
 		UiGroups: []api.UiGroup{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateUIGroup(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +103,7 @@ func CreateUIGroup(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, group)
+	WriteJSON(w, r, http.StatusCreated, group)
 }
 
 func GetUIGroup(w http.ResponseWriter, r *http.Request) {
@@ -114,7 +114,7 @@ func GetUIGroup(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, group)
+	WriteJSON(w, r, http.StatusOK, group)
 }
 
 func UpdateUIGroup(w http.ResponseWriter, r *http.Request) {
@@ -130,7 +130,7 @@ func UpdateUIGroup(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, group)
+	WriteJSON(w, r, http.StatusOK, group)
 }
 
 func DeleteUIGroup(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +138,7 @@ func DeleteUIGroup(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListUIFields(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +146,7 @@ func ListUIFields(w http.ResponseWriter, r *http.Request) {
 		UiFields: []api.UiField{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateUIField(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +166,7 @@ func CreateUIField(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:     time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, field)
+	WriteJSON(w, r, http.StatusCreated, field)
 }
 
 func GetUIField(w http.ResponseWriter, r *http.Request) {
@@ -181,7 +181,7 @@ func GetUIField(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:     time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, field)
+	WriteJSON(w, r, http.StatusOK, field)
 }
 
 func UpdateUIField(w http.ResponseWriter, r *http.Request) {
@@ -201,7 +201,7 @@ func UpdateUIField(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:     time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, field)
+	WriteJSON(w, r, http.StatusOK, field)
 }
 
 func DeleteUIField(w http.ResponseWriter, r *http.Request) {
@@ -209,5 +209,5 @@ func DeleteUIField(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }

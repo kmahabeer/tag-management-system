@@ -22,7 +22,7 @@ func ListEntities(w http.ResponseWriter, r *http.Request) {
 		"total", response.Total,
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntity(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func CreateEntity(w http.ResponseWriter, r *http.Request) {
 		"entity_name", entity.Name,
 	)
 
-	WriteJSON(w, http.StatusCreated, entity)
+	WriteJSON(w, r, http.StatusCreated, entity)
 }
 
 func GetEntity(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +86,7 @@ func GetEntity(w http.ResponseWriter, r *http.Request) {
 		"entity_id", entity.ID,
 	)
 
-	WriteJSON(w, http.StatusOK, entity)
+	WriteJSON(w, r, http.StatusOK, entity)
 }
 
 func UpdateEntity(w http.ResponseWriter, r *http.Request) {
@@ -129,7 +129,7 @@ func UpdateEntity(w http.ResponseWriter, r *http.Request) {
 		"entity_id", entity.ID,
 	)
 
-	WriteJSON(w, http.StatusOK, entity)
+	WriteJSON(w, r, http.StatusOK, entity)
 }
 
 func DeleteEntity(w http.ResponseWriter, r *http.Request) {
@@ -160,7 +160,7 @@ func DeleteEntity(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityTags(w http.ResponseWriter, r *http.Request) {
@@ -192,7 +192,7 @@ func ListEntityTags(w http.ResponseWriter, r *http.Request) {
 		"total_tags", len(response.Tags),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityTags(w http.ResponseWriter, r *http.Request) {
@@ -235,7 +235,7 @@ func UpdateEntityTags(w http.ResponseWriter, r *http.Request) {
 		"total_tags", len(response.Tags),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityTag(w http.ResponseWriter, r *http.Request) {
@@ -289,7 +289,7 @@ func GetEntityTag(w http.ResponseWriter, r *http.Request) {
 		"tag_id", tagID,
 	)
 
-	WriteJSON(w, http.StatusOK, tag)
+	WriteJSON(w, r, http.StatusOK, tag)
 }
 
 func DeleteEntityTag(w http.ResponseWriter, r *http.Request) {
@@ -332,7 +332,7 @@ func DeleteEntityTag(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityPurposes(w http.ResponseWriter, r *http.Request) {
@@ -364,7 +364,7 @@ func ListEntityPurposes(w http.ResponseWriter, r *http.Request) {
 		"total_purposes", len(response.Purposes),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityPurposes(w http.ResponseWriter, r *http.Request) {
@@ -407,7 +407,7 @@ func UpdateEntityPurposes(w http.ResponseWriter, r *http.Request) {
 		"total_purposes", len(response.Purposes),
 	)
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityPurpose(w http.ResponseWriter, r *http.Request) {
@@ -451,7 +451,7 @@ func GetEntityPurpose(w http.ResponseWriter, r *http.Request) {
 		"purpose_id", purposeID,
 	)
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
@@ -500,7 +500,7 @@ func UpdateEntityPurpose(w http.ResponseWriter, r *http.Request) {
 		"purpose_id", purposeID,
 	)
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func DeleteEntityPurpose(w http.ResponseWriter, r *http.Request) {
@@ -543,7 +543,7 @@ func DeleteEntityPurpose(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityVersions(w http.ResponseWriter, r *http.Request) {
@@ -551,7 +551,7 @@ func ListEntityVersions(w http.ResponseWriter, r *http.Request) {
 		Versions: []api.Entity{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityVersions(w http.ResponseWriter, r *http.Request) {
@@ -565,7 +565,7 @@ func UpdateEntityVersions(w http.ResponseWriter, r *http.Request) {
 		Versions:  []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -580,7 +580,7 @@ func GetEntityVersion(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func UpdateEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -595,7 +595,7 @@ func UpdateEntityVersion(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func DeleteEntityVersion(w http.ResponseWriter, r *http.Request) {
@@ -603,7 +603,7 @@ func DeleteEntityVersion(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRatings(w http.ResponseWriter, r *http.Request) {
@@ -611,7 +611,7 @@ func ListEntityRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRatings(w http.ResponseWriter, r *http.Request) {
@@ -625,7 +625,7 @@ func UpdateEntityRatings(w http.ResponseWriter, r *http.Request) {
 		Ratings:  []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -638,7 +638,7 @@ func GetEntityRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -656,7 +656,7 @@ func UpdateEntityRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRating(w http.ResponseWriter, r *http.Request) {
@@ -664,7 +664,7 @@ func DeleteEntityRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationships(w http.ResponseWriter, r *http.Request) {
@@ -672,7 +672,7 @@ func ListEntityRelationships(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRelationships(w http.ResponseWriter, r *http.Request) {
@@ -686,7 +686,7 @@ func UpdateEntityRelationships(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -696,7 +696,7 @@ func GetEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func UpdateEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -711,7 +711,7 @@ func UpdateEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func DeleteEntityRelationship(w http.ResponseWriter, r *http.Request) {
@@ -719,7 +719,7 @@ func DeleteEntityRelationship(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -727,7 +727,7 @@ func ListEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func UpdateEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
@@ -741,7 +741,7 @@ func UpdateEntityRelationshipRatings(w http.ResponseWriter, r *http.Request) {
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func GetEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -754,7 +754,7 @@ func GetEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -772,7 +772,7 @@ func UpdateEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
@@ -780,7 +780,7 @@ func DeleteEntityRelationshipRating(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipsSystem(w http.ResponseWriter, r *http.Request) {
@@ -788,7 +788,7 @@ func ListEntityRelationshipsSystem(w http.ResponseWriter, r *http.Request) {
 		Relationships: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -803,7 +803,7 @@ func CreateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusCreated, relationship)
+	WriteJSON(w, r, http.StatusCreated, relationship)
 }
 
 func GetEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -813,7 +813,7 @@ func GetEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func UpdateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -828,7 +828,7 @@ func UpdateEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, relationship)
+	WriteJSON(w, r, http.StatusOK, relationship)
 }
 
 func DeleteEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
@@ -836,7 +836,7 @@ func DeleteEntityRelationshipSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRelationshipRatingsSystem(w http.ResponseWriter, r *http.Request) {
@@ -844,7 +844,7 @@ func ListEntityRelationshipRatingsSystem(w http.ResponseWriter, r *http.Request)
 		RelationshipRatings: []api.EntityRelationshipRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -862,7 +862,7 @@ func CreateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rating)
+	WriteJSON(w, r, http.StatusCreated, rating)
 }
 
 func GetEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -875,7 +875,7 @@ func GetEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -893,7 +893,7 @@ func UpdateEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -901,7 +901,7 @@ func DeleteEntityRelationshipRatingSystem(w http.ResponseWriter, r *http.Request
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityRatingsSystem(w http.ResponseWriter, r *http.Request) {
@@ -909,7 +909,7 @@ func ListEntityRatingsSystem(w http.ResponseWriter, r *http.Request) {
 		Ratings: []api.EntityContextualRatingInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -927,7 +927,7 @@ func CreateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusCreated, rating)
+	WriteJSON(w, r, http.StatusCreated, rating)
 }
 
 func GetEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -940,7 +940,7 @@ func GetEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func UpdateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -958,7 +958,7 @@ func UpdateEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	WriteJSON(w, http.StatusOK, rating)
+	WriteJSON(w, r, http.StatusOK, rating)
 }
 
 func DeleteEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
@@ -966,7 +966,7 @@ func DeleteEntityRatingSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityPurposesSystem(w http.ResponseWriter, r *http.Request) {
@@ -974,7 +974,7 @@ func ListEntityPurposesSystem(w http.ResponseWriter, r *http.Request) {
 		Purposes: []api.EntityPurposeInput{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -988,7 +988,7 @@ func CreateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
-	WriteJSON(w, http.StatusCreated, purpose)
+	WriteJSON(w, r, http.StatusCreated, purpose)
 }
 
 func GetEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -997,7 +997,7 @@ func GetEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    true,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func UpdateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -1011,7 +1011,7 @@ func UpdateEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		IsPrimary:    input.IsPrimary,
 	}
 
-	WriteJSON(w, http.StatusOK, purpose)
+	WriteJSON(w, r, http.StatusOK, purpose)
 }
 
 func DeleteEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
@@ -1019,7 +1019,7 @@ func DeleteEntityPurposeSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func ListEntityVersionsSystem(w http.ResponseWriter, r *http.Request) {
@@ -1027,7 +1027,7 @@ func ListEntityVersionsSystem(w http.ResponseWriter, r *http.Request) {
 		Versions: []api.EntityRelationship{},
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
 
 func CreateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -1042,7 +1042,7 @@ func CreateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusCreated, version)
+	WriteJSON(w, r, http.StatusCreated, version)
 }
 
 func GetEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -1052,7 +1052,7 @@ func GetEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: uuid.New(),
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func UpdateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -1067,7 +1067,7 @@ func UpdateEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		RelationshipTypeID: input.RelationshipTypeID,
 	}
 
-	WriteJSON(w, http.StatusOK, version)
+	WriteJSON(w, r, http.StatusOK, version)
 }
 
 func DeleteEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
@@ -1075,5 +1075,5 @@ func DeleteEntityVersionSystem(w http.ResponseWriter, r *http.Request) {
 		Status: "deleted",
 	}
 
-	WriteJSON(w, http.StatusOK, response)
+	WriteJSON(w, r, http.StatusOK, response)
 }
