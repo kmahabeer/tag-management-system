@@ -8,6 +8,14 @@ info:
     - **RESTful architecture** — resource-based URIs and standard HTTP verbs (GET, POST, PATCH, DELETE)
     - **JSON payloads** — all requests and responses use JSON
     - **Frontend-controlled authentication** — only frontend clients (CLI, UI) interact with the API through validated tokens (except for development/testing)
+
+    ## Rate Limiting
+      The API implements global rate limiting using a token bucket algorithm. Requests are limited to 60 per minute per IP address.
+      All API responses include the following headers to indicate the current rate limit status:
+      - `X-RateLimit-Limit`: The maximum number of requests allowed per minute.
+      - `X-RateLimit-Remaining`: The approximate number of requests remaining in the current time window.
+      - `X-RateLimit-Reset`: The estimated time when the rate limit resets, in Unix timestamp format.
+      When the rate limit is exceeded, the API returns a 429 Too Many Requests response with an additional `Retry-After` header indicating the number of seconds to wait before retrying the request.
   title: Tag Management System API
   version: 0.1.1
 servers:
@@ -130,6 +138,8 @@ paths:
   /meta/health:
     get:
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -159,6 +169,8 @@ paths:
             type: integer
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -176,6 +188,8 @@ paths:
               $ref: '#/components/schemas/TagInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -210,6 +224,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -237,6 +253,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -270,6 +288,8 @@ paths:
               $ref: '#/components/schemas/TagInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -300,6 +320,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -329,6 +351,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -364,6 +388,8 @@ paths:
               $ref: '#/components/schemas/AliasUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -399,6 +425,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__aliases_post_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -438,6 +466,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -477,6 +507,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -521,6 +553,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__aliases__alias_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -551,6 +585,8 @@ paths:
             type: string
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -570,6 +606,8 @@ paths:
               $ref: '#/components/schemas/_tag_aliases_post_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -598,6 +636,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -625,6 +665,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -659,6 +701,8 @@ paths:
               $ref: '#/components/schemas/_tag_aliases_post_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -690,6 +734,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -736,6 +782,8 @@ paths:
             type: string
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -772,6 +820,8 @@ paths:
               $ref: '#/components/schemas/RelationshipUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -808,6 +858,8 @@ paths:
               $ref: '#/components/schemas/TagRelationshipInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -847,6 +899,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -886,6 +940,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -930,6 +986,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__relationships__relationship_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -979,6 +1037,8 @@ paths:
             type: string
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -999,6 +1059,8 @@ paths:
               $ref: '#/components/schemas/TagRelationship'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -1027,6 +1089,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1055,6 +1119,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1090,6 +1156,8 @@ paths:
               $ref: '#/components/schemas/_tag_relationships__id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1121,6 +1189,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1155,6 +1225,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1192,6 +1264,8 @@ paths:
               $ref: '#/components/schemas/CompositionUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1230,6 +1304,8 @@ paths:
               $ref: '#/components/schemas/TagComponentInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -1271,6 +1347,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1311,6 +1389,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1356,6 +1436,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__compositions__composition_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1397,6 +1479,8 @@ paths:
             type: string
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1418,6 +1502,8 @@ paths:
               $ref: '#/components/schemas/_tag_compositions_post_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -1446,6 +1532,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1473,6 +1561,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1508,6 +1598,8 @@ paths:
               $ref: '#/components/schemas/_tag_compositions__id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1539,6 +1631,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1569,6 +1663,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1605,6 +1701,8 @@ paths:
               $ref: '#/components/schemas/ContextualRatingUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1644,6 +1742,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1683,6 +1783,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1726,6 +1828,8 @@ paths:
               $ref: '#/components/schemas/TagContextualRatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1757,6 +1861,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1787,6 +1893,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1823,6 +1931,8 @@ paths:
               $ref: '#/components/schemas/RelationshipRatingUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1862,6 +1972,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1902,6 +2014,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1947,6 +2061,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__relationship_ratings__rating_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -1989,6 +2105,8 @@ paths:
             type: integer
           style: form
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2009,6 +2127,8 @@ paths:
               $ref: '#/components/schemas/EntityInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -2038,6 +2158,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2066,6 +2188,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2102,6 +2226,8 @@ paths:
               $ref: '#/components/schemas/EntityInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2133,6 +2259,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2169,6 +2297,8 @@ paths:
               $ref: '#/components/schemas/EntityTagUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2209,6 +2339,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2248,6 +2380,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2279,6 +2413,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2315,6 +2451,8 @@ paths:
               $ref: '#/components/schemas/EntityPurposeUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2354,6 +2492,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2393,6 +2533,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2437,6 +2579,8 @@ paths:
               $ref: '#/components/schemas/_entities__id__purposes__purpose_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2469,6 +2613,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2506,6 +2652,8 @@ paths:
               $ref: '#/components/schemas/_entities__id__versions_patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2545,6 +2693,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2584,6 +2734,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2628,6 +2780,8 @@ paths:
               $ref: '#/components/schemas/_entities__id__versions__version_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2659,6 +2813,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2696,6 +2852,8 @@ paths:
               $ref: '#/components/schemas/EntityContextualRatingUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2735,6 +2893,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2774,6 +2934,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2816,6 +2978,8 @@ paths:
               $ref: '#/components/schemas/_entities__id__ratings__rating_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2847,6 +3011,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2883,6 +3049,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2922,6 +3090,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -2961,6 +3131,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3005,6 +3177,8 @@ paths:
               $ref: '#/components/schemas/_entities__id__relationships__relationship_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3037,6 +3211,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3074,6 +3250,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipRatingUpdate'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3113,6 +3291,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3152,6 +3332,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3196,6 +3378,8 @@ paths:
               $ref: '#/components/schemas/_tags__id__relationship_ratings__rating_id__patch_request'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3217,6 +3401,8 @@ paths:
         "Retrieve a system-wide list of all entity-to-entity relationships,\
         \ regardless of source or target."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3237,6 +3423,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3261,6 +3449,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3291,6 +3481,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3306,6 +3498,8 @@ paths:
         Retrieve a global list of all contextual ratings applied to entity-to-entity
         relationships.
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3326,6 +3520,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipRatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3348,6 +3544,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3377,6 +3575,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipRatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3392,6 +3592,8 @@ paths:
         Retrieve a global list of all contextual ratings applied directly
         to entities.
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3410,6 +3612,8 @@ paths:
               $ref: '#/components/schemas/EntityContextualRatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3432,6 +3636,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3461,6 +3667,8 @@ paths:
               $ref: '#/components/schemas/EntityContextualRatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3476,6 +3684,8 @@ paths:
         "Retrieve all purpose tag assignments across all entities, including\
         \ which are primary."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3496,6 +3706,8 @@ paths:
               $ref: '#/components/schemas/EntityPurposeInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3518,6 +3730,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3545,6 +3759,8 @@ paths:
               $ref: '#/components/schemas/EntityPurposeInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3560,6 +3776,8 @@ paths:
         "Retrieve all version-type relationships (e.g., “version-of”) across\
         \ the system."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3580,6 +3798,8 @@ paths:
               $ref: '#/components/schemas/EntityRelationshipInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3595,6 +3815,8 @@ paths:
         "Retrieve all semantic contexts under which tags, entities, or\
         \ relationships can be grouped, rated, or classified."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3615,6 +3837,8 @@ paths:
               $ref: '#/components/schemas/ContextInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3639,6 +3863,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3668,6 +3894,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3703,6 +3931,8 @@ paths:
               $ref: '#/components/schemas/ContextInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3724,6 +3954,8 @@ paths:
         "Retrieve all grammatical classifications used to categorize tags\
         \ (e.g., noun, adjective, adverb)."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3744,6 +3976,8 @@ paths:
               $ref: '#/components/schemas/PartOfSpeechInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3768,6 +4002,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3797,6 +4033,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3832,6 +4070,8 @@ paths:
               $ref: '#/components/schemas/PartOfSpeechInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3853,6 +4093,8 @@ paths:
         "Retrieve all available rating values defined across the system,\
         \ including their scores, descriptions, and rating types."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3873,6 +4115,8 @@ paths:
               $ref: '#/components/schemas/RatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -3897,6 +4141,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3926,6 +4172,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3961,6 +4209,8 @@ paths:
               $ref: '#/components/schemas/RatingInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -3982,6 +4232,8 @@ paths:
         "Retrieve all defined rating categories, such as \"Likeness\",\
         \ \"Confidence\", or \"Clarity\", which group rating values by meaning."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4002,6 +4254,8 @@ paths:
               $ref: '#/components/schemas/RatingTypeInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -4026,6 +4280,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4055,6 +4311,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4088,6 +4346,8 @@ paths:
               $ref: '#/components/schemas/RatingTypeInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4109,6 +4369,8 @@ paths:
         Retrieve all UI layout profiles that define how tags and contexts
         are organized in the user interface.
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4129,6 +4391,8 @@ paths:
               $ref: '#/components/schemas/UiLayoutInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -4154,6 +4418,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4176,6 +4442,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4210,6 +4478,8 @@ paths:
               $ref: '#/components/schemas/UiLayoutInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4225,6 +4495,8 @@ paths:
         Retrieve all reusable UI group definitions that segment layouts
         into labeled sections.
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4245,6 +4517,8 @@ paths:
               $ref: '#/components/schemas/UiGroupInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -4269,6 +4543,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4292,6 +4568,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4325,6 +4603,8 @@ paths:
               $ref: '#/components/schemas/UiGroupInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4340,6 +4620,8 @@ paths:
         "Retrieve all field definitions that map contexts, categories,\
         \ and tags to specific sections in a layout."
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4360,6 +4642,8 @@ paths:
               $ref: '#/components/schemas/UiFieldInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '201':
           content:
             application/json:
@@ -4382,6 +4666,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4405,6 +4691,8 @@ paths:
             type: string
           style: simple
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -4438,6 +4726,8 @@ paths:
               $ref: '#/components/schemas/UiFieldInput'
         required: true
       responses:
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
         '200':
           content:
             application/json:
@@ -6548,6 +6838,31 @@ components:
           type: array
       title: _ui_fields_get_200_response
       type: object
+ responses:
+   RateLimitExceeded:
+     description: Too Many Requests - Rate limit exceeded
+     headers:
+       X-RateLimit-Limit:
+         schema:
+           type: integer
+         description: The maximum number of requests allowed per time window.
+       X-RateLimit-Remaining:
+         schema:
+           type: integer
+         description: The number of requests remaining in the current time window.
+       X-RateLimit-Reset:
+         schema:
+           type: integer
+           format: int64
+         description: The time when the rate limit resets, in Unix timestamp format.
+       Retry-After:
+         schema:
+           type: integer
+         description: The number of seconds to wait before retrying the request.
+     content:
+       application/json:
+         schema:
+           $ref: '#/components/schemas/ErrorResponse'
 x-tagGroups:
   - name: Meta
     tags:
