@@ -12,6 +12,7 @@ type Config struct {
 	Database  DatabaseConfig
 	CORS      CORSConfig
 	RateLimit RateLimitConfig
+	Security  SecurityConfig
 }
 
 // ServerConfig holds server-related configuration
@@ -44,6 +45,20 @@ type RateLimitConfig struct {
 	RequestsPerMinute int
 }
 
+// SecurityConfig holds security-related configuration
+type SecurityConfig struct {
+	ContentSecurityPolicy   string
+	StrictTransportSecurity string
+	XContentTypeOptions     string
+	XFrameOptions           string
+	XXSSProtection          string
+	ReferrerPolicy          string
+	PermissionsPolicy       string
+	ServerHeader            string
+	RemoveXPoweredBy        bool
+	CacheControl            string
+}
+
 // LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
 	return &Config{
@@ -68,6 +83,18 @@ func LoadConfig() (*Config, error) {
 		},
 		RateLimit: RateLimitConfig{
 			RequestsPerMinute: parseInt(getEnv("RATE_LIMIT_REQUESTS_PER_MINUTE", "60")),
+		},
+		Security: SecurityConfig{
+			ContentSecurityPolicy:   getEnv("SECURITY_CONTENT_SECURITY_POLICY", "default-src 'self'"),
+			StrictTransportSecurity: getEnv("SECURITY_STRICT_TRANSPORT_SECURITY", "max-age=31536000; includeSubDomains"),
+			XContentTypeOptions:     getEnv("SECURITY_X_CONTENT_TYPE_OPTIONS", "nosniff"),
+			XFrameOptions:           getEnv("SECURITY_X_FRAME_OPTIONS", "DENY"),
+			XXSSProtection:          getEnv("SECURITY_X_XSS_PROTECTION", "1; mode=block"),
+			ReferrerPolicy:          getEnv("SECURITY_REFERRER_POLICY", "strict-origin-when-cross-origin"),
+			PermissionsPolicy:       getEnv("SECURITY_PERMISSIONS_POLICY", ""),
+			ServerHeader:            getEnv("SECURITY_SERVER_HEADER", ""),
+			RemoveXPoweredBy:        parseBool(getEnv("SECURITY_REMOVE_X_POWERED_BY", "true")),
+			CacheControl:            getEnv("SECURITY_CACHE_CONTROL", "no-cache, no-store, must-revalidate"),
 		},
 	}, nil
 }
